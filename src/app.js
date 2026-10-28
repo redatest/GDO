@@ -436,23 +436,37 @@ function renderUnifilaireView() {
   const xSpacing = 160;
   const ySpacing = 68;
 
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+
   for (let d = 0; d <= maxDepth; d++) {
     const group = depthGroups[d] || [];
     const totalH = group.length * ySpacing;
     const startY = 260 - totalH / 2;
     group.forEach((n, idx) => {
+      const nx = 80 + d * xSpacing;
+      const ny = startY + idx * ySpacing;
+      if (nx < minX) minX = nx;
+      if (nx > maxX) maxX = nx;
+      if (ny < minY) minY = ny;
+      if (ny > maxY) maxY = ny;
+
       calculatedNodes.push({
         ...n,
-        x: 80 + d * xSpacing,
-        y: startY + idx * ySpacing,
+        x: nx,
+        y: ny,
         depth: d,
         inPath: inPathSet.has(n.id)
       });
     });
   }
 
+  if (isFinite(minX)) {
+    window._currentCalculatedBounds = { minX, maxX, minY, maxY };
+  }
+
   const nodePosMap = new Map();
   for (const n of calculatedNodes) nodePosMap.set(n.id, n);
+  window._currentNodePosMap = nodePosMap;
 
   return `
     <div class="flex flex-col h-[calc(100vh-105px)] bg-slate-50 text-slate-800 relative overflow-hidden">
@@ -509,10 +523,16 @@ function renderUnifilaireView() {
         <svg
           id="networkSvg"
           class="w-full h-full select-none"
-          style="touch-action: none; transform: translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom}); transform-origin: 0 0;"
+          style="width: 100%; height: 100%; touch-action: none; overflow: visible !important;"
         >
-          <!-- Arcs MT -->
-          <g class="edges">
+          <!-- Conteneur Pan & Zoom Infini (sans clipping) -->
+          <g
+            id="networkViewport"
+            transform="translate(${state.pan.x}, ${state.pan.y}) scale(${state.zoom})"
+            style="transform: translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom}); transform-origin: 0 0;"
+          >
+            <!-- Arcs MT -->
+            <g class="edges">
             ${renderEdges.map(edge => {
               const u = nodePosMap.get(edge.from);
               const v = nodePosMap.get(edge.to);
@@ -609,7 +629,8 @@ function renderUnifilaireView() {
               `;
             }).join('')}
           </g>
-        </svg>
+        </g>
+      </svg>
 
         <!-- Contrôles Flottants Zoom Tactile -->
         <div class="absolute bottom-4 right-4 flex flex-col gap-1 z-10">
@@ -1284,9 +1305,11 @@ function renderNewConducteurModal() {
 
 // --- MISE À JOUR TRANSFORMATION DU SCHÉMA SVG (PAN & ZOOM) ---
 function updateSvgTransform() {
-  const svg = document.getElementById('networkSvg');
-  if (svg) {
-    svg.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
+  const g = document.getElementById('networkViewport');
+  if (g) {
+    g.setAttribute('transform', `translate(${state.pan.x}, ${state.pan.y}) scale(${state.zoom})`);
+    g.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
+    g.style.transformOrigin = '0 0';
   }
 }
 
@@ -1364,6 +1387,9 @@ window.app = {
     state.selectedEdge = null;
     state.showBottomSheet = false;
     renderApp();
+    setTimeout(() => {
+      window.app.fitView();
+    }, 60);
   },
   selectDepart: (depId) => {
     state.selectedDepartId = depId;
@@ -1371,18 +1397,43 @@ window.app = {
     state.selectedEdge = null;
     state.showBottomSheet = false;
     renderApp();
+    setTimeout(() => {
+      window.app.fitView();
+    }, 60);
   },
   toggleJunctions: () => {
     state.showJunctions = !state.showJunctions;
     renderApp();
   },
   zoomCanvas: (delta) => {
-    state.zoom = Math.min(Math.max(0.2, state.zoom + delta), 3.5);
+    state.zoom = Math.min(Math.max(0.15, state.zoom + delta), 4.0);
     updateSvgTransform();
   },
   fitView: () => {
-    state.zoom = 1;
-    state.pan = { x: 30, y: 70 };
+    const container = document.getElementById('svgContainer');
+    const width = container ? container.clientWidth : (window.innerWidth || 390);
+    const height = container ? container.clientHeight : 500;
+
+    if (window._currentCalculatedBounds && isFinite(window._currentCalculatedBounds.minX)) {
+      const b = window._currentCalculatedBounds;
+      const graphW = Math.max(b.maxX - b.minX + 160, 200);
+      const graphH = Math.max(b.maxY - b.minY + 160, 200);
+
+      // Pour mobile (ou desktop) : cadrage initial parfait
+      const scaleX = (width - 40) / graphW;
+      const scaleY = (height - 40) / graphH;
+      // On conserve un zoom lisible :
+      const autoZoom = Math.min(Math.max(scaleY, 0.45), 1.0);
+
+      state.zoom = autoZoom;
+      state.pan = {
+        x: 30,
+        y: Math.max(20, (height - (b.maxY - b.minY) * autoZoom) / 2 - b.minY * autoZoom)
+      };
+    } else {
+      state.zoom = 0.8;
+      state.pan = { x: 30, y: 70 };
+    }
     updateSvgTransform();
   },
   selectNode: (nodeId) => {
@@ -1563,6 +1614,18 @@ window.app = {
       state.showBottomSheet = true;
     }
     renderApp();
+    setTimeout(() => {
+      const nodePos = window._currentNodePosMap?.get(nodeId);
+      if (nodePos) {
+        const container = document.getElementById('svgContainer');
+        const w = container ? container.clientWidth : (window.innerWidth || 390);
+        const h = container ? container.clientHeight : 500;
+        state.zoom = 1.0;
+        state.pan.x = w / 2 - nodePos.x * state.zoom;
+        state.pan.y = h / 2 - nodePos.y * state.zoom;
+        updateSvgTransform();
+      }
+    }, 60);
   },
 
   // Terrain & Visites (GPARC-Mobile)

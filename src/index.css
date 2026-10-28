@@ -13,3 +13,15 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+#networkSvg {
+  overflow: visible !important;
+}
+
+#svgContainer {
+  touch-action: none !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
