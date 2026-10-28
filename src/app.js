@@ -94,7 +94,12 @@ const state = {
   zoom: 1,
   pan: { x: 30, y: 70 },
   isDragging: false,
-  dragStart: { x: 0, y: 0 },
+  dragMoved: false,
+  dragStart: { x: 0, y: 0, startX: 0, startY: 0 },
+  touchInitialDist: 0,
+  touchInitialZoom: 1,
+  touchInitialPan: { x: 30, y: 70 },
+  touchCenter: { x: 0, y: 0 },
   selectedNode: null,
   selectedEdge: null,
   showBottomSheet: false,
@@ -491,15 +496,20 @@ function renderUnifilaireView() {
       <div
         id="svgContainer"
         class="relative flex-1 bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none"
-        style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 24px 24px;"
+        style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 24px 24px; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;"
         onmousedown="window.app.handleMouseDown(event)"
         onmousemove="window.app.handleMouseMove(event)"
         onmouseup="window.app.handleMouseUp(event)"
+        onmouseleave="window.app.handleMouseUp(event)"
+        ontouchstart="window.app.handleTouchStart(event)"
+        ontouchmove="window.app.handleTouchMove(event)"
+        ontouchend="window.app.handleTouchEnd(event)"
+        ontouchcancel="window.app.handleTouchEnd(event)"
       >
         <svg
           id="networkSvg"
-          class="w-full h-full"
-          style="transform: translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom}); transform-origin: 0 0;"
+          class="w-full h-full select-none"
+          style="touch-action: none; transform: translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom}); transform-origin: 0 0;"
         >
           <!-- Arcs MT -->
           <g class="edges">
@@ -1272,6 +1282,34 @@ function renderNewConducteurModal() {
   `;
 }
 
+// --- MISE À JOUR TRANSFORMATION DU SCHÉMA SVG (PAN & ZOOM) ---
+function updateSvgTransform() {
+  const svg = document.getElementById('networkSvg');
+  if (svg) {
+    svg.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
+  }
+}
+
+// --- ATTACHEMENT DES ÉVÉNEMENTS TACTILES NON-PASSIFS SUR LE SCHÉMA ---
+function attachSchemaCanvasListeners() {
+  const container = document.getElementById('svgContainer');
+  if (!container) return;
+
+  // Enlever d'anciens listeners si existants pour éviter les doublons
+  container.removeEventListener('touchstart', window.app.handleTouchStart);
+  container.removeEventListener('touchmove', window.app.handleTouchMove);
+  container.removeEventListener('touchend', window.app.handleTouchEnd);
+  container.removeEventListener('touchcancel', window.app.handleTouchEnd);
+  container.removeEventListener('wheel', window.app.handleWheel);
+
+  // Attacher avec { passive: false } pour autoriser e.preventDefault() sur mobile
+  container.addEventListener('touchstart', window.app.handleTouchStart, { passive: false });
+  container.addEventListener('touchmove', window.app.handleTouchMove, { passive: false });
+  container.addEventListener('touchend', window.app.handleTouchEnd, { passive: false });
+  container.addEventListener('touchcancel', window.app.handleTouchEnd, { passive: false });
+  container.addEventListener('wheel', window.app.handleWheel, { passive: false });
+}
+
 // --- RENDU GLOBAL SPA ---
 export function renderApp() {
   const root = document.getElementById('root');
@@ -1280,7 +1318,7 @@ export function renderApp() {
   let viewHtml = '';
   if (state.activeTab === 'home') viewHtml = renderHomeView();
   else if (state.activeTab === 'unifilaire') viewHtml = renderUnifilaireView();
-  else if (state.activeTab === 'ouvrages') viewHtml = renderOuvragesView();
+  else if (state.activeTab === 'ouvrages') viewHtml = renderOvragesViewSafe();
   else if (state.activeTab === 'terrain') viewHtml = renderTerrainView();
   else if (state.activeTab === 'settings') viewHtml = renderSettingsView();
 
@@ -1298,6 +1336,15 @@ export function renderApp() {
       ${renderNewConducteurModal()}
     </div>
   `;
+
+  // Initialisation des écouteurs tactiles du schéma interactif
+  if (state.activeTab === 'unifilaire') {
+    attachSchemaCanvasListeners();
+  }
+}
+
+function renderOvragesViewSafe() {
+  return renderOuvragesView();
 }
 
 // --- MÉTHODES GLOBALES ACCESSIBLES ---
@@ -1331,14 +1378,15 @@ window.app = {
   },
   zoomCanvas: (delta) => {
     state.zoom = Math.min(Math.max(0.2, state.zoom + delta), 3.5);
-    renderApp();
+    updateSvgTransform();
   },
   fitView: () => {
     state.zoom = 1;
     state.pan = { x: 30, y: 70 };
-    renderApp();
+    updateSvgTransform();
   },
   selectNode: (nodeId) => {
+    if (state.dragMoved) return;
     const dep = networkData.departs[state.selectedDepartId];
     const n = dep?.nodes.find(item => item.id === nodeId);
     if (n) {
@@ -1349,6 +1397,7 @@ window.app = {
     }
   },
   selectEdge: (edgeId) => {
+    if (state.dragMoved) return;
     const dep = networkData.departs[state.selectedDepartId];
     const e = dep?.edges.find(item => item.id === edgeId);
     if (e) {
@@ -1362,22 +1411,137 @@ window.app = {
     state.showBottomSheet = false;
     renderApp();
   },
+
+  // --- GESTION TACTILE MOBILE (PAN ET PINCH-TO-ZOOM À 2 DOIGTS) ---
+  handleTouchStart: (e) => {
+    if (!e.touches || e.touches.length === 0) return;
+    state.dragMoved = false;
+
+    if (e.touches.length === 1) {
+      // 1 doigt : déplacement (pan)
+      const touch = e.touches[0];
+      state.isDragging = true;
+      state.dragStart = {
+        x: touch.clientX - state.pan.x,
+        y: touch.clientY - state.pan.y,
+        startX: touch.clientX,
+        startY: touch.clientY
+      };
+    } else if (e.touches.length >= 2) {
+      // 2 doigts : zoom par pincement (pinch-to-zoom)
+      state.isDragging = false;
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const dist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      state.touchInitialDist = dist > 0 ? dist : 1;
+      state.touchInitialZoom = state.zoom;
+      state.touchInitialPan = { x: state.pan.x, y: state.pan.y };
+      state.touchCenter = {
+        x: (t1.clientX + t2.clientX) / 2,
+        y: (t1.clientY + t2.clientY) / 2
+      };
+    }
+  },
+
+  handleTouchMove: (e) => {
+    if (!e.touches || e.touches.length === 0) return;
+    if (e.cancelable) {
+      e.preventDefault(); // Empêche le scroll de page ou le rafraîchissement natif
+    }
+
+    if (e.touches.length === 1 && state.isDragging) {
+      const touch = e.touches[0];
+      const dx = touch.clientX - state.dragStart.startX;
+      const dy = touch.clientY - state.dragStart.startY;
+      if (Math.hypot(dx, dy) > 4) {
+        state.dragMoved = true;
+      }
+      state.pan.x = touch.clientX - state.dragStart.x;
+      state.pan.y = touch.clientY - state.dragStart.y;
+      updateSvgTransform();
+    } else if (e.touches.length >= 2) {
+      state.dragMoved = true;
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const currentDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      const factor = currentDist / (state.touchInitialDist || 1);
+      const targetZoom = Math.min(Math.max(0.2, state.touchInitialZoom * factor), 3.5);
+
+      const currentCenter = {
+        x: (t1.clientX + t2.clientX) / 2,
+        y: (t1.clientY + t2.clientY) / 2
+      };
+
+      const zoomRatio = targetZoom / state.touchInitialZoom;
+      state.pan.x = currentCenter.x - (state.touchCenter.x - state.touchInitialPan.x) * zoomRatio;
+      state.pan.y = currentCenter.y - (state.touchCenter.y - state.touchInitialPan.y) * zoomRatio;
+      state.zoom = targetZoom;
+      updateSvgTransform();
+    }
+  },
+
+  handleTouchEnd: (e) => {
+    if (e.touches && e.touches.length === 1) {
+      // Reprise fluide du pan à 1 doigt
+      const touch = e.touches[0];
+      state.isDragging = true;
+      state.dragStart = {
+        x: touch.clientX - state.pan.x,
+        y: touch.clientY - state.pan.y,
+        startX: touch.clientX,
+        startY: touch.clientY
+      };
+    } else if (!e.touches || e.touches.length === 0) {
+      state.isDragging = false;
+      setTimeout(() => {
+        state.dragMoved = false;
+      }, 80);
+    }
+  },
+
+  // --- GESTION SOURIS DESKTOP ---
   handleMouseDown: (e) => {
     if (e.button !== 0) return;
     state.isDragging = true;
-    state.dragStart = { x: e.clientX - state.pan.x, y: e.clientY - state.pan.y };
+    state.dragMoved = false;
+    state.dragStart = {
+      x: e.clientX - state.pan.x,
+      y: e.clientY - state.pan.y,
+      startX: e.clientX,
+      startY: e.clientY
+    };
   },
   handleMouseMove: (e) => {
     if (!state.isDragging) return;
+    const dx = e.clientX - state.dragStart.startX;
+    const dy = e.clientY - state.dragStart.startY;
+    if (Math.hypot(dx, dy) > 4) {
+      state.dragMoved = true;
+    }
     state.pan.x = e.clientX - state.dragStart.x;
     state.pan.y = e.clientY - state.dragStart.y;
-    const svg = document.getElementById('networkSvg');
-    if (svg) {
-      svg.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
-    }
+    updateSvgTransform();
   },
   handleMouseUp: () => {
     state.isDragging = false;
+    setTimeout(() => {
+      state.dragMoved = false;
+    }, 80);
+  },
+  handleWheel: (e) => {
+    if (e.cancelable) e.preventDefault();
+    const zoomFactor = e.deltaY < 0 ? 1.15 : 0.87;
+    const targetZoom = Math.min(Math.max(0.2, state.zoom * zoomFactor), 3.5);
+
+    const rect = document.getElementById('svgContainer')?.getBoundingClientRect();
+    if (rect) {
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      state.pan.x = mouseX - (mouseX - state.pan.x) * (targetZoom / state.zoom);
+      state.pan.y = mouseY - (mouseY - state.pan.y) * (targetZoom / state.zoom);
+    }
+    state.zoom = targetZoom;
+    updateSvgTransform();
   },
 
   // Ouvrages
