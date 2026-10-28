@@ -8,6 +8,59 @@ import { departsSummary } from './data/departsSummary.js';
 import { tableSchemas } from './data/tableSchemas.js';
 import { fullTablesData } from './data/fullTablesData.js';
 
+// --- RÉFÉRENTIEL PAR DÉFAUT DES PARAMÈTRES RÉSEAU MT ---
+const DEFAULT_SETTINGS = {
+  transfos: [
+    { kva: 50, ucc: 4.0, p0: 145, pk: 1050, in30: 0.96, type: 'AC', desc: 'Poste haut de poteau rural' },
+    { kva: 100, ucc: 4.0, p0: 260, pk: 1750, in30: 1.92, type: 'AC/MS', desc: 'Poste agricole / village' },
+    { kva: 160, ucc: 4.0, p0: 390, pk: 2350, in30: 3.08, type: 'MS', desc: 'Cabine maçonnée standard' },
+    { kva: 250, ucc: 4.0, p0: 530, pk: 3250, in30: 4.81, type: 'MS', desc: 'Agglomération moyenne' },
+    { kva: 400, ucc: 4.0, p0: 750, pk: 4600, in30: 7.70, type: 'MS', desc: 'Centre urbain / industrie' },
+    { kva: 630, ucc: 4.0, p0: 1100, pk: 6500, in30: 12.12, type: 'MS', desc: 'Zone industrielle / hôpital' },
+    { kva: 1000, ucc: 5.0, p0: 1700, pk: 10500, in30: 19.24, type: 'MS', desc: 'Grosse unité industrielle' }
+  ],
+  conducteurs: [
+    { code: 'AM_36', nom: 'Almélec 36 mm²', section: 36, nat: 'AM', r: 0.92, x: 0.38, iMax: 155, pose: 'AÉRIEN NU' },
+    { code: 'AM_75', nom: 'Almélec 75 mm²', section: 75, nat: 'AM', r: 0.44, x: 0.36, iMax: 245, pose: 'AÉRIEN NU' },
+    { code: 'AM_117', nom: 'Almélec 117 mm²', section: 117, nat: 'AM', r: 0.28, x: 0.35, iMax: 330, pose: 'AÉRIEN NU' },
+    { code: 'AM_148', nom: 'Almélec 148 mm²', section: 148, nat: 'AM', r: 0.22, x: 0.34, iMax: 385, pose: 'AÉRIEN NU' },
+    { code: 'CU_25', nom: 'Cuivre 25 mm²', section: 25, nat: 'CU', r: 0.72, x: 0.39, iMax: 140, pose: 'AÉRIEN NU' },
+    { code: 'CU_50', nom: 'Cuivre 50 mm²', section: 50, nat: 'CU', r: 0.36, x: 0.37, iMax: 215, pose: 'AÉRIEN NU' },
+    { code: 'SOUT_150', nom: 'Câble Souterrain Alu 150 mm²', section: 150, nat: 'AL', r: 0.21, x: 0.12, iMax: 320, pose: 'SOUTERRAIN' },
+    { code: 'SOUT_240', nom: 'Câble Souterrain Alu 240 mm²', section: 240, nat: 'AL', r: 0.13, x: 0.11, iMax: 415, pose: 'SOUTERRAIN' }
+  ],
+  noeuds: [
+    { prefix: 'H', label: 'Poste Source', tension: '60/30 kV ou 90/30 kV', organe: 'Disjoncteur général + Rame MT', couleur: '#7c3aed' },
+    { prefix: 'P', label: 'Poste HTA/BT', tension: '30 kV / 400 V', organe: 'Interrupteur-fusible combiné', couleur: '#ea580c' },
+    { prefix: 'E', label: 'Étoilement (Piquage)', tension: '30 kV', organe: 'Ponts de dérivation sur poteau', couleur: '#0d9488' },
+    { prefix: 'O', label: 'Poste de Coupure (PC)', tension: '30 kV', organe: 'Interrupteur à commande manuelle / IAT', couleur: '#059669' },
+    { prefix: 'R', label: 'Poste de Répartition', tension: '30 kV', organe: 'Cellules d\'aiguillage MT', couleur: '#0284c7' },
+    { prefix: 'C', label: 'Cellule MT', tension: '30 kV', organe: 'Disjoncteur départ ou arrivée', couleur: '#2563eb' },
+    { prefix: 'B', label: 'Jeu de Barres', tension: '30 kV', organe: 'Barres collectrices en cuivre', couleur: '#475569' },
+    { prefix: 'J', label: 'Jonction de passage', tension: '30 kV', organe: 'Support d\'alignement / d\'ancrage', couleur: '#64748b' }
+  ],
+  seuils: {
+    tensionNominale: 30.0,
+    tensionMin: 27.0,
+    tensionMax: 33.0,
+    chuteTensionMax: 5.0,
+    chuteTensionMaxRurale: 7.0,
+    cosPhi: 0.90,
+    frequence: 50,
+    tempRef: 40
+  }
+};
+
+function loadStoredSettings() {
+  try {
+    const saved = localStorage.getItem('gdo_mt_settings');
+    if (saved) return JSON.parse(saved);
+  } catch (err) {
+    console.warn('Impossible de charger les paramètres locaux:', err);
+  }
+  return JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+}
+
 // --- ÉTAT GLOBAL DE L'APPLICATION (SPA STATE) ---
 const state = {
   activeTab: 'dashboard',
@@ -15,7 +68,7 @@ const state = {
   layoutMode: 'hierarchical', // 'hierarchical' | 'radial' | 'simplified'
   showJunctions: false,
   showLengths: true,
-  colorMode: 'type', // 'type' | 'section'
+  colorMode: 'type',
   zoom: 1,
   pan: { x: 60, y: 120 },
   isDragging: false,
@@ -23,20 +76,24 @@ const state = {
   selectedNode: null,
   selectedEdge: null,
   searchQuery: '',
+  // Paramètres réseau
+  settingsSubTab: 'transfos', // 'transfos' | 'conducteurs' | 'noeuds' | 'seuils'
+  settings: loadStoredSettings(),
+  settingsSavedNotice: false,
+  showNewTransfoModal: false,
+  showNewConducteurModal: false,
   // Explorateur
   explorerTable: 'Poste_htabt_lig',
   explorerSheet: 'anomalie',
   explorerPage: 1,
   explorerPageSize: 20,
   explorerSearch: '',
-  explorerSelectedRow: null,
   // GPARC Mobile
   mobileDepartId: '125H3C20',
   mobileSearchQuery: '',
   mobileSelectedPosteId: '125P8002',
   mobileAnomalieType: 'RAS',
   mobileNote: '',
-  mobileSaved: false,
   mobileInterventions: [
     {
       id: 'INT-001',
@@ -79,14 +136,14 @@ Architecture : 100% PUR JAVASCRIPT / CLIENT-SIDE SPA (0% NODE.JS)
   * J = Jonction de passage / Support
 
 3. AUDIT DE QUALITÉ & ANOMALIES
-- 7 664 arcs avec tension enregistrée à 0.0V (anomalie de saisie DBase, à normaliser à 30 kV).
-- 6 départs dans Depart.xls avec 'num_depart' vide (à réconcilier via 'num_depart_cellule').
+- 7 664 arcs avec tension enregistrée à 0.0V (anomalie de saisie DBase, normalisée à 30 kV).
+- 6 départs dans Depart.xls avec 'num_depart' vide (réconciliés via 'num_depart_cellule').
 - 14 arcs orphelins sans correspondance de tronçon physique.
 
-4. ARCHITECTURE CIBLE SANS NODE.JS (TYPE GPARC-MOBILE)
-- Application Mobile Terrain : Flutter (Dart) ou Android Kotlin avec base embarquée SQLite locale (1,8 Mo).
-- Fonctionnement 100% hors-ligne sur le terrain (recherche poste < 2ms).
-- Serveur Central (si centralisation requise) : Python pur (FastAPI / Django) + PostgreSQL/PostGIS ou PHP/Laravel.`;
+4. PARAMÈTRES & RÉFÉRENTIEL DU RÉSEAU MT
+- Transformateurs gérés : calibres 50 à 1000 kVA (Ucc 4%, pertes fer et cuivre configurables).
+- Arcs de lignes : Almélec 36, 75, 117, 148 mm², Cuivre 25/50 mm², Souterrain 150/240 mm².
+- Chute de tension maximale admissible : 5.0 % (7.0 % en zone rurale).`;
 
 // --- FONCTIONS UTILITAIRES ---
 function formatNumber(num) {
@@ -103,7 +160,6 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-// --- MOTEUR DE NAVIGATION (ROUTER SPA) ---
 export function setTab(tabName) {
   state.activeTab = tabName;
   renderApp();
@@ -112,12 +168,12 @@ export function setTab(tabName) {
 // --- RENDU DU HEADER ---
 function renderHeader() {
   const tabs = [
-    { id: 'dashboard', label: 'Synthèse Réseau', icon: 'zap' },
-    { id: 'topology', label: 'Architecture Physique', icon: 'network' },
-    { id: 'mobile', label: 'GPARC-Mobile (Terrain)', icon: 'smartphone' },
-    { id: 'structural', label: 'Modèle DBase', icon: 'layers' },
-    { id: 'architecture', label: 'Cible Sans Node.js', icon: 'cpu' },
-    { id: 'explorer', label: '12 Tables Excel', icon: 'database' },
+    { id: 'dashboard', label: 'Synthèse Réseau' },
+    { id: 'topology', label: 'Architecture Physique' },
+    { id: 'mobile', label: 'GPARC-Mobile (Terrain)' },
+    { id: 'structural', label: 'Modèle DBase' },
+    { id: 'settings', label: 'Paramètres Réseau' },
+    { id: 'explorer', label: '12 Tables Excel' },
   ];
 
   return `
@@ -176,7 +232,7 @@ function renderDashboard() {
 
   return `
     <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-      <!-- Hero Card (Thème Clair) -->
+      <!-- Hero Card -->
       <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-xs">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div class="space-y-2 max-w-3xl">
@@ -187,7 +243,7 @@ function renderDashboard() {
               Gestion &amp; Visualisation des Ouvrages Moyenne Tension (HTA)
             </h1>
             <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Modernisation intégrale de l'application patrimoniale DBase III / FoxPro pour l'exploitation du réseau électrique de distribution Moyenne Tension (30 kV). Cette version fonctionne entièrement côté client sans aucun serveur Node.js et est hébergeable directement sur GitHub Pages.
+              Modernisation intégrale de l'application patrimoniale DBase III / FoxPro pour l'exploitation du réseau électrique Moyenne Tension (30 kV). Cette version fonctionne entièrement côté client sans aucun serveur Node.js et permet de configurer tous les paramètres clés des ouvrages (arcs, nœuds, transformateurs).
             </p>
           </div>
 
@@ -199,10 +255,10 @@ function renderDashboard() {
               Schéma Unifilaire &amp; Graphe
             </button>
             <button
-              onclick="window.app.setTab('mobile')"
+              onclick="window.app.setTab('settings')"
               class="px-4 py-2.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer text-center"
             >
-              Mode GPARC-Mobile
+              Paramètres des Ouvrages
             </button>
           </div>
         </div>
@@ -322,16 +378,14 @@ function renderDashboard() {
   `;
 }
 
-// --- VUE 2 : ARCHITECTURE PHYSIQUE & SCHÉMA UNIFILAIRE (THÈME CLAIR) ---
+// --- VUE 2 : ARCHITECTURE PHYSIQUE (SCHÉMA UNIFILAIRE CLAIR) ---
 function renderTopology() {
   const currentDepart = networkData.departs[state.selectedDepartId] || networkData.departs['125H3C20'];
   if (!currentDepart) return '<div class="p-8 text-center">Départ introuvable</div>';
 
-  // Calcul du graphe topologique
   const nodes = currentDepart.nodes;
   const rawEdges = currentDepart.edges;
 
-  // Filtrage selon mode simplifié
   let renderNodes = nodes;
   let renderEdges = rawEdges;
   if (!state.showJunctions && state.layoutMode === 'simplified') {
@@ -340,7 +394,6 @@ function renderTopology() {
     renderEdges = rawEdges.filter(e => essentialSet.has(e.from) && essentialSet.has(e.to));
   }
 
-  // Racine
   let rootNode = nodes.find(n => n.type === 'POSTE_SOURCE' || n.type === 'CELLULE');
   if (!rootNode) {
     const prefixMatch = currentDepart.id.match(/^(\d+[A-Z]\d+)/);
@@ -349,7 +402,6 @@ function renderTopology() {
   if (!rootNode) rootNode = nodes[0];
   const rootId = rootNode ? rootNode.id : nodes[0]?.id;
 
-  // BFS
   const adj = {};
   for (const e of rawEdges) {
     if (!adj[e.from]) adj[e.from] = [];
@@ -385,7 +437,6 @@ function renderTopology() {
     }
   }
 
-  // Chemin vers la source si nœud sélectionné
   const inPathSet = new Set();
   if (state.selectedNode) {
     let curr = state.selectedNode.id;
@@ -395,7 +446,6 @@ function renderTopology() {
     }
   }
 
-  // Regroupement par profondeur
   const depthGroups = {};
   for (const n of renderNodes) {
     const d = depthMap[n.id] ?? 0;
@@ -425,7 +475,6 @@ function renderTopology() {
       });
     }
   } else {
-    // Unifilaire Hiérarchique (Tree Orthogonal)
     const xSpacing = 160;
     const ySpacing = 65;
     for (let d = 0; d <= maxDepth; d++) {
@@ -447,7 +496,6 @@ function renderTopology() {
   const nodePosMap = new Map();
   for (const n of calculatedNodes) nodePosMap.set(n.id, n);
 
-  // Suggestions de recherche
   const searchSuggestions = state.searchQuery.trim()
     ? nodes.filter(n =>
         n.id.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
@@ -458,7 +506,7 @@ function renderTopology() {
 
   return `
     <div class="flex flex-col h-[calc(100vh-62px)] bg-slate-50 text-slate-800 overflow-hidden">
-      <!-- Toolbar Supérieure (Thème Clair) -->
+      <!-- Toolbar Supérieure -->
       <div class="flex flex-wrap items-center justify-between gap-4 px-6 py-2.5 bg-white border-b border-slate-200 z-20 shrink-0 shadow-2xs">
         <div class="flex items-center gap-3">
           <span class="text-xs font-bold text-slate-500 uppercase">Départ MT :</span>
@@ -553,7 +601,7 @@ function renderTopology() {
         </div>
       </div>
 
-      <!-- Zone Centrale (Canvas SVG Papier Technique Clair) -->
+      <!-- Zone Centrale (Canvas SVG Thème Clair) -->
       <div class="relative flex-1 flex overflow-hidden">
         <div
           id="svgContainer"
@@ -568,7 +616,6 @@ function renderTopology() {
             class="w-full h-full"
             style="transform: translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom}); transform-origin: 0 0;"
           >
-            <!-- Lignes Arcs MT (Thème Clair) -->
             <g class="edges">
               ${renderEdges.map(edge => {
                 const u = nodePosMap.get(edge.from);
@@ -603,7 +650,6 @@ function renderTopology() {
               }).join('')}
             </g>
 
-            <!-- Nœuds / Ouvrages MT (Thème Clair) -->
             <g class="nodes">
               ${calculatedNodes.map(node => {
                 const isSelected = state.selectedNode?.id === node.id;
@@ -613,16 +659,16 @@ function renderTopology() {
                 let fillColor = '#64748b';
                 let strokeColor = '#334155';
                 if (node.type === 'POSTE_SOURCE') {
-                  fillColor = '#7c3aed'; // Violet
+                  fillColor = '#7c3aed';
                   strokeColor = '#5b21b6';
                 } else if (node.type === 'POSTE_HTA_BT') {
-                  fillColor = '#ea580c'; // Amber / Orange
+                  fillColor = '#ea580c';
                   strokeColor = '#9a3412';
                 } else if (node.type === 'ETOILEMENT') {
-                  fillColor = '#0d9488'; // Teal
+                  fillColor = '#0d9488';
                   strokeColor = '#115e59';
                 } else if (node.type === 'POSTE_COUPURE') {
-                  fillColor = '#059669'; // Emerald
+                  fillColor = '#059669';
                   strokeColor = '#065f46';
                 }
 
@@ -654,14 +700,12 @@ function renderTopology() {
                       <circle r="${r}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="1"/>
                     `}
 
-                    <!-- Label -->
                     ${(node.type !== 'JONCTION' || state.zoom > 1.2 || isSelected) ? `
                       <text x="0" y="${r + 13}" fill="${isSelected ? '#1d4ed8' : '#0f172a'}" font-size="10" font-family="monospace" font-weight="${node.type === 'POSTE_HTA_BT' || isSelected ? 'bold' : 'normal'}" text-anchor="middle">
                         ${escapeHtml(node.meta?.nom ? `${node.meta.nom} (${node.id})` : node.id)}
                       </text>
                     ` : ''}
 
-                    <!-- Puissance kVA pour les postes -->
                     ${node.type === 'POSTE_HTA_BT' && node.meta?.p_instal ? `
                       <text x="0" y="${-r - 4}" fill="#b45309" font-size="9" font-family="monospace" font-weight="bold" text-anchor="middle">
                         ${node.meta.p_instal} kVA
@@ -673,7 +717,7 @@ function renderTopology() {
             </g>
           </svg>
 
-          <!-- Légende Schéma Unifilaire Flottante (Thème Clair) -->
+          <!-- Légende -->
           <div class="absolute top-4 left-4 p-3 bg-white/95 backdrop-blur-xs rounded-xl border border-slate-200 shadow-md text-[11px] space-y-1.5 z-10 pointer-events-auto">
             <span class="font-bold text-slate-800 text-xs block pb-1 border-b border-slate-200">Légende Réseau MT</span>
             <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-slate-600">
@@ -685,7 +729,7 @@ function renderTopology() {
             </div>
           </div>
 
-          <!-- Contrôles Zoom / Pan (Thème Clair) -->
+          <!-- Contrôles Zoom / Pan -->
           <div class="absolute bottom-5 left-5 flex items-center gap-1 p-1 bg-white/95 backdrop-blur-xs rounded-xl border border-slate-200 shadow-lg z-10">
             <button onclick="window.app.zoomCanvas(0.2)" class="px-2.5 py-1 text-slate-700 hover:bg-slate-100 rounded text-xs font-bold cursor-pointer" title="Zoom +">+</button>
             <button onclick="window.app.zoomCanvas(-0.2)" class="px-2.5 py-1 text-slate-700 hover:bg-slate-100 rounded text-xs font-bold cursor-pointer" title="Zoom -">&minus;</button>
@@ -695,7 +739,7 @@ function renderTopology() {
           </div>
         </div>
 
-        <!-- Tiroir Inspecteur d'Ouvrage Latéral (Thème Clair) -->
+        <!-- Tiroir Inspecteur d'Ouvrage -->
         ${(state.selectedNode || state.selectedEdge) ? `
           <div class="w-80 md:w-96 bg-white border-l border-slate-200 p-5 overflow-y-auto space-y-4 shrink-0 shadow-lg z-20">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200">
@@ -825,19 +869,16 @@ function renderGparcMobile() {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <!-- Cadre Téléphone / Tablette Durcie (Thème Clair) -->
         <div class="lg:col-span-7 flex justify-center">
           <div class="w-full max-w-md bg-slate-100 rounded-[36px] p-3 shadow-xl border-4 border-slate-300">
             <div class="w-28 h-3.5 bg-slate-300 rounded-full mx-auto mb-2"></div>
 
             <div class="bg-white rounded-[24px] overflow-hidden flex flex-col h-[620px] border border-slate-200 text-xs">
-              <!-- Top bar mobile -->
               <div class="px-4 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between font-mono text-[11px] text-slate-600 shrink-0">
                 <span class="font-bold text-slate-900">GPARC-MT Mobile</span>
                 <span class="text-emerald-700 font-bold">&bull; GPS Actif</span>
               </div>
 
-              <!-- Sélecteur départ & Recherche mobile -->
               <div class="p-3 bg-slate-50 border-b border-slate-200 space-y-2 shrink-0">
                 <div class="flex items-center justify-between">
                   <span class="text-[10px] text-slate-500 font-bold uppercase">Départ :</span>
@@ -862,7 +903,6 @@ function renderGparcMobile() {
                 />
               </div>
 
-              <!-- Contenu mobile défilant -->
               <div class="flex-1 overflow-y-auto p-3 space-y-3">
                 ${activePoste ? `
                   <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
@@ -884,7 +924,6 @@ function renderGparcMobile() {
                       <div><span class="text-slate-400 block text-[9px]">Commune</span><span class="text-slate-800">${activePoste.meta?.commune || '2401'}</span></div>
                     </div>
 
-                    <!-- Formulaire d'intervention locale -->
                     <form onsubmit="window.app.saveMobileIntervention(event)" class="space-y-2 pt-1 border-t border-slate-200">
                       <span class="text-[10px] font-bold text-slate-600 uppercase block">Relevé de Terrain :</span>
                       <select id="mobileAnomalieSelect" class="w-full bg-white text-slate-900 text-xs rounded px-2.5 py-1.5 border border-slate-300">
@@ -911,7 +950,6 @@ function renderGparcMobile() {
                   </div>
                 ` : ''}
 
-                <!-- Liste des autres postes du départ -->
                 <div class="space-y-1">
                   <span class="text-[10px] text-slate-500 font-bold uppercase block px-1">Postes du départ (${filteredPostes.length})</span>
                   ${filteredPostes.map(p => `
@@ -936,7 +974,6 @@ function renderGparcMobile() {
           </div>
         </div>
 
-        <!-- Colonne droite explicative -->
         <div class="lg:col-span-5 space-y-4 text-xs">
           <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
             <h2 class="text-base font-bold text-slate-900">Principes du Modèle GPARC-Mobile</h2>
@@ -958,7 +995,6 @@ function renderGparcMobile() {
             </div>
           </div>
 
-          <!-- Historique des interventions locales -->
           <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
             <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">
               Relevés Locaux SQLite (${state.mobileInterventions.length})
@@ -1008,7 +1044,6 @@ function renderStructural() {
         </div>
       </div>
 
-      <!-- Tables Grid -->
       <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
         <h2 class="text-base font-bold text-slate-900">Les 12 Tables Relationnelles Extraites</h2>
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -1024,45 +1059,400 @@ function renderStructural() {
   `;
 }
 
-// --- VUE 5 : ARCHITECTURE CIBLE SANS NODE.JS ---
-function renderArchitecture() {
+// --- VUE 5 : NOUVELLE PAGE DE PARAMÈTRES RÉSEAU (GESTION ARCS, NŒUDS, TRANSFOS) ---
+function renderSettings() {
+  const { transfos, conducteurs, noeuds, seuils } = state.settings;
+
+  const subTabs = [
+    { id: 'transfos', label: 'Transformateurs HTA/BT' },
+    { id: 'conducteurs', label: 'Conducteurs & Arcs MT' },
+    { id: 'noeuds', label: 'Nœuds & Organes MT' },
+    { id: 'seuils', label: 'Seuils & Normes Réseau' }
+  ];
+
   return `
-    <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-      <div class="space-y-1">
-        <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider block">Spécification Technique 100% Sans Node.js</span>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Architecture Cible Sans Node.js</h1>
-        <p class="text-xs sm:text-sm text-slate-600 max-w-4xl leading-relaxed">
-          Solutions complètes en Pur JavaScript (Client SPA), Python FastAPI, Flutter/SQLite (Mobile GPARC) et PHP Laravel.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-3">
-          <strong class="text-sm font-bold text-slate-900 block">1. Client SPA Pur JavaScript</strong>
-          <p class="text-slate-600 leading-relaxed">
-            Hébergeable directement sur GitHub Pages sans aucun serveur backend. Toutes les données de topologie sont intégrées côté client.
+    <div class="max-w-7xl mx-auto px-6 py-8 space-y-6">
+      <!-- En-tête -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <span class="text-xs font-bold text-blue-700 uppercase tracking-wider block">
+            Référentiel Métier &middot; Paramètres des Ouvrages MT
+          </span>
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900">
+            Gestion des Points Clés du Réseau
+          </h1>
+          <p class="text-xs text-slate-600 mt-1">
+            Configurez les caractéristiques physiques des transformateurs, sections d'arcs, types de nœuds et seuils d'exploitation normalisés.
           </p>
         </div>
 
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-3">
-          <strong class="text-sm font-bold text-slate-900 block">2. GPARC-Mobile (Flutter / SQLite)</strong>
-          <p class="text-slate-600 leading-relaxed">
-            Application mobile autonome de terrain. La base locale SQLite de 1,8 Mo permet une recherche déconnectée en moins de 2 ms.
-          </p>
-        </div>
-
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-3">
-          <strong class="text-sm font-bold text-slate-900 block">3. Serveur Central Python FastAPI</strong>
-          <p class="text-slate-600 leading-relaxed">
-            Pour les calculs d'ingénierie avancés (chute de tension &Delta;U, transits de puissance via PandaPower/NetworkX) sans Node.js.
-          </p>
+        <div class="flex items-center gap-2">
+          ${state.settingsSavedNotice ? `
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg shadow-2xs">
+              Paramètres enregistrés en local !
+            </span>
+          ` : ''}
+          <button
+            onclick="window.app.resetDefaultSettings()"
+            class="px-3 py-1.5 text-xs font-semibold text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 cursor-pointer shadow-2xs"
+          >
+            Réinitialiser Normes
+          </button>
         </div>
       </div>
+
+      <!-- Sous-onglets de configuration -->
+      <div class="flex items-center gap-2 border-b border-slate-200 pb-2">
+        ${subTabs.map(st => `
+          <button
+            onclick="window.app.setSettingsSubTab('${st.id}')"
+            class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
+              state.settingsSubTab === st.id
+                ? 'bg-blue-50 text-blue-800 font-bold border border-blue-200'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }"
+          >
+            ${st.label}
+          </button>
+        `).join('')}
+      </div>
+
+      <!-- Sous-Vue A : Transformateurs HTA / BT -->
+      ${state.settingsSubTab === 'transfos' ? `
+        <div class="space-y-4">
+          <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h2 class="text-base font-bold text-slate-900">Catalogue des Transformateurs HTA / BT (30 kV / 400 V)</h2>
+                <p class="text-xs text-slate-500">Calibres normalisés utilisés dans les 504 postes du réseau</p>
+              </div>
+              <button
+                onclick="window.app.toggleNewTransfoModal(true)"
+                class="px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs cursor-pointer"
+              >
+                + Ajouter un Calibre
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-700 border-y border-slate-200">
+                  <tr>
+                    <th class="py-2.5 px-3 font-semibold">Puissance (kVA)</th>
+                    <th class="py-2.5 px-3 font-semibold text-right">Tension Court-Circuit (Ucc %)</th>
+                    <th class="py-2.5 px-3 font-semibold text-right">Pertes à Vide P0 (W)</th>
+                    <th class="py-2.5 px-3 font-semibold text-right">Pertes en Charge Pk (W)</th>
+                    <th class="py-2.5 px-3 font-semibold text-right">Courant Nominal MT (A)</th>
+                    <th class="py-2.5 px-3 font-semibold">Type de Pose</th>
+                    <th class="py-2.5 px-3 font-semibold">Usage Typique</th>
+                    <th class="py-2.5 px-3 font-semibold text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${transfos.map((t, idx) => `
+                    <tr class="hover:bg-slate-50/70">
+                      <td class="py-2.5 px-3 font-mono font-bold text-amber-800">
+                        <span class="inline-block px-2 py-0.5 rounded bg-amber-50 border border-amber-200">
+                          ${t.kva} kVA
+                        </span>
+                      </td>
+                      <td class="py-2.5 px-3 text-right font-mono text-slate-800">${t.ucc} %</td>
+                      <td class="py-2.5 px-3 text-right font-mono text-slate-800">${t.p0} W</td>
+                      <td class="py-2.5 px-3 text-right font-mono text-slate-800">${t.pk} W</td>
+                      <td class="py-2.5 px-3 text-right font-mono font-bold text-blue-700">${t.in30} A</td>
+                      <td class="py-2.5 px-3 font-mono text-slate-600">${t.type}</td>
+                      <td class="py-2.5 px-3 text-slate-600">${escapeHtml(t.desc)}</td>
+                      <td class="py-2.5 px-3 text-center">
+                        <button
+                          onclick="window.app.deleteTransfo(${idx})"
+                          class="text-red-600 hover:text-red-800 text-[11px] font-semibold cursor-pointer"
+                        >
+                          Supprimer
+                        </button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Sous-Vue B : Conducteurs & Arcs MT -->
+      ${state.settingsSubTab === 'conducteurs' ? `
+        <div class="space-y-4">
+          <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h2 class="text-base font-bold text-slate-900">Catalogue des Conducteurs &amp; Lignes (Arcs MT)</h2>
+                <p class="text-xs text-slate-500">Paramètres linéiques pour le calcul des chutes de tension (&Delta;U) et pertes Joules</p>
+              </div>
+              <button
+                onclick="window.app.toggleNewConducteurModal(true)"
+                class="px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs cursor-pointer"
+              >
+                + Ajouter une Section
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-700 border-y border-slate-200">
+                  <tr>
+                    <th class="py-2.5 px-3 font-semibold">Désignation</th>
+                    <th class="py-2.5 px-3 font-semibold text-right">Section (mm²)</th>
+                    <th class="py-2.5 px-3 font-semibold">Nature</th>
+                    <th class="py-2.5 px-3 font-semibold text-right">Résistance R' (&Omega;/km)</th>
+                    <th class="py-2.5 px-3 font-semibold text-right">Réactance X' (&Omega;/km)</th>
+                    <th class="py-2.5 px-3 font-semibold text-right">Intensité Admissible (A)</th>
+                    <th class="py-2.5 px-3 font-semibold">Type de Pose</th>
+                    <th class="py-2.5 px-3 font-semibold text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${conducteurs.map((c, idx) => `
+                    <tr class="hover:bg-slate-50/70">
+                      <td class="py-2.5 px-3 font-mono font-bold text-slate-900">${c.nom}</td>
+                      <td class="py-2.5 px-3 text-right font-mono font-bold text-blue-700">${c.section}</td>
+                      <td class="py-2.5 px-3 font-mono text-slate-700">${c.nat}</td>
+                      <td class="py-2.5 px-3 text-right font-mono text-slate-800">${c.r}</td>
+                      <td class="py-2.5 px-3 text-right font-mono text-slate-800">${c.x}</td>
+                      <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-700">${c.iMax} A</td>
+                      <td class="py-2.5 px-3 font-mono text-slate-600">${c.pose}</td>
+                      <td class="py-2.5 px-3 text-center">
+                        <button
+                          onclick="window.app.deleteConducteur(${idx})"
+                          class="text-red-600 hover:text-red-800 text-[11px] font-semibold cursor-pointer"
+                        >
+                          Supprimer
+                        </button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Sous-Vue C : Nœuds & Organes MT -->
+      ${state.settingsSubTab === 'noeuds' ? `
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Référentiel des Nœuds &amp; Organes de Coupure</h2>
+            <p class="text-xs text-slate-500">Correspondance des préfixes de codification dBase et appareillages associés</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            ${noeuds.map(n => `
+              <div class="p-3.5 rounded-lg border border-slate-200 bg-slate-50 flex items-start gap-3">
+                <span class="w-8 h-8 rounded-lg flex items-center justify-center font-mono font-bold text-sm text-white shrink-0" style="background-color: ${n.couleur}">
+                  ${n.prefix}
+                </span>
+                <div class="space-y-0.5 flex-1">
+                  <div class="flex items-center justify-between">
+                    <strong class="text-slate-900 text-xs">${n.label}</strong>
+                    <span class="font-mono text-[10px] text-slate-500">${n.tension}</span>
+                  </div>
+                  <p class="text-slate-600 text-[11px]">Appareillage : <span class="font-medium text-slate-800">${n.organe}</span></p>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Sous-Vue D : Seuils & Normes Réseau -->
+      ${state.settingsSubTab === 'seuils' ? `
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-6">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Seuils Électriques &amp; Normes d'Exploitation HTA</h2>
+            <p class="text-xs text-slate-500">Limites de chute de tension, cosinus phi et plages de tension admissibles</p>
+          </div>
+
+          <form onsubmit="window.app.saveSeuils(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+              <label class="block text-slate-700 font-semibold text-[11px]">Tension Nominale MT (kV)</label>
+              <input
+                id="inputTensionNominale"
+                type="number"
+                step="0.5"
+                value="${seuils.tensionNominale}"
+                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
+              />
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+              <label class="block text-slate-700 font-semibold text-[11px]">Tension Minimale Admissible (kV)</label>
+              <input
+                id="inputTensionMin"
+                type="number"
+                step="0.5"
+                value="${seuils.tensionMin}"
+                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
+              />
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+              <label class="block text-slate-700 font-semibold text-[11px]">Tension Maximale Admissible (kV)</label>
+              <input
+                id="inputTensionMax"
+                type="number"
+                step="0.5"
+                value="${seuils.tensionMax}"
+                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
+              />
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+              <label class="block text-slate-700 font-semibold text-[11px]">Chute de Tension Max Urbaine (%)</label>
+              <input
+                id="inputChuteTensionMax"
+                type="number"
+                step="0.1"
+                value="${seuils.chuteTensionMax}"
+                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
+              />
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+              <label class="block text-slate-700 font-semibold text-[11px]">Chute de Tension Max Rurale (%)</label>
+              <input
+                id="inputChuteTensionMaxRurale"
+                type="number"
+                step="0.1"
+                value="${seuils.chuteTensionMaxRurale}"
+                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
+              />
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+              <label class="block text-slate-700 font-semibold text-[11px]">Facteur de Puissance Moyen (cos &phi;)</label>
+              <input
+                id="inputCosPhi"
+                type="number"
+                step="0.01"
+                value="${seuils.cosPhi}"
+                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
+              />
+            </div>
+
+            <div class="sm:col-span-2 lg:col-span-3 flex justify-end gap-2 pt-2 border-t border-slate-200">
+              <button
+                type="submit"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-xs transition-colors cursor-pointer"
+              >
+                Enregistrer les Paramètres d'Exploitation
+              </button>
+            </div>
+          </form>
+        </div>
+      ` : ''}
+
+      <!-- Modal Ajout Transfo -->
+      ${state.showNewTransfoModal ? `
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div class="bg-white rounded-xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+              <h3 class="text-sm font-bold text-slate-900">Ajouter un Calibre Transformateur</h3>
+              <button onclick="window.app.toggleNewTransfoModal(false)" class="text-slate-400 hover:text-slate-700 cursor-pointer">&times;</button>
+            </div>
+
+            <form onsubmit="window.app.addNewTransfo(event)" class="space-y-3 text-xs">
+              <div>
+                <label class="block text-slate-700 font-semibold">Puissance (kVA)</label>
+                <input id="newTransfoKva" type="number" required placeholder="ex: 800" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-slate-700 font-semibold">Pertes P0 (W)</label>
+                  <input id="newTransfoP0" type="number" value="1300" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
+                </div>
+                <div>
+                  <label class="block text-slate-700 font-semibold">Pertes Pk (W)</label>
+                  <input id="newTransfoPk" type="number" value="8000" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-slate-700 font-semibold">Type de Pose</label>
+                <select id="newTransfoType" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300">
+                  <option value="MS">Cabine Maçonnée (MS)</option>
+                  <option value="AC">Haut de Poteau (AC)</option>
+                  <option value="COMPACT">Poste Urbain Compact</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-slate-700 font-semibold">Description / Usage</label>
+                <input id="newTransfoDesc" type="text" placeholder="ex: Industrie moyenne" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300" />
+              </div>
+
+              <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
+                <button type="button" onclick="window.app.toggleNewTransfoModal(false)" class="px-3 py-1.5 rounded border border-slate-300 text-slate-600">Annuler</button>
+                <button type="submit" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow-xs">Ajouter</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Modal Ajout Conducteur -->
+      ${state.showNewConducteurModal ? `
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div class="bg-white rounded-xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+              <h3 class="text-sm font-bold text-slate-900">Ajouter une Section de Conducteur</h3>
+              <button onclick="window.app.toggleNewConducteurModal(false)" class="text-slate-400 hover:text-slate-700 cursor-pointer">&times;</button>
+            </div>
+
+            <form onsubmit="window.app.addNewConducteur(event)" class="space-y-3 text-xs">
+              <div>
+                <label class="block text-slate-700 font-semibold">Nom Conducteur</label>
+                <input id="newCondNom" type="text" required placeholder="ex: Almélec 93 mm²" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300" />
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-slate-700 font-semibold">Section (mm²)</label>
+                  <input id="newCondSection" type="number" required placeholder="93" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
+                </div>
+                <div>
+                  <label class="block text-slate-700 font-semibold">Nature Métal</label>
+                  <select id="newCondNat" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300">
+                    <option value="AM">Almélec (AM)</option>
+                    <option value="CU">Cuivre (CU)</option>
+                    <option value="AL">Aluminium (AL)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="block text-slate-700 font-semibold">R' (&Omega;/km)</label>
+                  <input id="newCondR" type="number" step="0.01" value="0.35" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
+                </div>
+                <div>
+                  <label class="block text-slate-700 font-semibold">X' (&Omega;/km)</label>
+                  <input id="newCondX" type="number" step="0.01" value="0.35" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
+                </div>
+                <div>
+                  <label class="block text-slate-700 font-semibold">I max (A)</label>
+                  <input id="newCondImax" type="number" value="280" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
+                </div>
+              </div>
+
+              <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
+                <button type="button" onclick="window.app.toggleNewConducteurModal(false)" class="px-3 py-1.5 rounded border border-slate-300 text-slate-600">Annuler</button>
+                <button type="submit" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow-xs">Ajouter</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ` : ''}
     </div>
   `;
 }
 
-// --- VUE 6 : EXPLORATEUR DE DONNÉES (THÈME CLAIR) ---
+// --- VUE 6 : EXPLORATEUR DE DONNÉES ---
 function renderExplorer() {
   const currentTable = fullTablesData[state.explorerTable] || fullTablesData['Poste_htabt_lig'];
   const rawRows = state.explorerSheet === 'corrigé' && currentTable.rowsCorrige?.length > 0
@@ -1097,7 +1487,6 @@ function renderExplorer() {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <!-- Liste des tables -->
         <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-1">
           <span class="text-xs font-bold text-slate-900 uppercase block mb-2 px-1">Sélectionner une Table</span>
           ${Object.keys(fullTablesData).map(tName => `
@@ -1115,7 +1504,6 @@ function renderExplorer() {
           `).join('')}
         </div>
 
-        <!-- Tableau des données -->
         <div class="lg:col-span-3 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col overflow-hidden">
           <div class="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4 bg-slate-50/50">
             <div class="flex items-center gap-3">
@@ -1219,7 +1607,7 @@ export function renderApp() {
   else if (state.activeTab === 'topology') viewHtml = renderTopology();
   else if (state.activeTab === 'mobile') viewHtml = renderGparcMobile();
   else if (state.activeTab === 'structural') viewHtml = renderStructural();
-  else if (state.activeTab === 'architecture') viewHtml = renderArchitecture();
+  else if (state.activeTab === 'settings') viewHtml = renderSettings();
   else if (state.activeTab === 'explorer') viewHtml = renderExplorer();
 
   root.innerHTML = `
@@ -1321,6 +1709,88 @@ window.app = {
   handleMouseUp: () => {
     state.isDragging = false;
   },
+
+  // Paramètres Réseau
+  setSettingsSubTab: (subTab) => {
+    state.settingsSubTab = subTab;
+    renderApp();
+  },
+  toggleNewTransfoModal: (show) => {
+    state.showNewTransfoModal = show;
+    renderApp();
+  },
+  toggleNewConducteurModal: (show) => {
+    state.showNewConducteurModal = show;
+    renderApp();
+  },
+  addNewTransfo: (e) => {
+    e.preventDefault();
+    const kva = Number(document.getElementById('newTransfoKva').value);
+    const p0 = Number(document.getElementById('newTransfoP0').value) || 1000;
+    const pk = Number(document.getElementById('newTransfoPk').value) || 6000;
+    const type = document.getElementById('newTransfoType').value;
+    const desc = document.getElementById('newTransfoDesc').value || 'Nouveau transformateur';
+    const in30 = Number((kva / (30 * Math.sqrt(3))).toFixed(2));
+
+    state.settings.transfos.push({ kva, ucc: 4.0, p0, pk, in30, type, desc });
+    state.settings.transfos.sort((a, b) => a.kva - b.kva);
+    state.showNewTransfoModal = false;
+    state.settingsSavedNotice = true;
+    try { localStorage.setItem('gdo_mt_settings', JSON.stringify(state.settings)); } catch (err) {}
+    renderApp();
+    setTimeout(() => { state.settingsSavedNotice = false; renderApp(); }, 3000);
+  },
+  deleteTransfo: (index) => {
+    state.settings.transfos.splice(index, 1);
+    try { localStorage.setItem('gdo_mt_settings', JSON.stringify(state.settings)); } catch (err) {}
+    renderApp();
+  },
+  addNewConducteur: (e) => {
+    e.preventDefault();
+    const nom = document.getElementById('newCondNom').value;
+    const section = Number(document.getElementById('newCondSection').value);
+    const nat = document.getElementById('newCondNat').value;
+    const r = Number(document.getElementById('newCondR').value);
+    const x = Number(document.getElementById('newCondX').value);
+    const iMax = Number(document.getElementById('newCondImax').value);
+    const code = `${nat}_${section}`;
+    const pose = nat === 'AL' && section >= 150 ? 'SOUTERRAIN' : 'AÉRIEN NU';
+
+    state.settings.conducteurs.push({ code, nom, section, nat, r, x, iMax, pose });
+    state.settings.conducteurs.sort((a, b) => a.section - b.section);
+    state.showNewConducteurModal = false;
+    state.settingsSavedNotice = true;
+    try { localStorage.setItem('gdo_mt_settings', JSON.stringify(state.settings)); } catch (err) {}
+    renderApp();
+    setTimeout(() => { state.settingsSavedNotice = false; renderApp(); }, 3000);
+  },
+  deleteConducteur: (index) => {
+    state.settings.conducteurs.splice(index, 1);
+    try { localStorage.setItem('gdo_mt_settings', JSON.stringify(state.settings)); } catch (err) {}
+    renderApp();
+  },
+  saveSeuils: (e) => {
+    e.preventDefault();
+    state.settings.seuils.tensionNominale = Number(document.getElementById('inputTensionNominale').value) || 30.0;
+    state.settings.seuils.tensionMin = Number(document.getElementById('inputTensionMin').value) || 27.0;
+    state.settings.seuils.tensionMax = Number(document.getElementById('inputTensionMax').value) || 33.0;
+    state.settings.seuils.chuteTensionMax = Number(document.getElementById('inputChuteTensionMax').value) || 5.0;
+    state.settings.seuils.chuteTensionMaxRurale = Number(document.getElementById('inputChuteTensionMaxRurale').value) || 7.0;
+    state.settings.seuils.cosPhi = Number(document.getElementById('inputCosPhi').value) || 0.90;
+
+    state.settingsSavedNotice = true;
+    try { localStorage.setItem('gdo_mt_settings', JSON.stringify(state.settings)); } catch (err) {}
+    renderApp();
+    setTimeout(() => { state.settingsSavedNotice = false; renderApp(); }, 3000);
+  },
+  resetDefaultSettings: () => {
+    state.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+    try { localStorage.removeItem('gdo_mt_settings'); } catch (err) {}
+    state.settingsSavedNotice = true;
+    renderApp();
+    setTimeout(() => { state.settingsSavedNotice = false; renderApp(); }, 3000);
+  },
+
   // Explorateur
   setExplorerTable: (tName) => {
     state.explorerTable = tName;
@@ -1368,6 +1838,7 @@ window.app = {
     a.click();
     URL.revokeObjectURL(url);
   },
+
   // GPARC Mobile
   setMobileDepart: (dId) => {
     state.mobileDepartId = dId;
@@ -1396,6 +1867,7 @@ window.app = {
     state.mobileInterventions.unshift(newInt);
     renderApp();
   },
+
   // Modal rapport
   toggleReportModal: (show) => {
     state.showReportModal = show;
