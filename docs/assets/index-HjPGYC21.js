@@ -12763,19 +12763,7 @@ type_isolant erroné:
 `,supports:{beton:0,bois:0,metal:0}},{id:`127P4021-127P3635:11`,from:`127P4021`,to:`127P3635`,longueur:217,nat_cond:`AL`,section:36,struct:`URSS`,tension:120,an_mes:`07/09/2022`,anomalie:`Tension erroné: 120.0 
 `,supports:{beton:0,bois:0,metal:0}}]},"127H1":{id:`127H1`,arcCount:2,nodeCount:3,posteCount:0,etoilCount:0,totalLengthKm:0,totalPowerKva:0,nodes:[{id:`127H1B1`,type:`POSTE_SOURCE`,prefix:`H`,meta:null},{id:`127H1C3`,type:`POSTE_SOURCE`,prefix:`H`,meta:null},{id:`127H1C6`,type:`POSTE_SOURCE`,prefix:`H`,meta:null}],edges:[{id:`127H1B1-127H1C3:11`,from:`127H1B1`,to:`127H1C3`,longueur:0,nat_cond:`AM`,section:36,struct:`URSS`,tension:54.599998474121094,an_mes:`16/07/2007`,anomalie:`Tension erroné: 54.599998474121094 
 `,supports:{beton:0,bois:0,metal:0}},{id:`127H1C6-127H1B1:11`,from:`127H1C6`,to:`127H1B1`,longueur:0,nat_cond:`AL`,section:36,struct:`URSS`,tension:120,an_mes:`16/07/2007`,anomalie:`Tension erroné: 120.0 
-`,supports:{beton:0,bois:0,metal:0}}]}}},t=[{id:`127H1C4`,arcCount:489,nodeCount:427,posteCount:142,etoilCount:121,totalLengthKm:167.08,totalPowerKva:3020,samplePostes:[{id:`127P3042`,nom:`127P3042`,p_instal:0,localite:``},{id:`127P3043`,nom:`127P3043`,p_instal:0,localite:``},{id:`127P3048`,nom:`127P3048`,p_instal:0,localite:``},{id:`127P3167`,nom:`127P3167`,p_instal:0,localite:``},{id:`127P3847`,nom:`127P3847`,p_instal:0,localite:``}]},{id:`121H5C19`,arcCount:451,nodeCount:345,posteCount:143,etoilCount:96,totalLengthKm:161.07,totalPowerKva:3880,samplePostes:[{id:`121P8116`,nom:`121P8116`,p_instal:0,localite:``},{id:`121P9555`,nom:`121P9555`,p_instal:0,localite:``},{id:`121P8291`,nom:`121P8291`,p_instal:0,localite:``},{id:`121P8999`,nom:`121P8999`,p_instal:0,localite:``},{id:`121P8389`,nom:`121P8389`,p_instal:0,localite:``}]},{id:`125H3C20`,arcCount:447,nodeCount:384,posteCount:127,etoilCount:124,totalLengthKm:153.55,totalPowerKva:33343,samplePostes:[{id:`125P8139`,nom:`Onab Boudaroua`,p_instal:3200,localite:`Oued Fragha`},{id:`125P8111`,nom:`Dne Moumna`,p_instal:63,localite:`Oued Fragha`},{id:`125P8185`,nom:`125P8185`,p_instal:0,localite:``},{id:`125P8424`,nom:`BMPJ A/B/BAIDA`,p_instal:160,localite:`AIN BEN BAIDA`},{id:`125P8467`,nom:`LYCEE A/B/BAIDA`,p_instal:100,localite:`AIN BEN BAIDA`}]},{id:`121H5C17`,arcCount:445,nodeCount:373,posteCount:154,etoilCount:99,totalLengthKm:108.64,totalPowerKva:2113,samplePostes:[{id:`121P8157`,nom:`121P8157`,p_instal:0,localite:``},{id:`121P8447`,nom:`121P8447`,p_instal:0,localite:``},{id:`127P3072`,nom:`127P3072`,p_instal:0,localite:``},{id:`127P3162`,nom:`127P3162`,p_instal:0,localite:``},{id:`127P3724`,nom:`127P3724`,p_instal:0,localite:``}]},{id:`127H1C3`,arcCount:415,nodeCount:350,posteCount:122,etoilCount:113,totalLengthKm:121.78,totalPowerKva:1010,samplePostes:[{id:`121P8350`,nom:`121P8350`,p_instal:0,localite:``},{id:`121P8362`,nom:`121P8362`,p_instal:0,localite:``},{id:`121P8021`,nom:`121P8021`,p_instal:0,localite:``},{id:`121P8384`,nom:`121P8384`,p_instal:0,localite:``},{id:`121P8452`,nom:`121P8452`,p_instal:0,localite:``}]},{id:`123H2C15`,arcCount:387,nodeCount:356,posteCount:110,etoilCount:107,totalLengthKm:161.11,totalPowerKva:850,samplePostes:[{id:`121P9689`,nom:`121P9689`,p_instal:0,localite:``},{id:`121P9731`,nom:`121P9731`,p_instal:0,localite:``},{id:`121P9795`,nom:`121P9795`,p_instal:0,localite:``},{id:`121P9796`,nom:`121P9796`,p_instal:0,localite:``},{id:`121P9797`,nom:`121P9797`,p_instal:0,localite:``}]},{id:`123H2C8`,arcCount:374,nodeCount:352,posteCount:97,etoilCount:113,totalLengthKm:203.64,totalPowerKva:350,samplePostes:[{id:`123P6039`,nom:`123P6039`,p_instal:0,localite:``},{id:`123P6062`,nom:`123P6062`,p_instal:0,localite:``},{id:`123P6011`,nom:`123P6011`,p_instal:0,localite:``},{id:`123P6674`,nom:`123P6674`,p_instal:0,localite:``},{id:`123P6056`,nom:`123P6056`,p_instal:0,localite:``}]},{id:`125H3C3`,arcCount:345,nodeCount:320,posteCount:101,etoilCount:95,totalLengthKm:134.58,totalPowerKva:400,samplePostes:[{id:`127P4108`,nom:`127P4108`,p_instal:0,localite:``},{id:`127P3081`,nom:`127P3081`,p_instal:0,localite:``},{id:`127P3756`,nom:`127P3756`,p_instal:0,localite:``},{id:`127P3757`,nom:`127P3757`,p_instal:0,localite:``},{id:`127P3758`,nom:`127P3758`,p_instal:0,localite:``}]},{id:`123H2C9`,arcCount:343,nodeCount:305,posteCount:114,etoilCount:86,totalLengthKm:148.21,totalPowerKva:1070,samplePostes:[{id:`123P6542`,nom:`123P6542`,p_instal:0,localite:``},{id:`123P6000`,nom:`123P6000`,p_instal:0,localite:``},{id:`123P6019`,nom:`123P6019`,p_instal:0,localite:``},{id:`123P6017`,nom:`123P6017`,p_instal:0,localite:``},{id:`123P6059`,nom:`123P6059`,p_instal:0,localite:``}]},{id:`125H3C2`,arcCount:339,nodeCount:269,posteCount:97,etoilCount:76,totalLengthKm:103.47,totalPowerKva:1070,samplePostes:[{id:`127P3520`,nom:`127P3520`,p_instal:0,localite:``},{id:`127P3730`,nom:`127P3730`,p_instal:0,localite:``},{id:`127P3731`,nom:`127P3731`,p_instal:0,localite:``},{id:`127P3737`,nom:`127P3737`,p_instal:0,localite:``},{id:`127P3780`,nom:`127P3780`,p_instal:0,localite:``}]},{id:`125H2C3`,arcCount:316,nodeCount:270,posteCount:96,etoilCount:79,totalLengthKm:91.83,totalPowerKva:24773,samplePostes:[{id:`125P8113`,nom:`St Pge Medj Sfa`,p_instal:63,localite:`Medjez Sfa`},{id:`125P8768`,nom:`ER El Msen 1`,p_instal:100,localite:`Oued Cheham`},{id:`125P8625`,nom:`Ferme Noir`,p_instal:50,localite:`Oued Cheham`},{id:`125P8242`,nom:`Pge Hamma`,p_instal:160,localite:`Oued Cheham`},{id:`125P8580`,nom:`LOTISS/OUED CHEHAM`,p_instal:250,localite:`OUED CHAHEM`}]},{id:`125H3C5`,arcCount:287,nodeCount:235,posteCount:95,etoilCount:64,totalLengthKm:89.76,totalPowerKva:2030,samplePostes:[{id:`127P3718`,nom:`127P3718`,p_instal:0,localite:``},{id:`127P3624`,nom:`127P3624`,p_instal:0,localite:``},{id:`127P3086`,nom:`127P3086`,p_instal:0,localite:``},{id:`127P3087`,nom:`127P3087`,p_instal:0,localite:``},{id:`127P3108`,nom:`127P3108`,p_instal:0,localite:``}]},{id:`123H2C14`,arcCount:269,nodeCount:242,posteCount:73,etoilCount:75,totalLengthKm:107.81,totalPowerKva:850,samplePostes:[{id:`121P8397`,nom:`121P8397`,p_instal:0,localite:``},{id:`121P9633`,nom:`DP JARDIN SELLOUA`,p_instal:400,localite:`SELLAOUA ANOUNA`},{id:`121P8691`,nom:`121P8691`,p_instal:0,localite:``},{id:`121P8913`,nom:`121P8913`,p_instal:0,localite:``},{id:`121P8828`,nom:`121P8828`,p_instal:0,localite:``}]},{id:`125H3C37`,arcCount:254,nodeCount:221,posteCount:70,etoilCount:69,totalLengthKm:83.05,totalPowerKva:8050,samplePostes:[{id:`125P8316`,nom:`CEM Beni Mezlin`,p_instal:100,localite:`Beni Mezline`},{id:`125P8889`,nom:`MEZDOUR BELIL`,p_instal:160,localite:`BENI MEZLINE`},{id:`125P8515`,nom:`DJENANE N CHAM`,p_instal:100,localite:`H N BAIL`},{id:`125P8330`,nom:`Beni Mezline`,p_instal:250,localite:`Beni Mezline`},{id:`125P8852`,nom:`10+10+10LOGTS B/MEZL`,p_instal:400,localite:`BENI MEZLINE`}]},{id:`127H1C1`,arcCount:218,nodeCount:175,posteCount:67,etoilCount:52,totalLengthKm:47.19,totalPowerKva:1690,samplePostes:[{id:`127P3109`,nom:`127P3109`,p_instal:0,localite:``},{id:`127P3168`,nom:`127P3168`,p_instal:0,localite:``},{id:`127P3764`,nom:`127P3764`,p_instal:0,localite:``},{id:`127P3767`,nom:`127P3767`,p_instal:0,localite:``},{id:`127P3177`,nom:`127P3177`,p_instal:0,localite:``}]},{id:`125H2C4`,arcCount:197,nodeCount:183,posteCount:58,etoilCount:58,totalLengthKm:72.36,totalPowerKva:7800,samplePostes:[{id:`125P8670`,nom:`125P8670`,p_instal:0,localite:``},{id:`125P9632`,nom:`DP 8 LOGTS H.NBAIL`,p_instal:400,localite:`HAMMAM NBAIL`},{id:`125P8588`,nom:`ER AIN ALIGUA P1`,p_instal:100,localite:`H N BAIL`},{id:`125P8589`,nom:`ER AIN ALIGUA P2`,p_instal:100,localite:`H N BAIL`},{id:`125P8135`,nom:`CFP H.N bails`,p_instal:400,localite:`Hammam N'Bail`}]},{id:`125H3C21`,arcCount:161,nodeCount:134,posteCount:65,etoilCount:34,totalLengthKm:40.52,totalPowerKva:1650,samplePostes:[{id:`125P8104`,nom:`125P8104`,p_instal:0,localite:``},{id:`125P8105`,nom:`SNTF Bouchegouf`,p_instal:50,localite:`Bouchegouf`},{id:`125P8294`,nom:`125P8294`,p_instal:0,localite:``},{id:`125P8514`,nom:`125P8514`,p_instal:0,localite:``},{id:`125P8794`,nom:`125P8794`,p_instal:0,localite:``}]},{id:`123H2C20`,arcCount:153,nodeCount:124,posteCount:57,etoilCount:33,totalLengthKm:66.53,totalPowerKva:1960,samplePostes:[{id:`123P6722`,nom:`123P6722`,p_instal:0,localite:``},{id:`123P6569`,nom:`123P6569`,p_instal:0,localite:``},{id:`123P6721`,nom:`123P6721`,p_instal:0,localite:``},{id:`123P6719`,nom:`123P6719`,p_instal:0,localite:``},{id:`123P6720`,nom:`123P6720`,p_instal:0,localite:``}]},{id:`125H3C36`,arcCount:147,nodeCount:127,posteCount:41,etoilCount:36,totalLengthKm:55.34,totalPowerKva:7770,samplePostes:[{id:`125P8346`,nom:`Nveau CEM H/N B`,p_instal:50,localite:`Hammam N'Bail`},{id:`125P8295`,nom:`Pge Guelta zarg`,p_instal:160,localite:`Hammam N'Bail`},{id:`125P8322`,nom:`Polyc H/N Bails`,p_instal:100,localite:`Hammam N'Bail`},{id:`125P8518`,nom:`EL CHAREF`,p_instal:160,localite:`HAMM N BAILS`},{id:`125P8516`,nom:`AIN HADJAR`,p_instal:100,localite:`H N BAIL`}]},{id:`121H5C14`,arcCount:145,nodeCount:113,posteCount:47,etoilCount:31,totalLengthKm:34.62,totalPowerKva:2790,samplePostes:[{id:`121P8541`,nom:`121P8541`,p_instal:0,localite:``},{id:`121P9592`,nom:`121P9592`,p_instal:0,localite:``},{id:`121P8149`,nom:`121P8149`,p_instal:0,localite:``},{id:`121P8372`,nom:`SARL POLIVO O/MAIZ`,p_instal:100,localite:`O/MAIZ`},{id:`127P3153`,nom:`127P3153`,p_instal:0,localite:``}]},{id:`123H2C10`,arcCount:129,nodeCount:115,posteCount:41,etoilCount:34,totalLengthKm:45.1,totalPowerKva:360,samplePostes:[{id:`123P6512`,nom:`123P6512`,p_instal:0,localite:``},{id:`123P6058`,nom:`123P6058`,p_instal:0,localite:``},{id:`123P6035`,nom:`123P6035`,p_instal:0,localite:``},{id:`123P6034`,nom:`123P6034`,p_instal:0,localite:``},{id:`123P6089`,nom:`123P6089`,p_instal:0,localite:``}]},{id:`125H2C2`,arcCount:127,nodeCount:108,posteCount:39,etoilCount:33,totalLengthKm:46.73,totalPowerKva:5330,samplePostes:[{id:`125P8233`,nom:`Huilerie Rahmo`,p_instal:100,localite:`Medjez Sfa`},{id:`125P8603`,nom:`ER A/Tahmamine1`,p_instal:100,localite:`Medjez Sfa`},{id:`125P8791`,nom:`125P8791`,p_instal:0,localite:``},{id:`125P8607`,nom:`ER ROSFA 2`,p_instal:100,localite:`MEDJEZ SFA`},{id:`125P8606`,nom:`ER ROSFA 1`,p_instal:160,localite:`MEDJEZ SFA`}]},{id:`121H5C20`,arcCount:123,nodeCount:89,posteCount:53,etoilCount:16,totalLengthKm:26.48,totalPowerKva:1280,samplePostes:[{id:`121P8538`,nom:`121P8538`,p_instal:0,localite:``},{id:`127P3500`,nom:`127P3500`,p_instal:0,localite:``},{id:`121P8047`,nom:`121P8047`,p_instal:0,localite:``},{id:`127P3133`,nom:`127P3133`,p_instal:0,localite:``},{id:`127P3012`,nom:`127P3012`,p_instal:0,localite:``}]},{id:`127H1C5`,arcCount:92,nodeCount:72,posteCount:31,etoilCount:17,totalLengthKm:19.09,totalPowerKva:200,samplePostes:[{id:`127P3008`,nom:`127P3008`,p_instal:0,localite:``},{id:`127P3157`,nom:`127P3157`,p_instal:0,localite:``},{id:`127P3728`,nom:`127P3728`,p_instal:0,localite:``},{id:`127P3102`,nom:`127P3102`,p_instal:0,localite:``},{id:`127P3186`,nom:`127P3186`,p_instal:0,localite:``}]},{id:`123H2C11`,arcCount:86,nodeCount:52,posteCount:42,etoilCount:5,totalLengthKm:19.5,totalPowerKva:250,samplePostes:[{id:`123P6025`,nom:`123P6025`,p_instal:0,localite:``},{id:`123P6105`,nom:`123P6105`,p_instal:0,localite:``},{id:`123P6625`,nom:`123P6625`,p_instal:0,localite:``},{id:`123P6038`,nom:`123P6038`,p_instal:0,localite:``},{id:`123P6006`,nom:`123P6006`,p_instal:0,localite:``}]},{id:`121H5C15`,arcCount:84,nodeCount:65,posteCount:63,etoilCount:0,totalLengthKm:28.07,totalPowerKva:1680,samplePostes:[{id:`121P8883`,nom:`121P8883`,p_instal:0,localite:``},{id:`121P8014`,nom:`121P8014`,p_instal:0,localite:``},{id:`121P8146`,nom:`Technicum`,p_instal:800,localite:`Guelma 2`},{id:`121P8015`,nom:`121P8015`,p_instal:0,localite:``},{id:`121P8530`,nom:`121P8530`,p_instal:0,localite:``}]},{id:`121H5C12`,arcCount:82,nodeCount:50,posteCount:47,etoilCount:0,totalLengthKm:23.88,totalPowerKva:2010,samplePostes:[{id:`121P8040`,nom:`121P8040`,p_instal:0,localite:``},{id:`121P8069`,nom:`121P8069`,p_instal:0,localite:``},{id:`121P8044`,nom:`121P8044`,p_instal:0,localite:``},{id:`121P8243`,nom:`121P8243`,p_instal:0,localite:``},{id:`121P8495`,nom:`121P8495`,p_instal:0,localite:``}]},{id:`121H5C18`,arcCount:77,nodeCount:54,posteCount:42,etoilCount:5,totalLengthKm:18.52,totalPowerKva:650,samplePostes:[{id:`121P8204`,nom:`121P8204`,p_instal:0,localite:``},{id:`121P8359`,nom:`121P8359`,p_instal:0,localite:``},{id:`127P4023`,nom:`127P4023`,p_instal:0,localite:``},{id:`121P8122`,nom:`121P8122`,p_instal:0,localite:``},{id:`121P8439`,nom:`121P8439`,p_instal:0,localite:``}]},{id:`121H5C2`,arcCount:70,nodeCount:55,posteCount:40,etoilCount:7,totalLengthKm:21.69,totalPowerKva:750,samplePostes:[{id:`121P8067`,nom:`121P8067`,p_instal:0,localite:``},{id:`121P8068`,nom:`121P8068`,p_instal:0,localite:``},{id:`121P8062`,nom:`121P8062`,p_instal:0,localite:``},{id:`121P8063`,nom:`121P8063`,p_instal:0,localite:``},{id:`121P8070`,nom:`121P8070`,p_instal:0,localite:``}]},{id:`127H2C1`,arcCount:68,nodeCount:54,posteCount:46,etoilCount:3,totalLengthKm:22.29,totalPowerKva:1050,samplePostes:[{id:`121P9622`,nom:`121P9622`,p_instal:0,localite:``},{id:`121P8091`,nom:`121P8091`,p_instal:0,localite:``},{id:`121P9016`,nom:`121P9016`,p_instal:0,localite:``},{id:`121P8483`,nom:`121P8483`,p_instal:0,localite:``},{id:`121P8948`,nom:`121P8948`,p_instal:0,localite:``}]},{id:`121H5C16`,arcCount:64,nodeCount:51,posteCount:50,etoilCount:0,totalLengthKm:19.31,totalPowerKva:1260,samplePostes:[{id:`121P9539`,nom:`121P9539`,p_instal:0,localite:``},{id:`121P8022`,nom:`121P8022`,p_instal:0,localite:``},{id:`121P8225`,nom:`121P8225`,p_instal:0,localite:``},{id:`121P8023`,nom:`121P8023`,p_instal:0,localite:``},{id:`121P8780`,nom:`121P8780`,p_instal:0,localite:``}]},{id:`123H2C6`,arcCount:58,nodeCount:42,posteCount:39,etoilCount:0,totalLengthKm:18.63,totalPowerKva:650,samplePostes:[{id:`123P6852`,nom:`123P6852`,p_instal:0,localite:``},{id:`123P6004`,nom:`123P6004`,p_instal:0,localite:``},{id:`123P6050`,nom:`123P6050`,p_instal:0,localite:``},{id:`123P6020`,nom:`123P6020`,p_instal:0,localite:``},{id:`123P6766`,nom:`123P6766`,p_instal:0,localite:``}]},{id:`121H5C4`,arcCount:55,nodeCount:43,posteCount:42,etoilCount:0,totalLengthKm:14.4,totalPowerKva:560,samplePostes:[{id:`121P8226`,nom:`121P8226`,p_instal:0,localite:``},{id:`121P8024`,nom:`121P8024`,p_instal:0,localite:``},{id:`121P9715`,nom:`121P9715`,p_instal:0,localite:``},{id:`121P8025`,nom:`121P8025`,p_instal:0,localite:``},{id:`121P8311`,nom:`Ecole/Fon.Base5`,p_instal:160,localite:`Guelma`}]},{id:`125H3C4`,arcCount:54,nodeCount:43,posteCount:30,etoilCount:3,totalLengthKm:34.77,totalPowerKva:0,samplePostes:[{id:`127P3925`,nom:`127P3925`,p_instal:0,localite:``},{id:`127P3077`,nom:`127P3077`,p_instal:0,localite:``},{id:`127P3032`,nom:`127P3032`,p_instal:0,localite:``},{id:`127P3948`,nom:`127P3948`,p_instal:0,localite:``},{id:`127P3826`,nom:`127P3826`,p_instal:0,localite:``}]},{id:`121H5C1`,arcCount:52,nodeCount:36,posteCount:35,etoilCount:0,totalLengthKm:14.62,totalPowerKva:0,samplePostes:[{id:`121P8419`,nom:`121P8419`,p_instal:0,localite:``},{id:`121P8004`,nom:`121P8004`,p_instal:0,localite:``},{id:`121P8448`,nom:`121P8448`,p_instal:0,localite:``},{id:`121P8005`,nom:`121P8005`,p_instal:0,localite:``},{id:`121P8006`,nom:`121P8006`,p_instal:0,localite:``}]},{id:`121O1C2`,arcCount:49,nodeCount:38,posteCount:37,etoilCount:0,totalLengthKm:11.1,totalPowerKva:1450,samplePostes:[{id:`121P8829`,nom:`121P8829`,p_instal:0,localite:``},{id:`121P8016`,nom:`121P8016`,p_instal:0,localite:``},{id:`121P8148`,nom:`121P8148`,p_instal:0,localite:``},{id:`121P8017`,nom:`121P8017`,p_instal:0,localite:``},{id:`121P8510`,nom:`121P8510`,p_instal:0,localite:``}]},{id:`125H3C35`,arcCount:46,nodeCount:31,posteCount:28,etoilCount:0,totalLengthKm:17.09,totalPowerKva:1030,samplePostes:[{id:`125P9500`,nom:`125P9500`,p_instal:0,localite:``},{id:`125P8097`,nom:`125P8097`,p_instal:0,localite:``},{id:`125P8318`,nom:`125P8318`,p_instal:0,localite:``},{id:`125P8137`,nom:`125P8137`,p_instal:0,localite:``},{id:`125P9606`,nom:`125P9606`,p_instal:0,localite:``}]},{id:`127H2C5`,arcCount:30,nodeCount:27,posteCount:8,etoilCount:8,totalLengthKm:19.75,totalPowerKva:0,samplePostes:[{id:`121P9782`,nom:`121P9782`,p_instal:0,localite:``},{id:`121P9021`,nom:`121P9021`,p_instal:0,localite:``},{id:`121P9629`,nom:`121P9629`,p_instal:0,localite:``},{id:`121P9780`,nom:`121P9780`,p_instal:0,localite:``},{id:`121P9791`,nom:`121P9791`,p_instal:0,localite:``}]},{id:`125H3`,arcCount:29,nodeCount:32,posteCount:0,etoilCount:0,totalLengthKm:.03,totalPowerKva:0,samplePostes:[]},{id:`121O1C4`,arcCount:20,nodeCount:16,posteCount:15,etoilCount:0,totalLengthKm:3.56,totalPowerKva:400,samplePostes:[{id:`121P8879`,nom:`121P8879`,p_instal:0,localite:``},{id:`121P8002`,nom:`BEA`,p_instal:400,localite:`Guelma 2`},{id:`121P8003`,nom:`121P8003`,p_instal:0,localite:``},{id:`121P9726`,nom:`121P9726`,p_instal:0,localite:``},{id:`121P8039`,nom:`121P8039`,p_instal:0,localite:``}]},{id:`127H2C2`,arcCount:20,nodeCount:17,posteCount:4,etoilCount:6,totalLengthKm:6.94,totalPowerKva:400,samplePostes:[{id:`127P3652`,nom:`127P3652`,p_instal:0,localite:``},{id:`127P3887`,nom:`DP CHERFA AHMED`,p_instal:400,localite:`BOUMAHRA`},{id:`127P3576`,nom:`127P3576`,p_instal:0,localite:``},{id:`127P3971`,nom:`127P3971`,p_instal:0,localite:``}]},{id:`NON_AFFECTE`,arcCount:19,nodeCount:22,posteCount:11,etoilCount:7,totalLengthKm:8.02,totalPowerKva:750,samplePostes:[{id:`121P8197`,nom:`121P8197`,p_instal:0,localite:``},{id:`123P6656`,nom:`123P6656`,p_instal:0,localite:``},{id:`125P9903`,nom:`125P9903`,p_instal:0,localite:``},{id:`125P8605`,nom:`125P8605`,p_instal:0,localite:``},{id:`125P9581`,nom:`125P9581`,p_instal:0,localite:``}]},{id:`125H3C6`,arcCount:18,nodeCount:15,posteCount:2,etoilCount:4,totalLengthKm:15.07,totalPowerKva:0,samplePostes:[{id:`127P3117`,nom:`127P3117`,p_instal:0,localite:``},{id:`127P3127`,nom:`127P3127`,p_instal:0,localite:``}]},{id:`121H5C13`,arcCount:13,nodeCount:10,posteCount:3,etoilCount:3,totalLengthKm:4.17,totalPowerKva:3e3,samplePostes:[{id:`127P3158`,nom:`127P3158`,p_instal:0,localite:``},{id:`127P3234`,nom:`127P3234`,p_instal:0,localite:``},{id:`127P3195`,nom:`CONSERVERIE B/AMOR`,p_instal:3e3,localite:`EL FEDJOUDJ`}]},{id:`121H5C11`,arcCount:12,nodeCount:11,posteCount:1,etoilCount:3,totalLengthKm:11.38,totalPowerKva:0,samplePostes:[{id:`121P8439`,nom:`121P8439`,p_instal:0,localite:``}]},{id:`125H3C17`,arcCount:7,nodeCount:8,posteCount:0,etoilCount:1,totalLengthKm:21.08,totalPowerKva:0,samplePostes:[]},{id:`125H3C18`,arcCount:5,nodeCount:6,posteCount:0,etoilCount:0,totalLengthKm:20.29,totalPowerKva:0,samplePostes:[]},{id:`121H5C5`,arcCount:2,nodeCount:2,posteCount:0,etoilCount:0,totalLengthKm:1.12,totalPowerKva:0,samplePostes:[]},{id:`121H5C6`,arcCount:2,nodeCount:2,posteCount:0,etoilCount:0,totalLengthKm:1.12,totalPowerKva:0,samplePostes:[]},{id:`127H1`,arcCount:2,nodeCount:3,posteCount:0,etoilCount:0,totalLengthKm:0,totalPowerKva:0,samplePostes:[]},{id:`125H2C5`,arcCount:1,nodeCount:2,posteCount:1,etoilCount:0,totalLengthKm:6.75,totalPowerKva:0,samplePostes:[{id:`125P8096`,nom:`125P8096`,p_instal:0,localite:``}]}],n=[{tableName:`Alimentation`,fileName:`Alimentation.xls`,rowCount:31,rowCountCorrige:0,sheets:[`anomalie`],fields:[{name:`code`,sample:`112J342`,type:`string`},{name:`anomalie`,sample:`num_depart different: 112H1C13!=null 
-`,type:`string`},{name:`id_dd`,sample:52,type:`number`},{name:`nom_depart`,sample:`EL HADJAR`,type:`string`},{name:`num_depart`,sample:`112H1C13`,type:`string`},{name:`p_alim`,sample:1,type:`number`},{name:`id_district`,sample:0,type:`number`},{name:`id_appareilc`,sample:0,type:`number`}]},{tableName:`Arc`,fileName:`Arc.xls`,rowCount:7678,rowCountCorrige:587,sheets:[`anomalie`,`corrigé`],fields:[{name:`code`,sample:`121E1-121J1011:11`,type:`string`},{name:`anomalie`,sample:`Tension erroné: 0.0 
-`,type:`string`},{name:`noeud1`,sample:`121E1`,type:`string`},{name:`noeud2`,sample:`121J1011`,type:`string`},{name:`n_arc`,sample:1,type:`number`},{name:`n_para`,sample:1,type:`number`},{name:`tension`,sample:0,type:`number`},{name:`u_constr`,sample:30,type:`number`},{name:`nat_arc`,sample:`A`,type:`string`},{name:`nat_cond`,sample:`AM`,type:`string`},{name:`section`,sample:36,type:`number`},{name:`longueur`,sample:40,type:`number`},{name:`struct`,sample:`NU`,type:`string`},{name:`m_bs_sp`,sample:1,type:`number`},{name:`construc`,sample:99,type:`number`},{name:`an_mes`,sample:`01/01/1970`,type:`string`},{name:`etat`,sample:`S`,type:`string`},{name:`n_depart`,sample:`127H1C3`,type:`string`},{name:`troncon`,sample:128,type:`number`},{name:`agence`,sample:`121`,type:`string`}]},{tableName:`Cellule`,fileName:`Cellule.xls`,rowCount:36,rowCountCorrige:0,sheets:[`anomalie`],fields:[{name:`code`,sample:`121H5C1`,type:`string`},{name:`anomalie`,sample:`Tension erroné 0.0 
-`,type:`string`},{name:`agence`,sample:`121`,type:`string`},{name:`t_pcomp`,sample:`H`,type:`string`},{name:`n_poste`,sample:5,type:`number`},{name:`t_noeud`,sample:`C`,type:`string`},{name:`n_cellul`,sample:1,type:`number`},{name:`tension`,sample:0,type:`number`},{name:`fonction`,sample:1,type:`number`},{name:`nom_dep`,sample:`VILLE 7`,type:`string`},{name:`t_cellul`,sample:`4`,type:`string`},{name:`construct`,sample:30,type:`number`},{name:`an_mes`,sample:`28/07/2016`,type:`string`},{name:`etat`,sample:`S`,type:`string`},{name:`n_depart`,sample:`121H5C1`,type:`string`}]},{tableName:`Depart`,fileName:`Depart.xls`,rowCount:6,rowCountCorrige:0,sheets:[`anomalie`],fields:[{name:`code`,sample:`121H5C3`,type:`string`},{name:`anomalie`,sample:`num_depart null 
-`,type:`string`},{name:`id_dd`,sample:52,type:`number`},{name:`nom_depart`,sample:`REMANTE BAR`,type:`string`},{name:`num_depart_cellule`,sample:`121H5C3`,type:`string`},{name:`p_alim`,sample:0,type:`number`},{name:`id_district`,sample:163,type:`number`},{name:`id_cellule`,sample:3,type:`number`},{name:`date_creation`,sample:40939,type:`number`}]},{tableName:`Etoilement_lig`,fileName:`Etoilement_lig.xls`,rowCount:378,rowCountCorrige:0,sheets:[`anomalie`],fields:[{name:`code`,sample:`121E1`,type:`string`},{name:`anomalie`,sample:`Tension erroné: 0.0 
-`,type:`string`},{name:`n_depart`,sample:`127H1C3`,type:`string`},{name:`commune`,sample:2401,type:`number`},{name:`agence`,sample:`121`,type:`string`},{name:`n_noeud`,sample:1,type:`number`},{name:`tension`,sample:0,type:`number`},{name:`t_noeud`,sample:`E`,type:`string`}]},{tableName:`Jeubarre`,fileName:`Jeubarre.xls`,rowCount:22,rowCountCorrige:0,sheets:[`anomalie`],fields:[{name:`code`,sample:`121H5B1`,type:`string`},{name:`anomalie`,sample:`Tension erroné: 36.0 
-`,type:`string`},{name:`agence`,sample:`121`,type:`string`},{name:`t_pcomp`,sample:`H`,type:`string`},{name:`n_poste`,sample:5,type:`number`},{name:`t_noeud`,sample:`B`,type:`string`},{name:`n_barre`,sample:1,type:`number`},{name:`u_constr`,sample:0,type:`number`},{name:`tension`,sample:36,type:`number`},{name:`i_nom`,sample:5e3,type:`number`},{name:`i_cc`,sample:30,type:`number`},{name:`construct`,sample:30,type:`number`},{name:`an_fab`,sample:`01/01/2010`,type:`string`},{name:`an_mes`,sample:`31/01/2012`,type:`string`},{name:`etat`,sample:`S`,type:`string`},{name:`n_depart`,sample:`121H5`,type:`string`},{name:`nature`,sample:`CU`,type:`string`}]},{tableName:`Poste_coupure`,fileName:`Poste_coupure.xls`,rowCount:1,rowCountCorrige:0,sheets:[`anomalie`],fields:[{name:`code`,sample:`121O1`,type:`string`},{name:`anomalie`,sample:`Tension erroné 0.0 
-`,type:`string`},{name:`an_mes`,sample:`01/01/1985`,type:`string`},{name:`t_poste`,sample:`MS`,type:`string`},{name:`agence`,sample:`121`,type:`string`},{name:`commune`,sample:2401,type:`number`},{name:`n_poste`,sample:1,type:`number`},{name:`t_protect`,sample:`S`,type:`string`},{name:`t_pcomp`,sample:`O`,type:`string`},{name:`tension`,sample:0,type:`number`},{name:`etat`,sample:`S`,type:`string`},{name:`nom_pst`,sample:`PC FENDJEL`,type:`string`}]},{tableName:`Poste_htabt_lig`,fileName:`Poste_htabt_lig.xls`,rowCount:503,rowCountCorrige:0,sheets:[`anomalie`],fields:[{name:`code`,sample:`121P8002`,type:`string`},{name:`anomalie`,sample:`Tension erroné 0.0 
-`,type:`string`},{name:`n_depart`,sample:`121O1C4`,type:`string`},{name:`etat`,sample:`S`,type:`string`},{name:`sect_jb`,sample:0,type:`number`},{name:`t_protect`,sample:`S`,type:`string`},{name:`agence`,sample:`121`,type:`string`},{name:`t_poste`,sample:`MS`,type:`string`},{name:`commune`,sample:2401,type:`number`},{name:`alim_auto`,sample:`N`,type:`string`},{name:`n_noeud`,sample:8002,type:`number`},{name:`raccord`,sample:`C`,type:`string`},{name:`an_mes`,sample:`01/01/1983`,type:`string`},{name:`fonction`,sample:`AB`,type:`string`},{name:`nb_trans`,sample:1,type:`number`},{name:`p_instal`,sample:400,type:`number`},{name:`t_noeud`,sample:`P`,type:`string`},{name:`nom_pst`,sample:`BEA`,type:`string`},{name:`tension`,sample:0,type:`number`},{name:`pmd`,sample:80,type:`number`},{name:`localite`,sample:`Guelma 2`,type:`string`}]},{tableName:`Poste_htabt_pst`,fileName:`Poste_htabt_pst.xls`,rowCount:1,rowCountCorrige:0,sheets:[`anomalie`],fields:[{name:`code`,sample:`121O1P85`,type:`string`},{name:`anomalie`,sample:`Tension erroné 0.0 
-`,type:`string`},{name:`n_depart`,sample:`121H5C6`,type:`string`},{name:`etat`,sample:`S`,type:`string`},{name:`p_auto`,sample:`0`,type:`string`},{name:`raccord`,sample:`C`,type:`string`},{name:`agence`,sample:`121`,type:`string`},{name:`nom_pst`,sample:`PC FENDJEL`,type:`string`},{name:`alim_auto`,sample:`N`,type:`string`},{name:`t_noeud`,sample:`P`,type:`string`},{name:`nb_trans`,sample:1,type:`number`},{name:`sect_jb`,sample:120,type:`number`},{name:`n_poste`,sample:1,type:`number`},{name:`fonction`,sample:`DP`,type:`string`},{name:`an_mes`,sample:`01/01/1985`,type:`string`},{name:`t_poste`,sample:`MM`,type:`string`},{name:`tension`,sample:0,type:`number`},{name:`t_protect`,sample:`S`,type:`string`},{name:`t_pcomp`,sample:`O`,type:`string`},{name:`localite_1`,sample:`GUELMA`,type:`string`},{name:`pmd`,sample:0,type:`number`},{name:`n_postepc`,sample:85,type:`number`},{name:`p_instal`,sample:630,type:`number`}]},{tableName:`Poste_repartition`,fileName:`Poste_repartition.xls`,rowCount:1,rowCountCorrige:0,sheets:[`anomalie`],fields:[{name:`code`,sample:`121R2`,type:`string`},{name:`anomalie`,sample:`Tension erroné 0.0 
-`,type:`string`},{name:`agence`,sample:`121`,type:`string`},{name:`t_pcomp`,sample:`R`,type:`string`},{name:`n_poste`,sample:2,type:`number`},{name:`commune`,sample:2401,type:`number`},{name:`nom_pst`,sample:`PC AIN AMARA`,type:`string`},{name:`tension`,sample:0,type:`number`},{name:`t_protect`,sample:`E`,type:`string`},{name:`an_mes`,sample:`01/01/1981`,type:`string`},{name:`etat`,sample:`S`,type:`string`}]},{tableName:`Poste_source`,fileName:`Poste_source.xls`,rowCount:2,rowCountCorrige:0,sheets:[`anomalie`],fields:[{name:`code`,sample:`125H2`,type:`string`},{name:`anomalie`,sample:`Commune erroné 2430 (appartient a l'agence 125) 
-`,type:`string`},{name:`agence`,sample:`125`,type:`string`},{name:`t_pcomp`,sample:`H`,type:`string`},{name:`n_poste`,sample:2,type:`number`},{name:`nom_pst`,sample:`MEDJEZ SFA`,type:`string`},{name:`c_xp`,sample:`MSF`,type:`string`},{name:`commune`,sample:2430,type:`number`},{name:`u_prim`,sample:90,type:`number`},{name:`u_second1`,sample:0,type:`number`},{name:`p_tr1`,sample:10,type:`number`},{name:`p_tr2`,sample:10,type:`number`},{name:`p_cc`,sample:0,type:`number`},{name:`nb_trans`,sample:2,type:`number`},{name:`an_mes`,sample:`01/01/1970`,type:`string`},{name:`etat`,sample:`S`,type:`string`}]},{tableName:`Segment`,fileName:`Segment.xls`,rowCount:246,rowCountCorrige:125,sheets:[`anomalie`,`corrigé`],fields:[{name:`code`,sample:`121E1-121J1011`,type:`string`},{name:`anomalie`,sample:`Tension erroné: 0.0 
-`,type:`string`},{name:`noeud1`,sample:`121E1`,type:`string`},{name:`noeud2`,sample:`121J1011`,type:`string`},{name:`tension`,sample:0,type:`number`},{name:`troncon`,sample:128,type:`number`},{name:`agence`,sample:`121`,type:`string`},{name:`longueur`,sample:40,type:`number`},{name:`an_mes`,sample:`01/01/1970`,type:`string`},{name:`etat`,sample:`S`,type:`string`},{name:`n_depart`,sample:`127H1C3`,type:`string`},{name:`rang`,sample:11,type:`number`}]}],r={Alimentation:{tableName:`Alimentation`,fileName:`Alimentation.xls`,totalRows:31,totalRowsCorrige:0,sheets:[`anomalie`],rows:[{code:`112J342`,anomalie:`num_depart different: 112H1C13!=null 
+`,supports:{beton:0,bois:0,metal:0}}]}}},t=[{id:`127H1C4`,arcCount:489,nodeCount:427,posteCount:142,etoilCount:121,totalLengthKm:167.08,totalPowerKva:3020,samplePostes:[{id:`127P3042`,nom:`127P3042`,p_instal:0,localite:``},{id:`127P3043`,nom:`127P3043`,p_instal:0,localite:``},{id:`127P3048`,nom:`127P3048`,p_instal:0,localite:``},{id:`127P3167`,nom:`127P3167`,p_instal:0,localite:``},{id:`127P3847`,nom:`127P3847`,p_instal:0,localite:``}]},{id:`121H5C19`,arcCount:451,nodeCount:345,posteCount:143,etoilCount:96,totalLengthKm:161.07,totalPowerKva:3880,samplePostes:[{id:`121P8116`,nom:`121P8116`,p_instal:0,localite:``},{id:`121P9555`,nom:`121P9555`,p_instal:0,localite:``},{id:`121P8291`,nom:`121P8291`,p_instal:0,localite:``},{id:`121P8999`,nom:`121P8999`,p_instal:0,localite:``},{id:`121P8389`,nom:`121P8389`,p_instal:0,localite:``}]},{id:`125H3C20`,arcCount:447,nodeCount:384,posteCount:127,etoilCount:124,totalLengthKm:153.55,totalPowerKva:33343,samplePostes:[{id:`125P8139`,nom:`Onab Boudaroua`,p_instal:3200,localite:`Oued Fragha`},{id:`125P8111`,nom:`Dne Moumna`,p_instal:63,localite:`Oued Fragha`},{id:`125P8185`,nom:`125P8185`,p_instal:0,localite:``},{id:`125P8424`,nom:`BMPJ A/B/BAIDA`,p_instal:160,localite:`AIN BEN BAIDA`},{id:`125P8467`,nom:`LYCEE A/B/BAIDA`,p_instal:100,localite:`AIN BEN BAIDA`}]},{id:`121H5C17`,arcCount:445,nodeCount:373,posteCount:154,etoilCount:99,totalLengthKm:108.64,totalPowerKva:2113,samplePostes:[{id:`121P8157`,nom:`121P8157`,p_instal:0,localite:``},{id:`121P8447`,nom:`121P8447`,p_instal:0,localite:``},{id:`127P3072`,nom:`127P3072`,p_instal:0,localite:``},{id:`127P3162`,nom:`127P3162`,p_instal:0,localite:``},{id:`127P3724`,nom:`127P3724`,p_instal:0,localite:``}]},{id:`127H1C3`,arcCount:415,nodeCount:350,posteCount:122,etoilCount:113,totalLengthKm:121.78,totalPowerKva:1010,samplePostes:[{id:`121P8350`,nom:`121P8350`,p_instal:0,localite:``},{id:`121P8362`,nom:`121P8362`,p_instal:0,localite:``},{id:`121P8021`,nom:`121P8021`,p_instal:0,localite:``},{id:`121P8384`,nom:`121P8384`,p_instal:0,localite:``},{id:`121P8452`,nom:`121P8452`,p_instal:0,localite:``}]},{id:`123H2C15`,arcCount:387,nodeCount:356,posteCount:110,etoilCount:107,totalLengthKm:161.11,totalPowerKva:850,samplePostes:[{id:`121P9689`,nom:`121P9689`,p_instal:0,localite:``},{id:`121P9731`,nom:`121P9731`,p_instal:0,localite:``},{id:`121P9795`,nom:`121P9795`,p_instal:0,localite:``},{id:`121P9796`,nom:`121P9796`,p_instal:0,localite:``},{id:`121P9797`,nom:`121P9797`,p_instal:0,localite:``}]},{id:`123H2C8`,arcCount:374,nodeCount:352,posteCount:97,etoilCount:113,totalLengthKm:203.64,totalPowerKva:350,samplePostes:[{id:`123P6039`,nom:`123P6039`,p_instal:0,localite:``},{id:`123P6062`,nom:`123P6062`,p_instal:0,localite:``},{id:`123P6011`,nom:`123P6011`,p_instal:0,localite:``},{id:`123P6674`,nom:`123P6674`,p_instal:0,localite:``},{id:`123P6056`,nom:`123P6056`,p_instal:0,localite:``}]},{id:`125H3C3`,arcCount:345,nodeCount:320,posteCount:101,etoilCount:95,totalLengthKm:134.58,totalPowerKva:400,samplePostes:[{id:`127P4108`,nom:`127P4108`,p_instal:0,localite:``},{id:`127P3081`,nom:`127P3081`,p_instal:0,localite:``},{id:`127P3756`,nom:`127P3756`,p_instal:0,localite:``},{id:`127P3757`,nom:`127P3757`,p_instal:0,localite:``},{id:`127P3758`,nom:`127P3758`,p_instal:0,localite:``}]},{id:`123H2C9`,arcCount:343,nodeCount:305,posteCount:114,etoilCount:86,totalLengthKm:148.21,totalPowerKva:1070,samplePostes:[{id:`123P6542`,nom:`123P6542`,p_instal:0,localite:``},{id:`123P6000`,nom:`123P6000`,p_instal:0,localite:``},{id:`123P6019`,nom:`123P6019`,p_instal:0,localite:``},{id:`123P6017`,nom:`123P6017`,p_instal:0,localite:``},{id:`123P6059`,nom:`123P6059`,p_instal:0,localite:``}]},{id:`125H3C2`,arcCount:339,nodeCount:269,posteCount:97,etoilCount:76,totalLengthKm:103.47,totalPowerKva:1070,samplePostes:[{id:`127P3520`,nom:`127P3520`,p_instal:0,localite:``},{id:`127P3730`,nom:`127P3730`,p_instal:0,localite:``},{id:`127P3731`,nom:`127P3731`,p_instal:0,localite:``},{id:`127P3737`,nom:`127P3737`,p_instal:0,localite:``},{id:`127P3780`,nom:`127P3780`,p_instal:0,localite:``}]},{id:`125H2C3`,arcCount:316,nodeCount:270,posteCount:96,etoilCount:79,totalLengthKm:91.83,totalPowerKva:24773,samplePostes:[{id:`125P8113`,nom:`St Pge Medj Sfa`,p_instal:63,localite:`Medjez Sfa`},{id:`125P8768`,nom:`ER El Msen 1`,p_instal:100,localite:`Oued Cheham`},{id:`125P8625`,nom:`Ferme Noir`,p_instal:50,localite:`Oued Cheham`},{id:`125P8242`,nom:`Pge Hamma`,p_instal:160,localite:`Oued Cheham`},{id:`125P8580`,nom:`LOTISS/OUED CHEHAM`,p_instal:250,localite:`OUED CHAHEM`}]},{id:`125H3C5`,arcCount:287,nodeCount:235,posteCount:95,etoilCount:64,totalLengthKm:89.76,totalPowerKva:2030,samplePostes:[{id:`127P3718`,nom:`127P3718`,p_instal:0,localite:``},{id:`127P3624`,nom:`127P3624`,p_instal:0,localite:``},{id:`127P3086`,nom:`127P3086`,p_instal:0,localite:``},{id:`127P3087`,nom:`127P3087`,p_instal:0,localite:``},{id:`127P3108`,nom:`127P3108`,p_instal:0,localite:``}]},{id:`123H2C14`,arcCount:269,nodeCount:242,posteCount:73,etoilCount:75,totalLengthKm:107.81,totalPowerKva:850,samplePostes:[{id:`121P8397`,nom:`121P8397`,p_instal:0,localite:``},{id:`121P9633`,nom:`DP JARDIN SELLOUA`,p_instal:400,localite:`SELLAOUA ANOUNA`},{id:`121P8691`,nom:`121P8691`,p_instal:0,localite:``},{id:`121P8913`,nom:`121P8913`,p_instal:0,localite:``},{id:`121P8828`,nom:`121P8828`,p_instal:0,localite:``}]},{id:`125H3C37`,arcCount:254,nodeCount:221,posteCount:70,etoilCount:69,totalLengthKm:83.05,totalPowerKva:8050,samplePostes:[{id:`125P8316`,nom:`CEM Beni Mezlin`,p_instal:100,localite:`Beni Mezline`},{id:`125P8889`,nom:`MEZDOUR BELIL`,p_instal:160,localite:`BENI MEZLINE`},{id:`125P8515`,nom:`DJENANE N CHAM`,p_instal:100,localite:`H N BAIL`},{id:`125P8330`,nom:`Beni Mezline`,p_instal:250,localite:`Beni Mezline`},{id:`125P8852`,nom:`10+10+10LOGTS B/MEZL`,p_instal:400,localite:`BENI MEZLINE`}]},{id:`127H1C1`,arcCount:218,nodeCount:175,posteCount:67,etoilCount:52,totalLengthKm:47.19,totalPowerKva:1690,samplePostes:[{id:`127P3109`,nom:`127P3109`,p_instal:0,localite:``},{id:`127P3168`,nom:`127P3168`,p_instal:0,localite:``},{id:`127P3764`,nom:`127P3764`,p_instal:0,localite:``},{id:`127P3767`,nom:`127P3767`,p_instal:0,localite:``},{id:`127P3177`,nom:`127P3177`,p_instal:0,localite:``}]},{id:`125H2C4`,arcCount:197,nodeCount:183,posteCount:58,etoilCount:58,totalLengthKm:72.36,totalPowerKva:7800,samplePostes:[{id:`125P8670`,nom:`125P8670`,p_instal:0,localite:``},{id:`125P9632`,nom:`DP 8 LOGTS H.NBAIL`,p_instal:400,localite:`HAMMAM NBAIL`},{id:`125P8588`,nom:`ER AIN ALIGUA P1`,p_instal:100,localite:`H N BAIL`},{id:`125P8589`,nom:`ER AIN ALIGUA P2`,p_instal:100,localite:`H N BAIL`},{id:`125P8135`,nom:`CFP H.N bails`,p_instal:400,localite:`Hammam N'Bail`}]},{id:`125H3C21`,arcCount:161,nodeCount:134,posteCount:65,etoilCount:34,totalLengthKm:40.52,totalPowerKva:1650,samplePostes:[{id:`125P8104`,nom:`125P8104`,p_instal:0,localite:``},{id:`125P8105`,nom:`SNTF Bouchegouf`,p_instal:50,localite:`Bouchegouf`},{id:`125P8294`,nom:`125P8294`,p_instal:0,localite:``},{id:`125P8514`,nom:`125P8514`,p_instal:0,localite:``},{id:`125P8794`,nom:`125P8794`,p_instal:0,localite:``}]},{id:`123H2C20`,arcCount:153,nodeCount:124,posteCount:57,etoilCount:33,totalLengthKm:66.53,totalPowerKva:1960,samplePostes:[{id:`123P6722`,nom:`123P6722`,p_instal:0,localite:``},{id:`123P6569`,nom:`123P6569`,p_instal:0,localite:``},{id:`123P6721`,nom:`123P6721`,p_instal:0,localite:``},{id:`123P6719`,nom:`123P6719`,p_instal:0,localite:``},{id:`123P6720`,nom:`123P6720`,p_instal:0,localite:``}]},{id:`125H3C36`,arcCount:147,nodeCount:127,posteCount:41,etoilCount:36,totalLengthKm:55.34,totalPowerKva:7770,samplePostes:[{id:`125P8346`,nom:`Nveau CEM H/N B`,p_instal:50,localite:`Hammam N'Bail`},{id:`125P8295`,nom:`Pge Guelta zarg`,p_instal:160,localite:`Hammam N'Bail`},{id:`125P8322`,nom:`Polyc H/N Bails`,p_instal:100,localite:`Hammam N'Bail`},{id:`125P8518`,nom:`EL CHAREF`,p_instal:160,localite:`HAMM N BAILS`},{id:`125P8516`,nom:`AIN HADJAR`,p_instal:100,localite:`H N BAIL`}]},{id:`121H5C14`,arcCount:145,nodeCount:113,posteCount:47,etoilCount:31,totalLengthKm:34.62,totalPowerKva:2790,samplePostes:[{id:`121P8541`,nom:`121P8541`,p_instal:0,localite:``},{id:`121P9592`,nom:`121P9592`,p_instal:0,localite:``},{id:`121P8149`,nom:`121P8149`,p_instal:0,localite:``},{id:`121P8372`,nom:`SARL POLIVO O/MAIZ`,p_instal:100,localite:`O/MAIZ`},{id:`127P3153`,nom:`127P3153`,p_instal:0,localite:``}]},{id:`123H2C10`,arcCount:129,nodeCount:115,posteCount:41,etoilCount:34,totalLengthKm:45.1,totalPowerKva:360,samplePostes:[{id:`123P6512`,nom:`123P6512`,p_instal:0,localite:``},{id:`123P6058`,nom:`123P6058`,p_instal:0,localite:``},{id:`123P6035`,nom:`123P6035`,p_instal:0,localite:``},{id:`123P6034`,nom:`123P6034`,p_instal:0,localite:``},{id:`123P6089`,nom:`123P6089`,p_instal:0,localite:``}]},{id:`125H2C2`,arcCount:127,nodeCount:108,posteCount:39,etoilCount:33,totalLengthKm:46.73,totalPowerKva:5330,samplePostes:[{id:`125P8233`,nom:`Huilerie Rahmo`,p_instal:100,localite:`Medjez Sfa`},{id:`125P8603`,nom:`ER A/Tahmamine1`,p_instal:100,localite:`Medjez Sfa`},{id:`125P8791`,nom:`125P8791`,p_instal:0,localite:``},{id:`125P8607`,nom:`ER ROSFA 2`,p_instal:100,localite:`MEDJEZ SFA`},{id:`125P8606`,nom:`ER ROSFA 1`,p_instal:160,localite:`MEDJEZ SFA`}]},{id:`121H5C20`,arcCount:123,nodeCount:89,posteCount:53,etoilCount:16,totalLengthKm:26.48,totalPowerKva:1280,samplePostes:[{id:`121P8538`,nom:`121P8538`,p_instal:0,localite:``},{id:`127P3500`,nom:`127P3500`,p_instal:0,localite:``},{id:`121P8047`,nom:`121P8047`,p_instal:0,localite:``},{id:`127P3133`,nom:`127P3133`,p_instal:0,localite:``},{id:`127P3012`,nom:`127P3012`,p_instal:0,localite:``}]},{id:`127H1C5`,arcCount:92,nodeCount:72,posteCount:31,etoilCount:17,totalLengthKm:19.09,totalPowerKva:200,samplePostes:[{id:`127P3008`,nom:`127P3008`,p_instal:0,localite:``},{id:`127P3157`,nom:`127P3157`,p_instal:0,localite:``},{id:`127P3728`,nom:`127P3728`,p_instal:0,localite:``},{id:`127P3102`,nom:`127P3102`,p_instal:0,localite:``},{id:`127P3186`,nom:`127P3186`,p_instal:0,localite:``}]},{id:`123H2C11`,arcCount:86,nodeCount:52,posteCount:42,etoilCount:5,totalLengthKm:19.5,totalPowerKva:250,samplePostes:[{id:`123P6025`,nom:`123P6025`,p_instal:0,localite:``},{id:`123P6105`,nom:`123P6105`,p_instal:0,localite:``},{id:`123P6625`,nom:`123P6625`,p_instal:0,localite:``},{id:`123P6038`,nom:`123P6038`,p_instal:0,localite:``},{id:`123P6006`,nom:`123P6006`,p_instal:0,localite:``}]},{id:`121H5C15`,arcCount:84,nodeCount:65,posteCount:63,etoilCount:0,totalLengthKm:28.07,totalPowerKva:1680,samplePostes:[{id:`121P8883`,nom:`121P8883`,p_instal:0,localite:``},{id:`121P8014`,nom:`121P8014`,p_instal:0,localite:``},{id:`121P8146`,nom:`Technicum`,p_instal:800,localite:`Guelma 2`},{id:`121P8015`,nom:`121P8015`,p_instal:0,localite:``},{id:`121P8530`,nom:`121P8530`,p_instal:0,localite:``}]},{id:`121H5C12`,arcCount:82,nodeCount:50,posteCount:47,etoilCount:0,totalLengthKm:23.88,totalPowerKva:2010,samplePostes:[{id:`121P8040`,nom:`121P8040`,p_instal:0,localite:``},{id:`121P8069`,nom:`121P8069`,p_instal:0,localite:``},{id:`121P8044`,nom:`121P8044`,p_instal:0,localite:``},{id:`121P8243`,nom:`121P8243`,p_instal:0,localite:``},{id:`121P8495`,nom:`121P8495`,p_instal:0,localite:``}]},{id:`121H5C18`,arcCount:77,nodeCount:54,posteCount:42,etoilCount:5,totalLengthKm:18.52,totalPowerKva:650,samplePostes:[{id:`121P8204`,nom:`121P8204`,p_instal:0,localite:``},{id:`121P8359`,nom:`121P8359`,p_instal:0,localite:``},{id:`127P4023`,nom:`127P4023`,p_instal:0,localite:``},{id:`121P8122`,nom:`121P8122`,p_instal:0,localite:``},{id:`121P8439`,nom:`121P8439`,p_instal:0,localite:``}]},{id:`121H5C2`,arcCount:70,nodeCount:55,posteCount:40,etoilCount:7,totalLengthKm:21.69,totalPowerKva:750,samplePostes:[{id:`121P8067`,nom:`121P8067`,p_instal:0,localite:``},{id:`121P8068`,nom:`121P8068`,p_instal:0,localite:``},{id:`121P8062`,nom:`121P8062`,p_instal:0,localite:``},{id:`121P8063`,nom:`121P8063`,p_instal:0,localite:``},{id:`121P8070`,nom:`121P8070`,p_instal:0,localite:``}]},{id:`127H2C1`,arcCount:68,nodeCount:54,posteCount:46,etoilCount:3,totalLengthKm:22.29,totalPowerKva:1050,samplePostes:[{id:`121P9622`,nom:`121P9622`,p_instal:0,localite:``},{id:`121P8091`,nom:`121P8091`,p_instal:0,localite:``},{id:`121P9016`,nom:`121P9016`,p_instal:0,localite:``},{id:`121P8483`,nom:`121P8483`,p_instal:0,localite:``},{id:`121P8948`,nom:`121P8948`,p_instal:0,localite:``}]},{id:`121H5C16`,arcCount:64,nodeCount:51,posteCount:50,etoilCount:0,totalLengthKm:19.31,totalPowerKva:1260,samplePostes:[{id:`121P9539`,nom:`121P9539`,p_instal:0,localite:``},{id:`121P8022`,nom:`121P8022`,p_instal:0,localite:``},{id:`121P8225`,nom:`121P8225`,p_instal:0,localite:``},{id:`121P8023`,nom:`121P8023`,p_instal:0,localite:``},{id:`121P8780`,nom:`121P8780`,p_instal:0,localite:``}]},{id:`123H2C6`,arcCount:58,nodeCount:42,posteCount:39,etoilCount:0,totalLengthKm:18.63,totalPowerKva:650,samplePostes:[{id:`123P6852`,nom:`123P6852`,p_instal:0,localite:``},{id:`123P6004`,nom:`123P6004`,p_instal:0,localite:``},{id:`123P6050`,nom:`123P6050`,p_instal:0,localite:``},{id:`123P6020`,nom:`123P6020`,p_instal:0,localite:``},{id:`123P6766`,nom:`123P6766`,p_instal:0,localite:``}]},{id:`121H5C4`,arcCount:55,nodeCount:43,posteCount:42,etoilCount:0,totalLengthKm:14.4,totalPowerKva:560,samplePostes:[{id:`121P8226`,nom:`121P8226`,p_instal:0,localite:``},{id:`121P8024`,nom:`121P8024`,p_instal:0,localite:``},{id:`121P9715`,nom:`121P9715`,p_instal:0,localite:``},{id:`121P8025`,nom:`121P8025`,p_instal:0,localite:``},{id:`121P8311`,nom:`Ecole/Fon.Base5`,p_instal:160,localite:`Guelma`}]},{id:`125H3C4`,arcCount:54,nodeCount:43,posteCount:30,etoilCount:3,totalLengthKm:34.77,totalPowerKva:0,samplePostes:[{id:`127P3925`,nom:`127P3925`,p_instal:0,localite:``},{id:`127P3077`,nom:`127P3077`,p_instal:0,localite:``},{id:`127P3032`,nom:`127P3032`,p_instal:0,localite:``},{id:`127P3948`,nom:`127P3948`,p_instal:0,localite:``},{id:`127P3826`,nom:`127P3826`,p_instal:0,localite:``}]},{id:`121H5C1`,arcCount:52,nodeCount:36,posteCount:35,etoilCount:0,totalLengthKm:14.62,totalPowerKva:0,samplePostes:[{id:`121P8419`,nom:`121P8419`,p_instal:0,localite:``},{id:`121P8004`,nom:`121P8004`,p_instal:0,localite:``},{id:`121P8448`,nom:`121P8448`,p_instal:0,localite:``},{id:`121P8005`,nom:`121P8005`,p_instal:0,localite:``},{id:`121P8006`,nom:`121P8006`,p_instal:0,localite:``}]},{id:`121O1C2`,arcCount:49,nodeCount:38,posteCount:37,etoilCount:0,totalLengthKm:11.1,totalPowerKva:1450,samplePostes:[{id:`121P8829`,nom:`121P8829`,p_instal:0,localite:``},{id:`121P8016`,nom:`121P8016`,p_instal:0,localite:``},{id:`121P8148`,nom:`121P8148`,p_instal:0,localite:``},{id:`121P8017`,nom:`121P8017`,p_instal:0,localite:``},{id:`121P8510`,nom:`121P8510`,p_instal:0,localite:``}]},{id:`125H3C35`,arcCount:46,nodeCount:31,posteCount:28,etoilCount:0,totalLengthKm:17.09,totalPowerKva:1030,samplePostes:[{id:`125P9500`,nom:`125P9500`,p_instal:0,localite:``},{id:`125P8097`,nom:`125P8097`,p_instal:0,localite:``},{id:`125P8318`,nom:`125P8318`,p_instal:0,localite:``},{id:`125P8137`,nom:`125P8137`,p_instal:0,localite:``},{id:`125P9606`,nom:`125P9606`,p_instal:0,localite:``}]},{id:`127H2C5`,arcCount:30,nodeCount:27,posteCount:8,etoilCount:8,totalLengthKm:19.75,totalPowerKva:0,samplePostes:[{id:`121P9782`,nom:`121P9782`,p_instal:0,localite:``},{id:`121P9021`,nom:`121P9021`,p_instal:0,localite:``},{id:`121P9629`,nom:`121P9629`,p_instal:0,localite:``},{id:`121P9780`,nom:`121P9780`,p_instal:0,localite:``},{id:`121P9791`,nom:`121P9791`,p_instal:0,localite:``}]},{id:`125H3`,arcCount:29,nodeCount:32,posteCount:0,etoilCount:0,totalLengthKm:.03,totalPowerKva:0,samplePostes:[]},{id:`121O1C4`,arcCount:20,nodeCount:16,posteCount:15,etoilCount:0,totalLengthKm:3.56,totalPowerKva:400,samplePostes:[{id:`121P8879`,nom:`121P8879`,p_instal:0,localite:``},{id:`121P8002`,nom:`BEA`,p_instal:400,localite:`Guelma 2`},{id:`121P8003`,nom:`121P8003`,p_instal:0,localite:``},{id:`121P9726`,nom:`121P9726`,p_instal:0,localite:``},{id:`121P8039`,nom:`121P8039`,p_instal:0,localite:``}]},{id:`127H2C2`,arcCount:20,nodeCount:17,posteCount:4,etoilCount:6,totalLengthKm:6.94,totalPowerKva:400,samplePostes:[{id:`127P3652`,nom:`127P3652`,p_instal:0,localite:``},{id:`127P3887`,nom:`DP CHERFA AHMED`,p_instal:400,localite:`BOUMAHRA`},{id:`127P3576`,nom:`127P3576`,p_instal:0,localite:``},{id:`127P3971`,nom:`127P3971`,p_instal:0,localite:``}]},{id:`NON_AFFECTE`,arcCount:19,nodeCount:22,posteCount:11,etoilCount:7,totalLengthKm:8.02,totalPowerKva:750,samplePostes:[{id:`121P8197`,nom:`121P8197`,p_instal:0,localite:``},{id:`123P6656`,nom:`123P6656`,p_instal:0,localite:``},{id:`125P9903`,nom:`125P9903`,p_instal:0,localite:``},{id:`125P8605`,nom:`125P8605`,p_instal:0,localite:``},{id:`125P9581`,nom:`125P9581`,p_instal:0,localite:``}]},{id:`125H3C6`,arcCount:18,nodeCount:15,posteCount:2,etoilCount:4,totalLengthKm:15.07,totalPowerKva:0,samplePostes:[{id:`127P3117`,nom:`127P3117`,p_instal:0,localite:``},{id:`127P3127`,nom:`127P3127`,p_instal:0,localite:``}]},{id:`121H5C13`,arcCount:13,nodeCount:10,posteCount:3,etoilCount:3,totalLengthKm:4.17,totalPowerKva:3e3,samplePostes:[{id:`127P3158`,nom:`127P3158`,p_instal:0,localite:``},{id:`127P3234`,nom:`127P3234`,p_instal:0,localite:``},{id:`127P3195`,nom:`CONSERVERIE B/AMOR`,p_instal:3e3,localite:`EL FEDJOUDJ`}]},{id:`121H5C11`,arcCount:12,nodeCount:11,posteCount:1,etoilCount:3,totalLengthKm:11.38,totalPowerKva:0,samplePostes:[{id:`121P8439`,nom:`121P8439`,p_instal:0,localite:``}]},{id:`125H3C17`,arcCount:7,nodeCount:8,posteCount:0,etoilCount:1,totalLengthKm:21.08,totalPowerKva:0,samplePostes:[]},{id:`125H3C18`,arcCount:5,nodeCount:6,posteCount:0,etoilCount:0,totalLengthKm:20.29,totalPowerKva:0,samplePostes:[]},{id:`121H5C5`,arcCount:2,nodeCount:2,posteCount:0,etoilCount:0,totalLengthKm:1.12,totalPowerKva:0,samplePostes:[]},{id:`121H5C6`,arcCount:2,nodeCount:2,posteCount:0,etoilCount:0,totalLengthKm:1.12,totalPowerKva:0,samplePostes:[]},{id:`127H1`,arcCount:2,nodeCount:3,posteCount:0,etoilCount:0,totalLengthKm:0,totalPowerKva:0,samplePostes:[]},{id:`125H2C5`,arcCount:1,nodeCount:2,posteCount:1,etoilCount:0,totalLengthKm:6.75,totalPowerKva:0,samplePostes:[{id:`125P8096`,nom:`125P8096`,p_instal:0,localite:``}]}],n={Alimentation:{tableName:`Alimentation`,fileName:`Alimentation.xls`,totalRows:31,totalRowsCorrige:0,sheets:[`anomalie`],rows:[{code:`112J342`,anomalie:`num_depart different: 112H1C13!=null 
 `,id_dd:52,nom_depart:`EL HADJAR`,num_depart:`112H1C13`,p_alim:1,id_district:0,id_appareilc:0},{code:`112J409`,anomalie:`num_depart different: 112H1C13!=null 
 `,id_dd:52,nom_depart:`EL HADJAR`,num_depart:`112H1C13`,p_alim:1,id_district:0,id_appareilc:0},{code:`112J900`,anomalie:`num_depart different: 112H1C13!=null 
 `,id_dd:52,nom_depart:`EL HADJAR`,num_depart:`112H1C13`,p_alim:1,id_district:0,id_appareilc:0},{code:`112J901`,anomalie:`num_depart different: 112H1C13!=null 
@@ -14853,1192 +14841,864 @@ Tension erroné 0.0
 `,noeud1:`127R1B2`,noeud2:`127R1C4`,tension:30,agence:`127`,longueur:0,an_mes:`14/11/2022`,etat:`S`,n_depart:`121H5C17`,rang:279},{code:`127R1B2-127R1C5`,correction:`Correction agence null - effectuée: null => 127 
 `,noeud1:`127R1B2`,noeud2:`127R1C5`,tension:30,agence:`127`,longueur:0,an_mes:`14/11/2022`,etat:`S`,n_depart:`121H5C17`,rang:280},{code:`127R1C1-127R1B1`,correction:`Correction agence null - effectuée: null => 127 
 `,noeud1:`127R1C1`,noeud2:`127R1B1`,tension:30,agence:`127`,longueur:0,an_mes:`14/11/2022`,etat:`S`,n_depart:`121H5C17`,rang:240},{code:`127R1C7-127R1B2`,correction:`Correction agence null - effectuée: null => 127 
-`,noeud1:`127R1C7`,noeud2:`127R1B2`,tension:30,agence:`127`,longueur:0,an_mes:`14/11/2022`,etat:`S`,n_depart:`121H5C17`,rang:281}]}},i={transfos:[{kva:50,ucc:4,p0:145,pk:1050,in30:.96,type:`AC`,desc:`Poste haut de poteau rural`},{kva:100,ucc:4,p0:260,pk:1750,in30:1.92,type:`AC/MS`,desc:`Poste agricole / village`},{kva:160,ucc:4,p0:390,pk:2350,in30:3.08,type:`MS`,desc:`Cabine maçonnée standard`},{kva:250,ucc:4,p0:530,pk:3250,in30:4.81,type:`MS`,desc:`Agglomération moyenne`},{kva:400,ucc:4,p0:750,pk:4600,in30:7.7,type:`MS`,desc:`Centre urbain / industrie`},{kva:630,ucc:4,p0:1100,pk:6500,in30:12.12,type:`MS`,desc:`Zone industrielle / hôpital`},{kva:1e3,ucc:5,p0:1700,pk:10500,in30:19.24,type:`MS`,desc:`Grosse unité industrielle`}],conducteurs:[{code:`AM_36`,nom:`Almélec 36 mm²`,section:36,nat:`AM`,r:.92,x:.38,iMax:155,pose:`AÉRIEN NU`},{code:`AM_75`,nom:`Almélec 75 mm²`,section:75,nat:`AM`,r:.44,x:.36,iMax:245,pose:`AÉRIEN NU`},{code:`AM_117`,nom:`Almélec 117 mm²`,section:117,nat:`AM`,r:.28,x:.35,iMax:330,pose:`AÉRIEN NU`},{code:`AM_148`,nom:`Almélec 148 mm²`,section:148,nat:`AM`,r:.22,x:.34,iMax:385,pose:`AÉRIEN NU`},{code:`CU_25`,nom:`Cuivre 25 mm²`,section:25,nat:`CU`,r:.72,x:.39,iMax:140,pose:`AÉRIEN NU`},{code:`CU_50`,nom:`Cuivre 50 mm²`,section:50,nat:`CU`,r:.36,x:.37,iMax:215,pose:`AÉRIEN NU`},{code:`SOUT_150`,nom:`Câble Souterrain Alu 150 mm²`,section:150,nat:`AL`,r:.21,x:.12,iMax:320,pose:`SOUTERRAIN`},{code:`SOUT_240`,nom:`Câble Souterrain Alu 240 mm²`,section:240,nat:`AL`,r:.13,x:.11,iMax:415,pose:`SOUTERRAIN`}],noeuds:[{prefix:`H`,label:`Poste Source`,tension:`60/30 kV ou 90/30 kV`,organe:`Disjoncteur général + Rame MT`,couleur:`#7c3aed`},{prefix:`P`,label:`Poste HTA/BT`,tension:`30 kV / 400 V`,organe:`Interrupteur-fusible combiné`,couleur:`#ea580c`},{prefix:`E`,label:`Étoilement (Piquage)`,tension:`30 kV`,organe:`Ponts de dérivation sur poteau`,couleur:`#0d9488`},{prefix:`O`,label:`Poste de Coupure (PC)`,tension:`30 kV`,organe:`Interrupteur à commande manuelle / IAT`,couleur:`#059669`},{prefix:`R`,label:`Poste de Répartition`,tension:`30 kV`,organe:`Cellules d'aiguillage MT`,couleur:`#0284c7`},{prefix:`C`,label:`Cellule MT`,tension:`30 kV`,organe:`Disjoncteur départ ou arrivée`,couleur:`#2563eb`},{prefix:`B`,label:`Jeu de Barres`,tension:`30 kV`,organe:`Barres collectrices en cuivre`,couleur:`#475569`},{prefix:`J`,label:`Jonction de passage`,tension:`30 kV`,organe:`Support d'alignement / d'ancrage`,couleur:`#64748b`}],seuils:{tensionNominale:30,tensionMin:27,tensionMax:33,chuteTensionMax:5,chuteTensionMaxRurale:7,cosPhi:.9,frequence:50,tempRef:40}};function a(){try{let e=localStorage.getItem(`gdo_mt_settings`);if(e)return JSON.parse(e)}catch(e){console.warn(`Impossible de charger les paramètres locaux:`,e)}return JSON.parse(JSON.stringify(i))}var o={activeTab:`dashboard`,selectedDepartId:`125H3C20`,layoutMode:`hierarchical`,showJunctions:!1,showLengths:!0,colorMode:`type`,zoom:1,pan:{x:60,y:120},isDragging:!1,dragStart:{x:0,y:0},selectedNode:null,selectedEdge:null,searchQuery:``,settingsSubTab:`transfos`,settings:a(),settingsSavedNotice:!1,showNewTransfoModal:!1,showNewConducteurModal:!1,explorerTable:`Poste_htabt_lig`,explorerSheet:`anomalie`,explorerPage:1,explorerPageSize:20,explorerSearch:``,mobileDepartId:`125H3C20`,mobileSearchQuery:``,mobileSelectedPosteId:`125P8002`,mobileAnomalieType:`RAS`,mobileNote:``,mobileInterventions:[{id:`INT-001`,posteId:`121P8002`,date:`28/10/2026 09:30`,type:`Contrôle Huile Transfo`,note:`Niveau d'huile normal, disjoncteur BT OK.`}],showReportModal:!1,reportCopied:!1},s=`# RAPPORT DE SYNTHÈSE TECHNIQUE — GDO-MT (RÉSEAU MOYENNE TENSION)
-Date d'analyse : 28 Octobre 2026
-Source : Fichiers Excel DBase III / FoxPro (12 tables)
-Wilaya : Guelma (Districts 121, 123, 125, 127)
-Architecture : 100% PUR JAVASCRIPT / CLIENT-SIDE SPA (0% NODE.JS)
-
-1. VOLUMÉTRIE & INVENTAIRE PHYSIQUE
-- Départs Moyenne Tension (HTA 30 kV) : 51 départs opérationnels
-- Linéaire Total de Réseau : 1 240,8 km de lignes
-- Arcs de Lignes & Tronçons : 7 678 branches physiques
-- Postes de Distribution HTA / BT : 504 transformateurs de distribution
-- Puissance Totale Installée : ~38 450 kVA
-- Nœuds de Piquage (Étoilements) : 378 nœuds de bifurcation
-- Postes Sources (HTB / HTA) : 2 sous-stations (125H3 NADOR 60/30kV, 125H2 MEDJEZ SFA 90/30kV)
-- Postes de Coupure & Répartition : 1 PC Fendjel (121O1), 1 PC Ain Amara (121R2)
-
-2. RÈGLE DE CODIFICATION NORMALISÉE
-- Format : [Agence 3 ch.][Type Ouvrage 1 car.][N° Ouvrage][Cellule]
-  * H = Poste Source HTB/HTA
-  * C = Cellule MT
-  * B = Jeu de barres MT
-  * O = Poste de Coupure (PC)
-  * E = Étoilement de ligne (Piquage)
-  * P = Poste HTA/BT (Transfo 30kV/400V)
-  * J = Jonction de passage / Support
-
-3. AUDIT DE QUALITÉ & ANOMALIES
-- 7 664 arcs avec tension enregistrée à 0.0V (anomalie de saisie DBase, normalisée à 30 kV).
-- 6 départs dans Depart.xls avec 'num_depart' vide (réconciliés via 'num_depart_cellule').
-- 14 arcs orphelins sans correspondance de tronçon physique.
-
-4. PARAMÈTRES & RÉFÉRENTIEL DU RÉSEAU MT
-- Transformateurs gérés : calibres 50 à 1000 kVA (Ucc 4%, pertes fer et cuivre configurables).
-- Arcs de lignes : Almélec 36, 75, 117, 148 mm², Cuivre 25/50 mm², Souterrain 150/240 mm².
-- Chute de tension maximale admissible : 5.0 % (7.0 % en zone rurale).`;function c(e){return e==null?`0`:Number(e).toLocaleString(`fr-FR`)}function l(e){return e==null?``:String(e).replace(/&/g,`&amp;`).replace(/</g,`&lt;`).replace(/>/g,`&gt;`).replace(/"/g,`&quot;`)}function u(e){o.activeTab=e,y()}function d(){return`
-    <header class="sticky top-0 z-40 flex items-center justify-between gap-4 px-6 py-3.5 bg-white border-b border-slate-200 shadow-xs">
-      <!-- Zone 1 : Wordmark Brand -->
-      <div class="flex items-center gap-3 shrink-0">
-        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-xs">
-          MT
+`,noeud1:`127R1C7`,noeud2:`127R1B2`,tension:30,agence:`127`,longueur:0,an_mes:`14/11/2022`,etat:`S`,n_depart:`121H5C17`,rang:281}]}},r={transfos:[{kva:50,ucc:4,p0:145,pk:1050,in30:.96,type:`AC`,desc:`Poste haut de poteau rural`},{kva:100,ucc:4,p0:260,pk:1750,in30:1.92,type:`AC/MS`,desc:`Poste agricole / village`},{kva:160,ucc:4,p0:390,pk:2350,in30:3.08,type:`MS`,desc:`Cabine maçonnée standard`},{kva:250,ucc:4,p0:530,pk:3250,in30:4.81,type:`MS`,desc:`Agglomération moyenne`},{kva:400,ucc:4,p0:750,pk:4600,in30:7.7,type:`MS`,desc:`Centre urbain / industrie`},{kva:630,ucc:4,p0:1100,pk:6500,in30:12.12,type:`MS`,desc:`Zone industrielle / hôpital`},{kva:1e3,ucc:5,p0:1700,pk:10500,in30:19.24,type:`MS`,desc:`Grosse unité industrielle`}],conducteurs:[{code:`AM_36`,nom:`Almélec 36 mm²`,section:36,nat:`AM`,r:.92,x:.38,iMax:155,pose:`AÉRIEN NU`},{code:`AM_75`,nom:`Almélec 75 mm²`,section:75,nat:`AM`,r:.44,x:.36,iMax:245,pose:`AÉRIEN NU`},{code:`AM_117`,nom:`Almélec 117 mm²`,section:117,nat:`AM`,r:.28,x:.35,iMax:330,pose:`AÉRIEN NU`},{code:`AM_148`,nom:`Almélec 148 mm²`,section:148,nat:`AM`,r:.22,x:.34,iMax:385,pose:`AÉRIEN NU`},{code:`CU_25`,nom:`Cuivre 25 mm²`,section:25,nat:`CU`,r:.72,x:.39,iMax:140,pose:`AÉRIEN NU`},{code:`CU_50`,nom:`Cuivre 50 mm²`,section:50,nat:`CU`,r:.36,x:.37,iMax:215,pose:`AÉRIEN NU`},{code:`SOUT_150`,nom:`Câble Souterrain Alu 150 mm²`,section:150,nat:`AL`,r:.21,x:.12,iMax:320,pose:`SOUTERRAIN`},{code:`SOUT_240`,nom:`Câble Souterrain Alu 240 mm²`,section:240,nat:`AL`,r:.13,x:.11,iMax:415,pose:`SOUTERRAIN`}],seuils:{tensionNominale:30,tensionMin:27,tensionMax:33,chuteTensionMax:5,chuteTensionMaxRurale:7,cosPhi:.9}};function i(){try{let e=localStorage.getItem(`gdo_mt_settings`);if(e)return JSON.parse(e)}catch{}return JSON.parse(JSON.stringify(r))}function a(){try{let e=localStorage.getItem(`gdo_mt_interventions`);if(e)return JSON.parse(e)}catch{}return[{id:`INT-2026-001`,posteId:`121P8036`,posteNom:`Pge Bentabouche`,date:`28/10/2026 09:30`,type:`Contrôle Huile Transfo`,statut:`RAS`,note:`Niveau d'huile normal, pas de fuite au niveau des traversées. Disjoncteur BT OK.`},{id:`INT-2026-002`,posteId:`121P8519`,posteNom:`30 LOGTS BENTABOUCHE`,date:`27/10/2026 14:15`,type:`Vérification Parafoudres & Prise de Terre`,statut:`Anomalie Mineure`,note:`Résistance de terre mesurée à 8.2 ohms. Nettoyage de la tresse de mise à la masse recommandé.`}]}var o={activeTab:`home`,selectedDepartId:`127H1C3`,selectedAgency:`ALL`,showQuickSearchModal:!1,quickSearchQuery:``,showJunctions:!1,zoom:1,pan:{x:30,y:70},isDragging:!1,dragStart:{x:0,y:0},selectedNode:null,selectedEdge:null,showBottomSheet:!1,ouvragesFilterType:`P`,ouvragesSearch:``,interventions:a(),newVisitPosteId:`121P8036`,newVisitType:`Inspection Visuelle Générale`,newVisitStatut:`RAS`,newVisitNote:``,visitSuccessNotice:!1,settingsSubTab:`transfos`,settings:i(),settingsSavedNotice:!1,showNewTransfoModal:!1,showNewConducteurModal:!1,tableSelected:`Poste_htabt_lig`,tablePage:1,tablePageSize:15,tableSearch:``};function s(e){return e==null?`0`:Number(e).toLocaleString(`fr-FR`)}function c(e){return e==null?``:String(e).replace(/&/g,`&amp;`).replace(/</g,`&lt;`).replace(/>/g,`&gt;`).replace(/"/g,`&quot;`)}function l(){return`
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 py-2 shadow-xs">
+      <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
+        <!-- Logo & Identité GPARC Mobile -->
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-black text-xs shadow-xs tracking-wider">
+            GP
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-black tracking-tight text-slate-900 leading-none">GPARC-Mobile</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">MT 30kV</span>
+            </div>
+            <span class="text-[10px] text-slate-500 font-medium">SDO &middot; Wilaya de Guelma (24)</span>
+          </div>
         </div>
-        <div>
-          <span class="text-base font-bold tracking-tight text-slate-900 whitespace-nowrap block leading-tight">
-            GDO-MT Web
-          </span>
-          <span class="text-[10px] text-slate-500 font-medium tracking-wide uppercase block">
-            Pur JavaScript &middot; Thème Clair
-          </span>
-        </div>
-      </div>
 
-      <!-- Zone 2 : Navigation SPA -->
-      <nav class="hidden lg:flex items-center gap-1 text-xs font-semibold">
-        ${[{id:`dashboard`,label:`Synthèse Réseau`},{id:`topology`,label:`Architecture Physique`},{id:`mobile`,label:`GPARC-Mobile (Terrain)`},{id:`structural`,label:`Modèle DBase`},{id:`settings`,label:`Paramètres Réseau`},{id:`explorer`,label:`12 Tables Excel`}].map(e=>`
+        <!-- Outils & Sélecteur d'Agence -->
+        <div class="flex items-center gap-1.5">
           <button
-            onclick="window.app.setTab('${e.id}')"
-            class="px-3 py-1.5 rounded-md transition-colors whitespace-nowrap cursor-pointer ${o.activeTab===e.id?`bg-blue-50 text-blue-800 font-bold border border-blue-200`:`text-slate-600 hover:text-slate-900 hover:bg-slate-100`}"
+            onclick="window.app.openQuickSearch()"
+            title="Recherche rapide d'ouvrage"
+            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold border border-slate-200 cursor-pointer"
           >
-            ${e.label}
+            🔍
           </button>
-        `).join(``)}
-      </nav>
 
-      <!-- Zone 3 : Action Primaire -->
-      <div class="flex items-center gap-2 shrink-0">
-        <button
-          onclick="window.app.toggleReportModal(true)"
-          class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs transition-colors cursor-pointer"
-        >
-          <span>Exporter Synthèse</span>
-        </button>
+          <select
+            onchange="window.app.setAgency(this.value)"
+            class="bg-slate-50 text-slate-800 text-[11px] font-semibold rounded-lg px-2 py-1 border border-slate-300 cursor-pointer shadow-2xs max-w-[130px]"
+          >
+            <option value="ALL" ${o.selectedAgency===`ALL`?`selected`:``}>Toutes agences</option>
+            <option value="121" ${o.selectedAgency===`121`?`selected`:``}>121 &middot; Guelma</option>
+            <option value="123" ${o.selectedAgency===`123`?`selected`:``}>123 &middot; Oued Zenati</option>
+            <option value="125" ${o.selectedAgency===`125`?`selected`:``}>125 &middot; Bouchegouf</option>
+            <option value="127" ${o.selectedAgency===`127`?`selected`:``}>127 &middot; District Est</option>
+          </select>
+        </div>
       </div>
     </header>
-  `}function f(){let e=t.slice(0,8),n=t.reduce((e,t)=>e+t.totalLengthKm,0).toFixed(1),r=t.reduce((e,t)=>e+t.posteCount,0),i=t.reduce((e,t)=>e+t.totalPowerKva,0);return`
-    <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-      <!-- Hero Card -->
-      <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-xs">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div class="space-y-2 max-w-3xl">
-            <span class="text-xs font-bold text-blue-700 uppercase tracking-wider block">
-              Application SPA 100% Pur JavaScript &middot; Zéro Node.js &middot; Thème Clair
+  `}function u(){return`
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 shadow-lg">
+      <div class="max-w-md mx-auto grid grid-cols-5 gap-1">
+        ${[{id:`home`,label:`Accueil`,icon:`🏠`},{id:`unifilaire`,label:`Schéma MT`,icon:`⚡`},{id:`ouvrages`,label:`Ouvrages`,icon:`🏢`},{id:`terrain`,label:`Visites`,icon:`📝`},{id:`settings`,label:`Paramètres`,icon:`⚙️`}].map(e=>{let t=o.activeTab===e.id;return`
+            <button
+              onclick="window.app.setTab('${e.id}')"
+              class="flex flex-col items-center justify-center py-1 rounded-xl transition-all cursor-pointer select-none ${t?`text-blue-600 font-bold bg-blue-50/80 shadow-2xs`:`text-slate-500 hover:text-slate-900`}"
+            >
+              <span class="text-base leading-none mb-0.5">${e.icon}</span>
+              <span class="text-[10px] leading-tight truncate tracking-tight">${e.label}</span>
+            </button>
+          `}).join(``)}
+      </div>
+    </nav>
+  `}function d(){let e=t.reduce((e,t)=>e+t.totalLengthKm,0).toFixed(1),n=t.reduce((e,t)=>e+t.posteCount,0),r=t.reduce((e,t)=>e+t.totalPowerKva,0),i=t.reduce((e,t)=>e+t.arcCount,0),a=o.selectedAgency===`ALL`?t:t.filter(e=>e.id.startsWith(o.selectedAgency));return`
+    <div class="p-4 space-y-4 max-w-2xl mx-auto">
+      <!-- Bannière Principale GPARC-Mobile -->
+      <div class="p-4 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 text-white shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-100">
+              GPARC-Terrain Connecté &middot; Cache Local
             </span>
-            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-              Gestion &amp; Visualisation des Ouvrages Moyenne Tension (HTA)
-            </h1>
-            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Modernisation intégrale de l'application patrimoniale DBase III / FoxPro pour l'exploitation du réseau électrique Moyenne Tension (30 kV). Cette version fonctionne entièrement côté client sans aucun serveur Node.js et permet de configurer tous les paramètres clés des ouvrages (arcs, nœuds, transformateurs).
-            </p>
           </div>
-
-          <div class="flex sm:flex-col gap-2 shrink-0">
-            <button
-              onclick="window.app.setTab('topology')"
-              class="px-4 py-2.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs transition-colors cursor-pointer text-center"
-            >
-              Schéma Unifilaire &amp; Graphe
-            </button>
-            <button
-              onclick="window.app.setTab('settings')"
-              class="px-4 py-2.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer text-center"
-            >
-              Paramètres des Ouvrages
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- KPI Grid -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <span class="text-xs font-medium text-slate-500 block mb-1">Départs Moyenne Tension</span>
-          <div class="text-2xl font-bold text-slate-900 font-mono tabular-nums">51</div>
-          <span class="text-[11px] text-slate-500 mt-1 block">Alimentés via Postes Sources</span>
-        </div>
-
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <span class="text-xs font-medium text-slate-500 block mb-1">Linéaire Total MT</span>
-          <div class="text-2xl font-bold text-slate-900 font-mono tabular-nums">${n} <span class="text-xs font-normal text-slate-500">km</span></div>
-          <span class="text-[11px] text-slate-500 mt-1 block">${c(t.reduce((e,t)=>e+t.arcCount,0))} arcs de lignes aériennes/souterraines</span>
-        </div>
-
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <span class="text-xs font-medium text-slate-500 block mb-1">Postes HTA / BT</span>
-          <div class="text-2xl font-bold text-slate-900 font-mono tabular-nums">${r}</div>
-          <span class="text-[11px] text-slate-500 mt-1 block">Transformateurs 30 kV / 400 V</span>
-        </div>
-
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <span class="text-xs font-medium text-slate-500 block mb-1">Puissance Installée</span>
-          <div class="text-2xl font-bold text-slate-900 font-mono tabular-nums">${c(i)} <span class="text-xs font-normal text-slate-500">kVA</span></div>
-          <span class="text-[11px] text-slate-500 mt-1 block">Puissance de transformation</span>
-        </div>
-      </div>
-
-      <!-- Top Départs Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-base font-bold text-slate-900">Départs MT Principaux</h2>
-              <p class="text-xs text-slate-500">Cliquez sur un départ pour ouvrir son schéma physique</p>
-            </div>
-            <button
-              onclick="window.app.setTab('topology')"
-              class="text-xs text-blue-600 hover:text-blue-800 font-semibold cursor-pointer"
-            >
-              Voir les 51 départs &rarr;
-            </button>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-slate-50 text-slate-700 border-y border-slate-200">
-                <tr>
-                  <th class="py-2 px-3 font-semibold">Code Départ</th>
-                  <th class="py-2 px-3 font-semibold text-right">Longueur (km)</th>
-                  <th class="py-2 px-3 font-semibold text-right">Arcs</th>
-                  <th class="py-2 px-3 font-semibold text-right">Postes HTA/BT</th>
-                  <th class="py-2 px-3 font-semibold text-right">Puissance (kVA)</th>
-                  <th class="py-2 px-3 font-semibold text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100">
-                ${e.map(e=>`
-                  <tr class="hover:bg-slate-50/80 transition-colors">
-                    <td class="py-2.5 px-3 font-mono font-bold text-slate-900">${e.id}</td>
-                    <td class="py-2.5 px-3 text-right font-mono text-slate-700">${e.totalLengthKm}</td>
-                    <td class="py-2.5 px-3 text-right font-mono text-slate-700">${e.arcCount}</td>
-                    <td class="py-2.5 px-3 text-right font-mono font-semibold text-amber-700">${e.posteCount}</td>
-                    <td class="py-2.5 px-3 text-right font-mono text-slate-700">${e.totalPowerKva>0?c(e.totalPowerKva):`—`}</td>
-                    <td class="py-2.5 px-3 text-center">
-                      <button
-                        onclick="window.app.selectDepart('${e.id}')"
-                        class="px-2.5 py-1 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded transition-colors cursor-pointer"
-                      >
-                        Visualiser
-                      </button>
-                    </td>
-                  </tr>
-                `).join(``)}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Postes Sources Card -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
-          <h2 class="text-base font-bold text-slate-900">Postes Sources HTB / HTA</h2>
-          <p class="text-xs text-slate-500">Sous-stations d'injection du réseau MT</p>
-
-          <div class="space-y-3">
-            <div class="p-3.5 rounded-lg border border-purple-200 bg-purple-50/50 space-y-1">
-              <div class="flex items-center justify-between">
-                <span class="font-mono text-xs font-bold text-purple-900">125H3 &middot; NADOR</span>
-                <span class="text-[10px] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded">60 / 30 kV</span>
-              </div>
-              <p class="text-xs text-slate-600">2 transformateurs &times; 40 MVA &middot; Commune 2416 (Nador)</p>
-            </div>
-
-            <div class="p-3.5 rounded-lg border border-purple-200 bg-purple-50/50 space-y-1">
-              <div class="flex items-center justify-between">
-                <span class="font-mono text-xs font-bold text-purple-900">125H2 &middot; MEDJEZ SFA</span>
-                <span class="text-[10px] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded">90 / 30 kV</span>
-              </div>
-              <p class="text-xs text-slate-600">2 transformateurs &times; 10 MVA &middot; Commune 2430</p>
-            </div>
-
-            <div class="p-3.5 rounded-lg border border-emerald-200 bg-emerald-50/50 space-y-1">
-              <div class="flex items-center justify-between">
-                <span class="font-mono text-xs font-bold text-emerald-900">121O1 &middot; PC FENDJEL</span>
-                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Poste Coupure</span>
-              </div>
-              <p class="text-xs text-slate-600">Organe de sectionnement 30 kV (MS) &middot; Agence 121</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `}function p(){let n=e.departs[o.selectedDepartId]||e.departs[`125H3C20`];if(!n)return`<div class="p-8 text-center">Départ introuvable</div>`;let r=n.nodes,i=n.edges,a=r,s=i;if(!o.showJunctions&&o.layoutMode===`simplified`){let e=new Set(r.filter(e=>e.type!==`JONCTION`).map(e=>e.id));a=r.filter(t=>e.has(t.id)),s=i.filter(t=>e.has(t.from)&&e.has(t.to))}let u=r.find(e=>e.type===`POSTE_SOURCE`||e.type===`CELLULE`);if(!u){let e=n.id.match(/^(\d+[A-Z]\d+)/);e&&(u=r.find(t=>t.id.startsWith(e[1])))}u||=r[0];let d=u?u.id:r[0]?.id,f={};for(let e of i)f[e.from]||(f[e.from]=[]),f[e.to]||(f[e.to]=[]),f[e.from].push(e.to),f[e.to].push(e.from);let p={},m={},h=new Set([d]),g=[{id:d,d:0}];for(p[d]=0,m[d]=null;g.length>0;){let{id:e,d:t}=g.shift();for(let n of f[e]||[])h.has(n)||(h.add(n),p[n]=t+1,m[n]=e,g.push({id:n,d:t+1}))}let _=1;for(let e of r)h.has(e.id)||(p[e.id]=_,_++);let v=new Set;if(o.selectedNode){let e=o.selectedNode.id;for(;e;)v.add(e),e=m[e]||null}let y={};for(let e of a){let t=p[e.id]??0;y[t]||(y[t]=[]),y[t].push(e)}let b=[],x=Math.max(...Object.keys(y).map(Number),0);if(o.layoutMode===`radial`)for(let e=0;e<=x;e++){let t=y[e]||[],n=e===0?0:80+e*65,r=t.length;t.forEach((t,i)=>{let a=r===1?0:i/r*2*Math.PI-Math.PI/2;b.push({...t,x:750+n*Math.cos(a),y:450+n*Math.sin(a),depth:e,inPath:v.has(t.id)})})}else for(let e=0;e<=x;e++){let t=y[e]||[],n=320-t.length*65/2;t.forEach((t,r)=>{b.push({...t,x:100+e*160,y:n+r*65,depth:e,inPath:v.has(t.id)})})}let S=new Map;for(let e of b)S.set(e.id,e);let C=o.searchQuery.trim()?r.filter(e=>e.id.toLowerCase().includes(o.searchQuery.toLowerCase())||e.meta?.nom&&e.meta.nom.toLowerCase().includes(o.searchQuery.toLowerCase())||e.meta?.localite&&e.meta.localite.toLowerCase().includes(o.searchQuery.toLowerCase())).slice(0,8):[];return`
-    <div class="flex flex-col h-[calc(100vh-62px)] bg-slate-50 text-slate-800 overflow-hidden">
-      <!-- Toolbar Supérieure -->
-      <div class="flex flex-wrap items-center justify-between gap-4 px-6 py-2.5 bg-white border-b border-slate-200 z-20 shrink-0 shadow-2xs">
-        <div class="flex items-center gap-3">
-          <span class="text-xs font-bold text-slate-500 uppercase">Départ MT :</span>
-          <select
-            onchange="window.app.selectDepart(this.value)"
-            class="bg-slate-50 text-slate-900 text-xs font-mono font-bold rounded-lg px-3 py-1.5 border border-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-600 cursor-pointer shadow-2xs"
-          >
-            ${t.map(e=>`
-              <option value="${e.id}" ${e.id===o.selectedDepartId?`selected`:``}>
-                ${e.id} &mdash; ${e.totalLengthKm} km &middot; ${e.posteCount} Postes &middot; ${e.arcCount} Arcs
-              </option>
-            `).join(``)}
-          </select>
-
-          <div class="hidden xl:flex items-center gap-3 text-xs text-slate-500 border-l border-slate-200 pl-3">
-            <span>Longueur : <strong class="text-slate-900 font-mono">${n.totalLengthKm} km</strong></span>
-            <span>&middot;</span>
-            <span>Postes HTA/BT : <strong class="text-amber-700 font-mono">${n.posteCount}</strong></span>
-            <span>&middot;</span>
-            <span>Puissance : <strong class="text-purple-700 font-mono">${c(n.totalPowerKva)} kVA</strong></span>
-          </div>
-        </div>
-
-        <!-- Recherche rapide -->
-        <div class="relative w-64">
-          <input
-            type="text"
-            placeholder="Rechercher poste, piquage..."
-            value="${l(o.searchQuery)}"
-            oninput="window.app.setSearchQuery(this.value)"
-            class="w-full bg-slate-50 text-slate-900 text-xs rounded-lg pl-3 pr-3 py-1.5 border border-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-600 shadow-2xs"
-          />
-
-          ${C.length>0?`
-            <div class="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl z-50 overflow-hidden max-h-56 overflow-y-auto">
-              ${C.map(e=>`
-                <button
-                  onclick="window.app.selectNodeById('${e.id}')"
-                  class="w-full text-left px-3 py-2 text-xs hover:bg-slate-100 transition-colors flex items-center justify-between border-b border-slate-100 last:border-0 cursor-pointer"
-                >
-                  <div class="truncate">
-                    <span class="font-mono font-bold text-slate-900">${e.id}</span>
-                    ${e.meta?.nom?`<span class="text-slate-500 ml-1.5">(${l(e.meta.nom)})</span>`:``}
-                  </div>
-                  <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">
-                    ${e.type.replace(`POSTE_`,``)}
-                  </span>
-                </button>
-              `).join(``)}
-            </div>
-          `:``}
-        </div>
-
-        <!-- Contrôles d'Affichage -->
-        <div class="flex items-center gap-2">
-          <div class="flex items-center p-0.5 bg-slate-100 rounded-lg border border-slate-200">
-            <button
-              onclick="window.app.setLayoutMode('hierarchical')"
-              class="px-2.5 py-1 text-xs font-semibold rounded cursor-pointer ${o.layoutMode===`hierarchical`?`bg-white text-slate-900 shadow-xs`:`text-slate-600 hover:text-slate-900`}"
-            >
-              Unifilaire
-            </button>
-            <button
-              onclick="window.app.setLayoutMode('radial')"
-              class="px-2.5 py-1 text-xs font-semibold rounded cursor-pointer ${o.layoutMode===`radial`?`bg-white text-slate-900 shadow-xs`:`text-slate-600 hover:text-slate-900`}"
-            >
-              Radial
-            </button>
-            <button
-              onclick="window.app.setLayoutMode('simplified')"
-              class="px-2.5 py-1 text-xs font-semibold rounded cursor-pointer ${o.layoutMode===`simplified`?`bg-white text-slate-900 shadow-xs`:`text-slate-600 hover:text-slate-900`}"
-            >
-              Postes Seuls
-            </button>
-          </div>
-
-          <button
-            onclick="window.app.toggleJunctions()"
-            class="px-2.5 py-1 text-xs font-semibold rounded-lg border transition-colors cursor-pointer ${o.showJunctions?`bg-blue-50 border-blue-300 text-blue-800`:`bg-white border-slate-200 text-slate-600`}"
-            title="Afficher/Masquer jonctions de passage"
-          >
-            Jonctions ${o.showJunctions?`ON`:`OFF`}
-          </button>
-        </div>
-      </div>
-
-      <!-- Zone Centrale (Canvas SVG Thème Clair) -->
-      <div class="relative flex-1 flex overflow-hidden">
-        <div
-          id="svgContainer"
-          class="relative flex-1 bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none"
-          style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 24px 24px;"
-          onmousedown="window.app.handleMouseDown(event)"
-          onmousemove="window.app.handleMouseMove(event)"
-          onmouseup="window.app.handleMouseUp(event)"
-        >
-          <svg
-            id="networkSvg"
-            class="w-full h-full"
-            style="transform: translate(${o.pan.x}px, ${o.pan.y}px) scale(${o.zoom}); transform-origin: 0 0;"
-          >
-            <g class="edges">
-              ${s.map(e=>{let t=S.get(e.from),n=S.get(e.to);if(!t||!n)return``;let r=o.selectedEdge?.id===e.id,i=t.inPath&&n.inPath,a=i?`#d97706`:e.nat_cond===`CU`?`#c2410c`:`#334155`;r&&(a=`#2563eb`);let s=i?3.5:r?3:e.section>=117?2.5:1.5,c=(t.x+n.x)/2,l=(t.y+n.y)/2;return`
-                  <g class="cursor-pointer" onclick="window.app.selectEdge('${e.id}')">
-                    <line
-                      x1="${t.x}" y1="${t.y}" x2="${n.x}" y2="${n.y}"
-                      stroke="${a}"
-                      stroke-width="${s}"
-                      stroke-dasharray="${e.struct===`SOUTERRAIN`?`4 3`:`none`}"
-                      opacity="${i||r?`1`:`0.85`}"
-                    />
-                    ${o.showLengths&&o.zoom>=.8&&e.longueur>0?`
-                      <text x="${c}" y="${l-4}" fill="#64748b" font-size="9" font-family="monospace" text-anchor="middle">
-                        ${e.longueur}m
-                      </text>
-                    `:``}
-                  </g>
-                `}).join(``)}
-            </g>
-
-            <g class="nodes">
-              ${b.map(e=>{let t=o.selectedNode?.id===e.id,n=e.id===d,r=e.type===`POSTE_SOURCE`?16:e.type===`POSTE_HTA_BT`?12:e.type===`ETOILEMENT`?9:5,i=`#64748b`,a=`#334155`;return e.type===`POSTE_SOURCE`?(i=`#7c3aed`,a=`#5b21b6`):e.type===`POSTE_HTA_BT`?(i=`#ea580c`,a=`#9a3412`):e.type===`ETOILEMENT`?(i=`#0d9488`,a=`#115e59`):e.type===`POSTE_COUPURE`&&(i=`#059669`,a=`#065f46`),e.inPath&&(a=`#d97706`,i=e.type===`POSTE_HTA_BT`?`#d97706`:i),t&&(a=`#2563eb`,i=`#2563eb`),`
-                  <g transform="translate(${e.x}, ${e.y})" class="cursor-pointer" onclick="window.app.selectNode('${e.id}')">
-                    ${t||n?`
-                      <circle r="${r+5}" fill="none" stroke="${a}" stroke-width="1.5" stroke-dasharray="3 3"/>
-                    `:``}
-
-                    ${e.type===`POSTE_SOURCE`?`
-                      <circle r="${r}" fill="${i}" stroke="${a}" stroke-width="2"/>
-                      <circle r="${r-5}" fill="none" stroke="#ffffff" stroke-width="1.5"/>
-                      <text y="3" fill="#ffffff" font-size="9" font-weight="bold" text-anchor="middle">HT</text>
-                    `:e.type===`POSTE_HTA_BT`?`
-                      <rect x="${-r}" y="${-r}" width="${r*2}" height="${r*2}" rx="3" fill="${i}" stroke="${a}" stroke-width="2"/>
-                      <text y="3.5" fill="#ffffff" font-size="9" font-weight="bold" font-family="monospace" text-anchor="middle">T</text>
-                    `:e.type===`ETOILEMENT`?`
-                      <polygon points="0,${-r} ${r},${r} ${-r},${r}" fill="${i}" stroke="${a}" stroke-width="1.5"/>
-                    `:`
-                      <circle r="${r}" fill="${i}" stroke="${a}" stroke-width="1"/>
-                    `}
-
-                    ${e.type!==`JONCTION`||o.zoom>1.2||t?`
-                      <text x="0" y="${r+13}" fill="${t?`#1d4ed8`:`#0f172a`}" font-size="10" font-family="monospace" font-weight="${e.type===`POSTE_HTA_BT`||t?`bold`:`normal`}" text-anchor="middle">
-                        ${l(e.meta?.nom?`${e.meta.nom} (${e.id})`:e.id)}
-                      </text>
-                    `:``}
-
-                    ${e.type===`POSTE_HTA_BT`&&e.meta?.p_instal?`
-                      <text x="0" y="${-r-4}" fill="#b45309" font-size="9" font-family="monospace" font-weight="bold" text-anchor="middle">
-                        ${e.meta.p_instal} kVA
-                      </text>
-                    `:``}
-                  </g>
-                `}).join(``)}
-            </g>
-          </svg>
-
-          <!-- Légende -->
-          <div class="absolute top-4 left-4 p-3 bg-white/95 backdrop-blur-xs rounded-xl border border-slate-200 shadow-md text-[11px] space-y-1.5 z-10 pointer-events-auto">
-            <span class="font-bold text-slate-800 text-xs block pb-1 border-b border-slate-200">Légende Réseau MT</span>
-            <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-slate-600">
-              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-600 shrink-0"></span><span>Poste Source 60/30kV</span></div>
-              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm bg-orange-600 shrink-0"></span><span>Poste HTA/BT (Transfo)</span></div>
-              <div class="flex items-center gap-2"><span class="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[8px] border-b-teal-600 shrink-0"></span><span>Piquage Étoilement</span></div>
-              <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-500 shrink-0"></span><span>Jonction de passage</span></div>
-              <div class="flex items-center gap-2"><span class="w-4 h-0.5 bg-amber-600 shrink-0"></span><span class="font-bold text-amber-700">Chemin vers source</span></div>
-            </div>
-          </div>
-
-          <!-- Contrôles Zoom / Pan -->
-          <div class="absolute bottom-5 left-5 flex items-center gap-1 p-1 bg-white/95 backdrop-blur-xs rounded-xl border border-slate-200 shadow-lg z-10">
-            <button onclick="window.app.zoomCanvas(0.2)" class="px-2.5 py-1 text-slate-700 hover:bg-slate-100 rounded text-xs font-bold cursor-pointer" title="Zoom +">+</button>
-            <button onclick="window.app.zoomCanvas(-0.2)" class="px-2.5 py-1 text-slate-700 hover:bg-slate-100 rounded text-xs font-bold cursor-pointer" title="Zoom -">&minus;</button>
-            <button onclick="window.app.fitView()" class="px-2.5 py-1 text-slate-700 hover:bg-slate-100 rounded text-xs cursor-pointer">Centrer</button>
-            <button onclick="window.app.resetView()" class="px-2.5 py-1 text-slate-700 hover:bg-slate-100 rounded text-xs cursor-pointer">Reset</button>
-            <span class="text-[11px] font-mono text-slate-500 px-2">${Math.round(o.zoom*100)}%</span>
-          </div>
-        </div>
-
-        <!-- Tiroir Inspecteur d'Ouvrage -->
-        ${o.selectedNode||o.selectedEdge?`
-          <div class="w-80 md:w-96 bg-white border-l border-slate-200 p-5 overflow-y-auto space-y-4 shrink-0 shadow-lg z-20">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Fiche Technique Ouvrage</span>
-              <button onclick="window.app.clearSelection()" class="text-xs text-slate-400 hover:text-slate-700 cursor-pointer">&times; Fermer</button>
-            </div>
-
-            ${o.selectedNode?`
-              <div class="space-y-4 text-xs">
-                <div>
-                  <span class="text-[10px] text-slate-400 font-mono uppercase block">Identifiant Nœud</span>
-                  <div class="text-lg font-mono font-bold text-slate-900">${o.selectedNode.id}</div>
-                  ${o.selectedNode.meta?.nom?`
-                    <div class="text-sm font-bold text-amber-700 mt-0.5">${l(o.selectedNode.meta.nom)}</div>
-                  `:``}
-                </div>
-
-                <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-                  <span class="font-bold text-slate-800 text-[11px] uppercase block">Paramètres Électriques</span>
-                  <div class="grid grid-cols-2 gap-2 text-slate-700">
-                    <div>
-                      <span class="text-slate-400 block text-[10px]">Tension Nominale</span>
-                      <strong class="font-mono text-slate-900">30 kV (HTA)</strong>
-                    </div>
-                    ${o.selectedNode.type===`POSTE_HTA_BT`?`
-                      <div>
-                        <span class="text-slate-400 block text-[10px]">Puissance Transfo</span>
-                        <strong class="font-mono text-amber-700">${o.selectedNode.meta?.p_instal||160} kVA</strong>
-                      </div>
-                      <div>
-                        <span class="text-slate-400 block text-[10px]">Type de Poste</span>
-                        <span class="font-mono text-slate-900">${o.selectedNode.meta?.t_poste===`MS`?`Cabine Maçonnée (MS)`:`Poteau (AC)`}</span>
-                      </div>
-                      <div>
-                        <span class="text-slate-400 block text-[10px]">Nb Transformateurs</span>
-                        <span class="font-mono text-slate-900">${o.selectedNode.meta?.nb_trans||1}</span>
-                      </div>
-                    `:``}
-                  </div>
-                </div>
-
-                <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5 text-slate-700">
-                  <span class="font-bold text-slate-800 text-[11px] uppercase block">Localisation &amp; Rattachement</span>
-                  <div>Localité : <strong>${l(o.selectedNode.meta?.localite||`Wilaya de Guelma`)}</strong></div>
-                  <div>Commune : <span class="font-mono text-slate-900">${o.selectedNode.meta?.commune||`—`}</span></div>
-                  <div>Départ MT : <span class="font-mono font-bold text-blue-700">${o.selectedDepartId}</span></div>
-                </div>
-
-                ${o.selectedNode.inPath?`
-                  <div class="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900">
-                    <strong class="block text-xs font-bold mb-0.5">Chemin d'alimentation amont tracé</strong>
-                    <p class="text-[11px] text-amber-800">
-                      Cet ouvrage est raccordé au départ <strong>${o.selectedDepartId}</strong> à l'échelon topologique ${o.selectedNode.depth}.
-                    </p>
-                  </div>
-                `:``}
-              </div>
-            `:``}
-
-            ${o.selectedEdge?`
-              <div class="space-y-4 text-xs">
-                <div>
-                  <span class="text-[10px] text-slate-400 font-mono uppercase block">Arc de Ligne MT</span>
-                  <div class="text-base font-mono font-bold text-slate-900">${o.selectedEdge.id}</div>
-                </div>
-
-                <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2 text-slate-700">
-                  <span class="font-bold text-slate-800 text-[11px] uppercase block">Caractéristiques Ligne</span>
-                  <div>De : <code class="font-mono font-bold text-slate-900">${o.selectedEdge.from}</code></div>
-                  <div>Vers : <code class="font-mono font-bold text-slate-900">${o.selectedEdge.to}</code></div>
-                  <div>Longueur : <strong class="font-mono text-emerald-700">${o.selectedEdge.longueur} mètres</strong></div>
-                  <div>Conducteur : <strong class="font-mono text-slate-900">${o.selectedEdge.nat_cond===`AM`?`Almélec (AM)`:o.selectedEdge.nat_cond}</strong></div>
-                  <div>Section : <strong class="font-mono text-slate-900">${o.selectedEdge.section} mm²</strong></div>
-                  <div>Pose : <span class="font-mono text-slate-900">${o.selectedEdge.struct}</span></div>
-                </div>
-
-                <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-                  <span class="font-bold text-slate-800 text-[11px] uppercase block">Supports (Poteaux)</span>
-                  <div class="grid grid-cols-3 gap-2 text-center text-xs">
-                    <div class="p-2 bg-white rounded border border-slate-200"><span class="text-slate-400 text-[10px] block">Béton</span><strong class="font-mono">${o.selectedEdge.supports.beton}</strong></div>
-                    <div class="p-2 bg-white rounded border border-slate-200"><span class="text-slate-400 text-[10px] block">Bois</span><strong class="font-mono">${o.selectedEdge.supports.bois}</strong></div>
-                    <div class="p-2 bg-white rounded border border-slate-200"><span class="text-slate-400 text-[10px] block">Métal</span><strong class="font-mono">${o.selectedEdge.supports.metal}</strong></div>
-                  </div>
-                </div>
-              </div>
-            `:``}
-          </div>
-        `:``}
-      </div>
-    </div>
-  `}function m(){let n=(e.departs[o.mobileDepartId]||e.departs[`125H3C20`]).nodes.filter(e=>e.type===`POSTE_HTA_BT`),r=o.mobileSearchQuery.trim()?n.filter(e=>e.id.toLowerCase().includes(o.mobileSearchQuery.toLowerCase())||e.meta?.nom&&e.meta.nom.toLowerCase().includes(o.mobileSearchQuery.toLowerCase())||e.meta?.localite&&e.meta.localite.toLowerCase().includes(o.mobileSearchQuery.toLowerCase())).slice(0,15):n.slice(0,15),i=n.find(e=>e.id===o.mobileSelectedPosteId)||n[0];return`
-    <div class="max-w-7xl mx-auto px-6 py-8 space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span class="text-xs font-bold text-blue-700 uppercase tracking-wider block">
-            Architecture Type GPARC-Mobile &middot; 0% Node.js
+          <span class="text-[10px] font-mono bg-white/20 px-2 py-0.5 rounded-full font-bold">
+            ${a.length} Départs MT
           </span>
-          <h1 class="text-2xl font-bold tracking-tight text-slate-900">
-            Simulateur Mobile de Terrain (Mode Déconnecté SQLite)
-          </h1>
-          <p class="text-xs text-slate-600 mt-1">
-            Les techniciens d'intervention exploitent les 504 postes et 7 678 arcs sans connexion Internet grâce à la base locale SQLite (1,8 Mo).
+        </div>
+
+        <div>
+          <h1 class="text-lg font-black tracking-tight">Réseau Moyenne Tension (HTA)</h1>
+          <p class="text-xs text-blue-100 leading-relaxed mt-0.5">
+            Cartographie topologique, caractéristiques physiques des ouvrages et carnet de visite technique.
           </p>
         </div>
 
-        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold shrink-0">
-          <span>Mode Hors-Ligne &middot; Base Locale 1,8 Mo</span>
+        <!-- 3 Boutons d'Action Rapide de Terrain -->
+        <div class="pt-1 grid grid-cols-3 gap-2 text-xs">
+          <button
+            onclick="window.app.openDepart('${a[0]?.id||`127H1C3`}')"
+            class="py-2 px-2 bg-white text-blue-700 font-bold rounded-xl shadow-xs text-center cursor-pointer flex flex-col items-center justify-center hover:bg-blue-50"
+          >
+            <span class="text-sm mb-0.5">⚡</span>
+            <span>Schéma MT</span>
+          </button>
+          <button
+            onclick="window.app.setTab('ouvrages')"
+            class="py-2 px-2 bg-blue-800/80 hover:bg-blue-800 text-white font-semibold rounded-xl text-center cursor-pointer flex flex-col items-center justify-center border border-white/10"
+          >
+            <span class="text-sm mb-0.5">🏢</span>
+            <span>Ouvrages</span>
+          </button>
+          <button
+            onclick="window.app.setTab('terrain')"
+            class="py-2 px-2 bg-emerald-700 hover:bg-emerald-600 text-white font-semibold rounded-xl text-center cursor-pointer flex flex-col items-center justify-center border border-white/10"
+          >
+            <span class="text-sm mb-0.5">📝</span>
+            <span>Visite Terrain</span>
+          </button>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div class="lg:col-span-7 flex justify-center">
-          <div class="w-full max-w-md bg-slate-100 rounded-[36px] p-3 shadow-xl border-4 border-slate-300">
-            <div class="w-28 h-3.5 bg-slate-300 rounded-full mx-auto mb-2"></div>
+      <!-- 4 Compteurs Statistiques Tactiles -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Linéaire Total</span>
+          <div class="text-lg font-mono font-bold text-slate-900">${e} <span class="text-xs font-normal text-slate-500">km</span></div>
+          <span class="text-[10px] text-slate-500">${s(i)} tronçons de lignes</span>
+        </div>
 
-            <div class="bg-white rounded-[24px] overflow-hidden flex flex-col h-[620px] border border-slate-200 text-xs">
-              <div class="px-4 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between font-mono text-[11px] text-slate-600 shrink-0">
-                <span class="font-bold text-slate-900">GPARC-MT Mobile</span>
-                <span class="text-emerald-700 font-bold">&bull; GPS Actif</span>
-              </div>
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Postes HTA/BT</span>
+          <div class="text-lg font-mono font-bold text-amber-700">${n}</div>
+          <span class="text-[10px] text-slate-500">Postes transformateurs</span>
+        </div>
 
-              <div class="p-3 bg-slate-50 border-b border-slate-200 space-y-2 shrink-0">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] text-slate-500 font-bold uppercase">Départ :</span>
-                  <select
-                    onchange="window.app.setMobileDepart(this.value)"
-                    class="bg-white text-slate-900 text-xs font-mono rounded px-2 py-1 border border-slate-300 font-semibold"
-                  >
-                    ${t.slice(0,15).map(e=>`
-                      <option value="${e.id}" ${e.id===o.mobileDepartId?`selected`:``}>
-                        ${e.id} (${e.posteCount} Postes)
-                      </option>
-                    `).join(``)}
-                  </select>
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Puissance Réseau</span>
+          <div class="text-lg font-mono font-bold text-purple-700">${s(r)} <span class="text-xs font-normal text-slate-500">kVA</span></div>
+          <span class="text-[10px] text-slate-500">Tension : 30 kV / 400 V</span>
+        </div>
+
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Étoilements</span>
+          <div class="text-lg font-mono font-bold text-teal-700">378</div>
+          <span class="text-[10px] text-slate-500">Piquages de dérivation</span>
+        </div>
+      </div>
+
+      <!-- Liste Rapide des Départs MT -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700">Départs MT &middot; Agence ${o.selectedAgency} (${a.length})</h2>
+          <span class="text-[10px] text-slate-400">Touchez pour ouvrir</span>
+        </div>
+
+        <div class="space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
+          ${a.map(e=>`
+            <div
+              onclick="window.app.openDepart('${e.id}')"
+              class="p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/30 transition-all flex items-center justify-between cursor-pointer"
+            >
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono font-bold text-xs text-slate-900">${e.id}</span>
+                  <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700">${e.posteCount} Postes</span>
                 </div>
-
-                <input
-                  type="text"
-                  placeholder="Chercher poste (code ou nom)..."
-                  value="${l(o.mobileSearchQuery)}"
-                  oninput="window.app.setMobileSearch(this.value)"
-                  class="w-full bg-white text-slate-900 rounded-lg px-3 py-1.5 text-xs border border-slate-300"
-                />
+                <span class="text-[11px] text-slate-500 block">${e.totalLengthKm} km &middot; ${e.arcCount} Arcs &middot; ${s(e.totalPowerKva)} kVA</span>
               </div>
-
-              <div class="flex-1 overflow-y-auto p-3 space-y-3">
-                ${i?`
-                  <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
-                    <div class="flex items-start justify-between">
-                      <div>
-                        <span class="font-mono text-xs font-bold text-blue-700 block">${i.id}</span>
-                        <span class="text-sm font-bold text-slate-900">${i.meta?.nom||`Poste HTA / BT`}</span>
-                        <div class="text-[11px] text-slate-500 mt-0.5">${i.meta?.localite||`Wilaya de Guelma (24)`}</div>
-                      </div>
-                      <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
-                        ${i.meta?.p_instal||160} kVA
-                      </span>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2 text-[11px] p-2 bg-white rounded-lg border border-slate-200 font-mono">
-                      <div><span class="text-slate-400 block text-[9px]">Tension</span><span class="text-slate-800">30 kV</span></div>
-                      <div><span class="text-slate-400 block text-[9px]">Type</span><span class="text-slate-800">${i.meta?.t_poste===`MS`?`Cabine MS`:`Poteau AC`}</span></div>
-                      <div><span class="text-slate-400 block text-[9px]">Mise en service</span><span class="text-slate-800">${i.meta?.an_mes||`01/01/1985`}</span></div>
-                      <div><span class="text-slate-400 block text-[9px]">Commune</span><span class="text-slate-800">${i.meta?.commune||`2401`}</span></div>
-                    </div>
-
-                    <form onsubmit="window.app.saveMobileIntervention(event)" class="space-y-2 pt-1 border-t border-slate-200">
-                      <span class="text-[10px] font-bold text-slate-600 uppercase block">Relevé de Terrain :</span>
-                      <select id="mobileAnomalieSelect" class="w-full bg-white text-slate-900 text-xs rounded px-2.5 py-1.5 border border-slate-300">
-                        <option value="RAS">RAS &mdash; Poste en bon état</option>
-                        <option value="Huile">Fuite d'huile transformateur</option>
-                        <option value="Fusible">Fusible MT à remplacer</option>
-                        <option value="Elagage">Élagage nécessaire</option>
-                      </select>
-
-                      <input
-                        id="mobileNoteInput"
-                        type="text"
-                        placeholder="Observation technicien..."
-                        class="w-full bg-white text-slate-900 text-xs rounded px-2.5 py-1.5 border border-slate-300"
-                      />
-
-                      <button
-                        type="submit"
-                        class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded text-xs transition-colors cursor-pointer"
-                      >
-                        Enregistrer dans SQLite Local
-                      </button>
-                    </form>
-                  </div>
-                `:``}
-
-                <div class="space-y-1">
-                  <span class="text-[10px] text-slate-500 font-bold uppercase block px-1">Postes du départ (${r.length})</span>
-                  ${r.map(e=>`
-                    <button
-                      onclick="window.app.selectMobilePoste('${e.id}')"
-                      class="w-full text-left p-2 rounded-lg transition-colors flex items-center justify-between border cursor-pointer ${o.mobileSelectedPosteId===e.id?`bg-blue-50 border-blue-400 text-blue-900 font-bold`:`bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100`}"
-                    >
-                      <div class="truncate pr-2">
-                        <span class="font-mono text-xs block">${e.id}</span>
-                        <span class="text-slate-500 text-[10px] truncate block">${e.meta?.nom||e.meta?.localite||`Poste HTA/BT`}</span>
-                      </div>
-                      <span class="font-mono text-[10px] text-amber-700 font-semibold shrink-0">${e.meta?.p_instal||160} kVA</span>
-                    </button>
-                  `).join(``)}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="lg:col-span-5 space-y-4 text-xs">
-          <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
-            <h2 class="text-base font-bold text-slate-900">Principes du Modèle GPARC-Mobile</h2>
-            <div class="space-y-2.5 text-slate-600 leading-relaxed">
-              <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <strong class="text-slate-900 block font-semibold">1. Pur JavaScript / Dart Mobile</strong>
-                <p>Aucun serveur Node.js en production. Le code tourne soit sur le navigateur web, soit sur l'application mobile Flutter / Android.</p>
-              </div>
-
-              <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <strong class="text-slate-900 block font-semibold">2. Poids Minimal (1,8 Mo)</strong>
-                <p>Les 7 678 arcs et 504 postes tiennent dans moins de 2 Mo sous SQLite, permettant une installation immédiate sur n'importe quel smartphone.</p>
-              </div>
-
-              <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <strong class="text-slate-900 block font-semibold">3. Synchronisation Différée</strong>
-                <p>Les interventions saisies en zone blanche sont synchronisées dès le retour en agence.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
-            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">
-              Relevés Locaux SQLite (${o.mobileInterventions.length})
-            </h3>
-            <div class="space-y-2">
-              ${o.mobileInterventions.map(e=>`
-                <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                  <div class="flex items-center justify-between">
-                    <span class="font-mono font-bold text-slate-900">${e.posteId} &middot; ${e.type}</span>
-                    <span class="text-[10px] text-slate-500 font-mono">${e.date}</span>
-                  </div>
-                  <p class="text-slate-600 text-[11px]">${l(e.note)}</p>
-                </div>
-              `).join(``)}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `}function h(){return`
-    <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-      <div class="space-y-1">
-        <span class="text-xs font-bold text-blue-700 uppercase tracking-wider block">Rétro-Ingénierie &middot; Modèle dBase</span>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Structure des Données DBase (GDO MT)</h1>
-        <p class="text-xs sm:text-sm text-slate-600 max-w-4xl leading-relaxed">
-          Décryptage du modèle relationnel dBase III / FoxPro et règles de codification hiérarchiques.
-        </p>
-      </div>
-
-      <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
-        <h2 class="text-base font-bold text-slate-900">Règle de Codification Alphanumérique</h2>
-        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-          <div class="text-xs font-semibold text-slate-800">
-            Exemple : Code Départ <code class="font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">125H3C20</code>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
-            <div class="p-3 bg-white rounded-lg border border-slate-200"><strong class="font-mono text-blue-700 text-sm block">125</strong>Agence (Bouchegouf)</div>
-            <div class="p-3 bg-white rounded-lg border border-slate-200"><strong class="font-mono text-purple-700 text-sm block">H</strong>Poste Source HTB/HTA</div>
-            <div class="p-3 bg-white rounded-lg border border-slate-200"><strong class="font-mono text-purple-700 text-sm block">3</strong>N°3 (Nador 60/30kV)</div>
-            <div class="p-3 bg-white rounded-lg border border-slate-200"><strong class="font-mono text-emerald-700 text-sm block">C20</strong>Cellule Départ n°20</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
-        <h2 class="text-base font-bold text-slate-900">Les 12 Tables Relationnelles Extraites</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          ${n.map(e=>`
-            <div class="p-3 rounded-lg border border-slate-200 bg-slate-50/60">
-              <span class="font-mono font-bold text-xs text-slate-900 block truncate">${e.fileName}</span>
-              <span class="text-slate-500 text-[11px] block mt-1">${e.rowCount} lignes &middot; ${e.fields.length} colonnes</span>
+              <span class="text-xs text-blue-600 font-bold px-2 py-1 rounded-lg bg-blue-50">&rarr;</span>
             </div>
           `).join(``)}
         </div>
       </div>
+
+      <!-- Postes Sources HTB / HTA -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-2">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700">Postes Sources HTB / HTA</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <div class="p-3 rounded-xl bg-purple-50/70 border border-purple-200">
+            <span class="font-mono font-bold text-purple-900 block text-xs">125H3 &middot; NADOR</span>
+            <span class="text-[11px] text-slate-600">60 / 30 kV &middot; 2 &times; 40 MVA &middot; 12 Départs</span>
+          </div>
+          <div class="p-3 rounded-xl bg-purple-50/70 border border-purple-200">
+            <span class="font-mono font-bold text-purple-900 block text-xs">125H2 &middot; MEDJEZ SFA</span>
+            <span class="text-[11px] text-slate-600">90 / 30 kV &middot; 2 &times; 10 MVA &middot; 8 Départs</span>
+          </div>
+        </div>
+      </div>
     </div>
-  `}function g(){let{transfos:e,conducteurs:t,noeuds:n,seuils:r}=o.settings;return`
-    <div class="max-w-7xl mx-auto px-6 py-8 space-y-6">
-      <!-- En-tête -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span class="text-xs font-bold text-blue-700 uppercase tracking-wider block">
-            Référentiel Métier &middot; Paramètres des Ouvrages MT
+  `}function f(){let n=e.departs[o.selectedDepartId]||e.departs[`127H1C3`]||e.departs[`125H3C20`];if(!n)return`<div class="p-8 text-center text-slate-500">Départ MT introuvable</div>`;let r=n.nodes,i=n.edges,a=r,s=i;if(!o.showJunctions){let e=new Set(r.filter(e=>e.type!==`JONCTION`).map(e=>e.id));a=r.filter(t=>e.has(t.id)),s=i.filter(t=>e.has(t.from)&&e.has(t.to))}let l=r.find(e=>e.type===`POSTE_SOURCE`||e.type===`CELLULE`);if(!l){let e=n.id.match(/^(\d+[A-Z]\d+)/);e&&(l=r.find(t=>t.id.startsWith(e[1])))}l||=r[0];let u=l?l.id:r[0]?.id,d={};for(let e of i)d[e.from]||(d[e.from]=[]),d[e.to]||(d[e.to]=[]),d[e.from].push(e.to),d[e.to].push(e.from);let f={},p={},m=new Set([u]),h=[{id:u,d:0}];for(f[u]=0,p[u]=null;h.length>0;){let{id:e,d:t}=h.shift();for(let n of d[e]||[])m.has(n)||(m.add(n),f[n]=t+1,p[n]=e,h.push({id:n,d:t+1}))}let g=1;for(let e of r)m.has(e.id)||(f[e.id]=g,g++);let _=new Set;if(o.selectedNode){let e=o.selectedNode.id;for(;e;)_.add(e),e=p[e]||null}let v={};for(let e of a){let t=f[e.id]??0;v[t]||(v[t]=[]),v[t].push(e)}let y=[],b=Math.max(...Object.keys(v).map(Number),0);for(let e=0;e<=b;e++){let t=v[e]||[],n=260-t.length*68/2;t.forEach((t,r)=>{y.push({...t,x:80+e*160,y:n+r*68,depth:e,inPath:_.has(t.id)})})}let x=new Map;for(let e of y)x.set(e.id,e);return`
+    <div class="flex flex-col h-[calc(100vh-105px)] bg-slate-50 text-slate-800 relative overflow-hidden">
+      <!-- Toolbar GPARC-Mobile pour Schéma -->
+      <div class="bg-white border-b border-slate-200 px-3 py-2 flex items-center justify-between gap-2 shrink-0 z-20 shadow-xs">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <select
+            onchange="window.app.selectDepart(this.value)"
+            class="bg-slate-50 text-slate-900 text-xs font-mono font-bold rounded-lg px-2 py-1.5 border border-slate-300 max-w-[180px] truncate"
+          >
+            ${t.map(e=>`
+              <option value="${e.id}" ${e.id===o.selectedDepartId?`selected`:``}>
+                ${e.id} (${e.posteCount}P)
+              </option>
+            `).join(``)}
+          </select>
+          <span class="text-[10px] text-slate-500 font-medium hidden sm:inline">
+            ${n.totalLengthKm} km
           </span>
-          <h1 class="text-2xl font-bold tracking-tight text-slate-900">
-            Gestion des Points Clés du Réseau
-          </h1>
-          <p class="text-xs text-slate-600 mt-1">
-            Configurez les caractéristiques physiques des transformateurs, sections d'arcs, types de nœuds et seuils d'exploitation normalisés.
-          </p>
         </div>
 
-        <div class="flex items-center gap-2">
-          ${o.settingsSavedNotice?`
-            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg shadow-2xs">
-              Paramètres enregistrés en local !
-            </span>
-          `:``}
+        <div class="flex items-center gap-1">
           <button
-            onclick="window.app.resetDefaultSettings()"
-            class="px-3 py-1.5 text-xs font-semibold text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 cursor-pointer shadow-2xs"
+            onclick="window.app.toggleJunctions()"
+            class="px-2 py-1 text-[11px] font-semibold rounded-lg border ${o.showJunctions?`bg-blue-50 border-blue-300 text-blue-800`:`bg-slate-50 border-slate-300 text-slate-600`}"
           >
-            Réinitialiser Normes
+            Jonct. ${o.showJunctions?`ON`:`OFF`}
+          </button>
+          <button
+            onclick="window.app.fitView()"
+            class="px-2 py-1 text-[11px] font-semibold rounded-lg bg-slate-50 border border-slate-300 text-slate-700"
+          >
+            Centrer
           </button>
         </div>
       </div>
 
-      <!-- Sous-onglets de configuration -->
-      <div class="flex items-center gap-2 border-b border-slate-200 pb-2">
-        ${[{id:`transfos`,label:`Transformateurs HTA/BT`},{id:`conducteurs`,label:`Conducteurs & Arcs MT`},{id:`noeuds`,label:`Nœuds & Organes MT`},{id:`seuils`,label:`Seuils & Normes Réseau`}].map(e=>`
-          <button
-            onclick="window.app.setSettingsSubTab('${e.id}')"
-            class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${o.settingsSubTab===e.id?`bg-blue-50 text-blue-800 font-bold border border-blue-200`:`text-slate-600 hover:text-slate-900 hover:bg-slate-100`}"
-          >
-            ${e.label}
-          </button>
+      <!-- Canvas SVG Interactif -->
+      <div
+        id="svgContainer"
+        class="relative flex-1 bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none"
+        style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 24px 24px;"
+        onmousedown="window.app.handleMouseDown(event)"
+        onmousemove="window.app.handleMouseMove(event)"
+        onmouseup="window.app.handleMouseUp(event)"
+      >
+        <svg
+          id="networkSvg"
+          class="w-full h-full"
+          style="transform: translate(${o.pan.x}px, ${o.pan.y}px) scale(${o.zoom}); transform-origin: 0 0;"
+        >
+          <!-- Arcs MT -->
+          <g class="edges">
+            ${s.map(e=>{let t=x.get(e.from),n=x.get(e.to);if(!t||!n)return``;let r=o.selectedEdge?.id===e.id,i=t.inPath&&n.inPath,a=i?`#d97706`:e.nat_cond===`CU`?`#c2410c`:`#334155`;r&&(a=`#2563eb`);let s=i?3.5:r?3:e.section>=117?2.5:1.5;return`
+                <g class="cursor-pointer" onclick="window.app.selectEdge('${e.id}')">
+                  <line
+                    x1="${t.x}" y1="${t.y}" x2="${n.x}" y2="${n.y}"
+                    stroke="${a}"
+                    stroke-width="${s}"
+                    stroke-dasharray="${e.struct===`SOUTERRAIN`?`4 3`:`none`}"
+                    opacity="${i||r?`1`:`0.85`}"
+                  />
+                  ${o.zoom>=.8&&e.longueur>0?`
+                    <text x="${(t.x+n.x)/2}" y="${(t.y+n.y)/2-4}" fill="#64748b" font-size="9" font-family="monospace" text-anchor="middle">
+                      ${e.longueur}m
+                    </text>
+                  `:``}
+                </g>
+              `}).join(``)}
+          </g>
+
+          <!-- Nœuds MT -->
+          <g class="nodes">
+            ${y.map(e=>{let t=o.selectedNode?.id===e.id,n=e.id===u,r=e.type===`POSTE_SOURCE`?15:e.type===`POSTE_HTA_BT`?12:e.type===`ETOILEMENT`?9:5,i=`#64748b`,a=`#334155`;return e.type===`POSTE_SOURCE`?(i=`#7c3aed`,a=`#5b21b6`):e.type===`POSTE_HTA_BT`?(i=`#ea580c`,a=`#9a3412`):e.type===`ETOILEMENT`?(i=`#0d9488`,a=`#115e59`):e.type===`POSTE_COUPURE`&&(i=`#059669`,a=`#065f46`),e.inPath&&(a=`#d97706`,i=e.type===`POSTE_HTA_BT`?`#d97706`:i),t&&(a=`#2563eb`,i=`#2563eb`),`
+                <g transform="translate(${e.x}, ${e.y})" class="cursor-pointer" onclick="window.app.selectNode('${e.id}')">
+                  ${t||n?`
+                    <circle r="${r+5}" fill="none" stroke="${a}" stroke-width="1.5" stroke-dasharray="3 3"/>
+                  `:``}
+
+                  ${e.type===`POSTE_SOURCE`?`
+                    <circle r="${r}" fill="${i}" stroke="${a}" stroke-width="2"/>
+                    <circle r="${r-5}" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+                    <text y="3" fill="#ffffff" font-size="9" font-weight="bold" text-anchor="middle">HT</text>
+                  `:e.type===`POSTE_HTA_BT`?`
+                    <rect x="${-r}" y="${-r}" width="${r*2}" height="${r*2}" rx="3" fill="${i}" stroke="${a}" stroke-width="2"/>
+                    <text y="3.5" fill="#ffffff" font-size="9" font-weight="bold" font-family="monospace" text-anchor="middle">T</text>
+                  `:e.type===`ETOILEMENT`?`
+                    <polygon points="0,${-r} ${r},${r} ${-r},${r}" fill="${i}" stroke="${a}" stroke-width="1.5"/>
+                  `:`
+                    <circle r="${r}" fill="${i}" stroke="${a}" stroke-width="1"/>
+                  `}
+
+                  ${e.type!==`JONCTION`||o.zoom>1.2||t?`
+                    <text x="0" y="${r+12}" fill="${t?`#1d4ed8`:`#0f172a`}" font-size="9.5" font-family="monospace" font-weight="${e.type===`POSTE_HTA_BT`||t?`bold`:`normal`}" text-anchor="middle">
+                      ${c(e.meta?.nom?`${e.meta.nom} (${e.id})`:e.id)}
+                    </text>
+                  `:``}
+
+                  ${e.type===`POSTE_HTA_BT`&&e.meta?.p_instal?`
+                    <text x="0" y="${-r-4}" fill="#b45309" font-size="9" font-family="monospace" font-weight="bold" text-anchor="middle">
+                      ${e.meta.p_instal}k
+                    </text>
+                  `:``}
+                </g>
+              `}).join(``)}
+          </g>
+        </svg>
+
+        <!-- Contrôles Flottants Zoom Tactile -->
+        <div class="absolute bottom-4 right-4 flex flex-col gap-1 z-10">
+          <button onclick="window.app.zoomCanvas(0.2)" class="w-9 h-9 rounded-xl bg-white shadow-md border border-slate-200 flex items-center justify-center text-slate-800 font-bold text-base cursor-pointer">+</button>
+          <button onclick="window.app.zoomCanvas(-0.2)" class="w-9 h-9 rounded-xl bg-white shadow-md border border-slate-200 flex items-center justify-center text-slate-800 font-bold text-base cursor-pointer">&minus;</button>
+        </div>
+      </div>
+
+      <!-- Bottom Sheet Tactile GPARC-Mobile (Fiche Ouvrage & Action Visite) -->
+      ${o.showBottomSheet&&(o.selectedNode||o.selectedEdge)?`
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl border-t border-slate-200 shadow-2xl p-4 z-30 max-h-[55vh] overflow-y-auto space-y-3">
+          <div class="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-1"></div>
+
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <div>
+              <span class="text-[10px] text-slate-400 font-mono uppercase block">Fiche Ouvrage GPARC</span>
+              <strong class="font-mono text-base text-slate-900">${o.selectedNode?.id||o.selectedEdge?.id}</strong>
+              ${o.selectedNode?.meta?.nom?`
+                <div class="text-xs font-bold text-amber-700">${c(o.selectedNode.meta.nom)}</div>
+              `:``}
+            </div>
+            <button onclick="window.app.closeBottomSheet()" class="text-xs text-slate-500 hover:text-slate-800 px-2.5 py-1 rounded-lg bg-slate-100 font-bold cursor-pointer">Fermer</button>
+          </div>
+
+          ${o.selectedNode?`
+            <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <div><span class="text-slate-400 block text-[9px]">Tension Nominale</span><span class="text-slate-900 font-bold">30 kV / 400 V</span></div>
+              <div><span class="text-slate-400 block text-[9px]">Puissance Transfo</span><span class="text-amber-700 font-bold">${o.selectedNode.meta?.p_instal||160} kVA</span></div>
+              <div><span class="text-slate-400 block text-[9px]">Structure</span><span class="text-slate-900">${o.selectedNode.meta?.t_poste===`MS`?`Cabine Maçonnée (MS)`:`Haut de Poteau (AC)`}</span></div>
+              <div><span class="text-slate-400 block text-[9px]">Commune</span><span class="text-slate-900 truncate block">${c(o.selectedNode.meta?.localite||`Wilaya de Guelma`)}</span></div>
+            </div>
+
+            <div class="pt-1 flex gap-2">
+              <button
+                onclick="window.app.createInterventionForPoste('${o.selectedNode.id}', '${c(o.selectedNode.meta?.nom||o.selectedNode.id)}')"
+                class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-xs text-center cursor-pointer"
+              >
+                📝 Créer Fiche de Visite de Terrain
+              </button>
+            </div>
+          `:``}
+
+          ${o.selectedEdge?`
+            <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <div><span class="text-slate-400 block text-[9px]">Longueur</span><span class="text-emerald-700 font-bold">${o.selectedEdge.longueur} m</span></div>
+              <div><span class="text-slate-400 block text-[9px]">Conducteur</span><span class="text-slate-900 font-bold">${o.selectedEdge.nat_cond} ${o.selectedEdge.section} mm²</span></div>
+              <div><span class="text-slate-400 block text-[9px]">Pose</span><span class="text-slate-900">${o.selectedEdge.struct}</span></div>
+              <div><span class="text-slate-400 block text-[9px]">Supports</span><span class="text-slate-900">Béton: ${o.selectedEdge.supports.beton} &middot; Métal: ${o.selectedEdge.supports.metal}</span></div>
+            </div>
+          `:``}
+        </div>
+      `:``}
+    </div>
+  `}function p(){let t=(e.departs[o.selectedDepartId]||e.departs[`127H1C3`]||e.departs[`125H3C20`]).nodes,n=t;if(o.ouvragesFilterType===`P`?n=t.filter(e=>e.type===`POSTE_HTA_BT`):o.ouvragesFilterType===`E`?n=t.filter(e=>e.type===`ETOILEMENT`):o.ouvragesFilterType===`H_O`&&(n=t.filter(e=>e.type===`POSTE_SOURCE`||e.type===`POSTE_COUPURE`)),o.ouvragesSearch.trim()){let e=o.ouvragesSearch.toLowerCase();n=n.filter(t=>t.id.toLowerCase().includes(e)||t.meta?.nom&&t.meta.nom.toLowerCase().includes(e)||t.meta?.localite&&t.meta.localite.toLowerCase().includes(e))}return`
+    <div class="p-4 space-y-4 max-w-2xl mx-auto">
+      <div>
+        <h1 class="text-base font-bold text-slate-900">Catalogue des Ouvrages MT</h1>
+        <p class="text-xs text-slate-500">Parc des équipements du départ ${o.selectedDepartId}</p>
+      </div>
+
+      <!-- Segmented Control Type d'Ouvrage -->
+      <div class="flex items-center p-1 bg-slate-200/80 rounded-xl text-xs">
+        <button
+          onclick="window.app.setOuvragesFilter('P')"
+          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${o.ouvragesFilterType===`P`?`bg-white text-slate-900 shadow-xs`:`text-slate-600`}"
+        >
+          Postes HTA/BT
+        </button>
+        <button
+          onclick="window.app.setOuvragesFilter('E')"
+          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${o.ouvragesFilterType===`E`?`bg-white text-slate-900 shadow-xs`:`text-slate-600`}"
+        >
+          Piquages (Étoil.)
+        </button>
+        <button
+          onclick="window.app.setOuvragesFilter('H_O')"
+          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${o.ouvragesFilterType===`H_O`?`bg-white text-slate-900 shadow-xs`:`text-slate-600`}"
+        >
+          Sources &amp; PC
+        </button>
+      </div>
+
+      <!-- Barre de recherche -->
+      <input
+        type="text"
+        placeholder="Rechercher par code, nom, commune..."
+        value="${c(o.ouvragesSearch)}"
+        oninput="window.app.setOuvragesSearch(this.value)"
+        class="w-full bg-white text-slate-900 text-xs rounded-xl px-3 py-2 border border-slate-300 shadow-2xs"
+      />
+
+      <!-- Liste des Ouvrages Mobile -->
+      <div class="space-y-2">
+        <span class="text-[11px] font-bold text-slate-500 block px-1">${n.length} équipements répertoriés :</span>
+
+        ${n.map(e=>`
+          <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
+            <div class="truncate pr-2">
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono font-bold text-xs text-slate-900">${e.id}</span>
+                ${e.type===`POSTE_HTA_BT`?`
+                  <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900">
+                    ${e.meta?.p_instal||160} kVA
+                  </span>
+                `:``}
+              </div>
+              <span class="text-xs font-semibold text-slate-700 block truncate">${e.meta?.nom||e.type}</span>
+              <span class="text-[10px] text-slate-400 block">${e.meta?.localite||`Wilaya de Guelma (24)`}</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button
+                onclick="window.app.showOuvrageOnMap('${e.id}')"
+                class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
+              >
+                ⚡ Schéma
+              </button>
+              <button
+                onclick="window.app.createInterventionForPoste('${e.id}', '${c(e.meta?.nom||e.id)}')"
+                class="px-2 py-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg cursor-pointer"
+              >
+                📝 Visite
+              </button>
+            </div>
+          </div>
         `).join(``)}
       </div>
+    </div>
+  `}function m(){let t=(e.departs[o.selectedDepartId]||e.departs[`127H1C3`]).nodes.filter(e=>e.type===`POSTE_HTA_BT`);return`
+    <div class="p-4 space-y-4 max-w-2xl mx-auto">
+      <div>
+        <h1 class="text-base font-bold text-slate-900">Carnet de Terrain &amp; Visites Techniques</h1>
+        <p class="text-xs text-slate-500">Relevés d'anomalies, fiches d'inspection et contrôle des postes MT</p>
+      </div>
 
-      <!-- Sous-Vue A : Transformateurs HTA / BT -->
+      ${o.visitSuccessNotice?`
+        <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between">
+          <span>&check; Visite enregistrée avec succès dans le stockage local !</span>
+          <button onclick="state.visitSuccessNotice = false; renderApp();" class="text-emerald-900 font-bold">&times;</button>
+        </div>
+      `:``}
+
+      <!-- Formulaire Tactile d'Inspection sur Site -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+          <span>📝 Nouvelle Fiche de Visite de Poste</span>
+        </h2>
+
+        <form onsubmit="window.app.saveIntervention(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Poste MT à inspecter</label>
+            <select
+              id="fieldVisitPoste"
+              class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono text-xs font-semibold"
+            >
+              ${t.map(e=>`
+                <option value="${e.id}" ${e.id===o.newVisitPosteId?`selected`:``}>
+                  ${e.id} &middot; ${e.meta?.nom||`Poste`} (${e.meta?.p_instal||160} kVA)
+                </option>
+              `).join(``)}
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Type de Contrôle</label>
+              <select id="fieldVisitType" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs">
+                <option value="Inspection Visuelle Générale">Inspection Visuelle Générale</option>
+                <option value="Contrôle Huile Transfo">Contrôle Huile &amp; Étanchéité</option>
+                <option value="Vérification Fusibles MT / BT">Vérification Fusibles &amp; Disjoncteur</option>
+                <option value="Mesure Tension BT &amp; Équilibrage">Mesure Tension BT &amp; Équilibrage</option>
+                <option value="Contrôle Terre &amp; Parafoudres">Prise de Terre &amp; Parafoudres</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Constat Technique</label>
+              <select id="fieldVisitStatut" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs font-semibold">
+                <option value="RAS" class="text-emerald-700">Bon état (RAS)</option>
+                <option value="Anomalie Mineure" class="text-amber-700">Anomalie Mineure</option>
+                <option value="Anomalie Critique" class="text-red-700">Anomalie Critique (Urgent)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Observations &amp; Relevés de Terrain</label>
+            <textarea
+              id="fieldVisitNotes"
+              rows="3"
+              placeholder="Ex : Niveau d'huile OK, tension 232V/402V, serrage des cosses BT effectué..."
+              class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs text-slate-900"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer"
+          >
+            &check; Enregistrer la Visite dans GPARC Mobile
+          </button>
+        </form>
+      </div>
+
+      <!-- Historique des Visites Enregistrées -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-bold text-slate-700">Historique des Visites (${o.interventions.length})</span>
+          <button
+            onclick="window.app.exportInterventions()"
+            class="text-xs text-blue-600 font-bold cursor-pointer"
+          >
+            Export JSON
+          </button>
+        </div>
+
+        ${o.interventions.length===0?`
+          <div class="p-6 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-400">
+            Aucune visite enregistrée pour le moment.
+          </div>
+        `:o.interventions.map(e=>`
+          <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-1.5 text-xs">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono font-bold text-slate-900">${e.posteId}</span>
+                <span class="text-[10px] text-slate-500 font-semibold">${c(e.posteNom||``)}</span>
+              </div>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded ${e.statut===`RAS`?`bg-emerald-100 text-emerald-800`:e.statut===`Anomalie Mineure`?`bg-amber-100 text-amber-800`:`bg-red-100 text-red-800`}">
+                ${e.statut}
+              </span>
+            </div>
+            <div class="text-[11px] text-slate-600">${e.type}</div>
+            <div class="text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">${c(e.note)}</div>
+            <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
+              <span>${e.date}</span>
+              <button onclick="window.app.deleteIntervention('${e.id}')" class="text-red-500 hover:text-red-700 font-semibold cursor-pointer">Supprimer</button>
+            </div>
+          </div>
+        `).join(``)}
+      </div>
+    </div>
+  `}function h(){let{transfos:e,conducteurs:t,seuils:n}=o.settings;return`
+    <div class="p-4 space-y-4 max-w-2xl mx-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-base font-bold text-slate-900">Paramètres &amp; Référentiel MT</h1>
+          <p class="text-xs text-slate-500">Calibres transformateurs, câbles, seuils &amp; tables DBase</p>
+        </div>
+        <button
+          onclick="window.app.resetDefaultSettings()"
+          class="px-2.5 py-1 text-xs font-semibold text-slate-600 bg-white border border-slate-300 rounded-lg shadow-2xs cursor-pointer"
+        >
+          Reset Normes
+        </button>
+      </div>
+
+      <!-- Segmented Control Sous-Onglets -->
+      <div class="flex items-center p-1 bg-slate-200/80 rounded-xl text-xs">
+        <button
+          onclick="window.app.setSettingsSubTab('transfos')"
+          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${o.settingsSubTab===`transfos`?`bg-white text-slate-900 shadow-xs`:`text-slate-600`}"
+        >
+          Transfos
+        </button>
+        <button
+          onclick="window.app.setSettingsSubTab('conducteurs')"
+          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${o.settingsSubTab===`conducteurs`?`bg-white text-slate-900 shadow-xs`:`text-slate-600`}"
+        >
+          Lignes
+        </button>
+        <button
+          onclick="window.app.setSettingsSubTab('seuils')"
+          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${o.settingsSubTab===`seuils`?`bg-white text-slate-900 shadow-xs`:`text-slate-600`}"
+        >
+          Seuils MT
+        </button>
+        <button
+          onclick="window.app.setSettingsSubTab('tables')"
+          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${o.settingsSubTab===`tables`?`bg-white text-slate-900 shadow-xs`:`text-slate-600`}"
+        >
+          12 Tables
+        </button>
+      </div>
+
+      <!-- 1. Sous-Onglet Transformateurs -->
       ${o.settingsSubTab===`transfos`?`
-        <div class="space-y-4">
-          <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <h2 class="text-base font-bold text-slate-900">Catalogue des Transformateurs HTA / BT (30 kV / 400 V)</h2>
-                <p class="text-xs text-slate-500">Calibres normalisés utilisés dans les 504 postes du réseau</p>
-              </div>
-              <button
-                onclick="window.app.toggleNewTransfoModal(true)"
-                class="px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs cursor-pointer"
-              >
-                + Ajouter un Calibre
-              </button>
-            </div>
-
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="bg-slate-50 text-slate-700 border-y border-slate-200">
-                  <tr>
-                    <th class="py-2.5 px-3 font-semibold">Puissance (kVA)</th>
-                    <th class="py-2.5 px-3 font-semibold text-right">Tension Court-Circuit (Ucc %)</th>
-                    <th class="py-2.5 px-3 font-semibold text-right">Pertes à Vide P0 (W)</th>
-                    <th class="py-2.5 px-3 font-semibold text-right">Pertes en Charge Pk (W)</th>
-                    <th class="py-2.5 px-3 font-semibold text-right">Courant Nominal MT (A)</th>
-                    <th class="py-2.5 px-3 font-semibold">Type de Pose</th>
-                    <th class="py-2.5 px-3 font-semibold">Usage Typique</th>
-                    <th class="py-2.5 px-3 font-semibold text-center">Action</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                  ${e.map((e,t)=>`
-                    <tr class="hover:bg-slate-50/70">
-                      <td class="py-2.5 px-3 font-mono font-bold text-amber-800">
-                        <span class="inline-block px-2 py-0.5 rounded bg-amber-50 border border-amber-200">
-                          ${e.kva} kVA
-                        </span>
-                      </td>
-                      <td class="py-2.5 px-3 text-right font-mono text-slate-800">${e.ucc} %</td>
-                      <td class="py-2.5 px-3 text-right font-mono text-slate-800">${e.p0} W</td>
-                      <td class="py-2.5 px-3 text-right font-mono text-slate-800">${e.pk} W</td>
-                      <td class="py-2.5 px-3 text-right font-mono font-bold text-blue-700">${e.in30} A</td>
-                      <td class="py-2.5 px-3 font-mono text-slate-600">${e.type}</td>
-                      <td class="py-2.5 px-3 text-slate-600">${l(e.desc)}</td>
-                      <td class="py-2.5 px-3 text-center">
-                        <button
-                          onclick="window.app.deleteTransfo(${t})"
-                          class="text-red-600 hover:text-red-800 text-[11px] font-semibold cursor-pointer"
-                        >
-                          Supprimer
-                        </button>
-                      </td>
-                    </tr>
-                  `).join(``)}
-                </tbody>
-              </table>
-            </div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-xs font-bold text-slate-700">Calibres Normalisés Sonelgaz (${e.length})</span>
+            <button onclick="window.app.toggleNewTransfoModal(true)" class="text-xs text-blue-600 font-bold cursor-pointer">+ Ajouter</button>
           </div>
+
+          ${e.map((e,t)=>`
+            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between text-xs">
+              <div>
+                <span class="font-mono font-bold text-amber-800 text-sm block">${e.kva} kVA</span>
+                <span class="text-slate-500 text-[11px]">Ucc: ${e.ucc}% &middot; In: ${e.in30}A &middot; P0: ${e.p0}W &middot; Pk: ${e.pk}W</span>
+                <span class="text-[10px] text-slate-400 block">${e.desc||``}</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700">${e.type}</span>
+                <button onclick="window.app.deleteTransfo(${t})" class="text-slate-400 hover:text-red-500 text-sm px-1 font-bold cursor-pointer">&times;</button>
+              </div>
+            </div>
+          `).join(``)}
         </div>
       `:``}
 
-      <!-- Sous-Vue B : Conducteurs & Arcs MT -->
+      <!-- 2. Sous-Onglet Conducteurs -->
       ${o.settingsSubTab===`conducteurs`?`
-        <div class="space-y-4">
-          <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-xs font-bold text-slate-700">Sections de Lignes &amp; Câbles (${t.length})</span>
+            <button onclick="window.app.toggleNewConducteurModal(true)" class="text-xs text-blue-600 font-bold cursor-pointer">+ Ajouter</button>
+          </div>
+
+          ${t.map((e,t)=>`
+            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between text-xs">
               <div>
-                <h2 class="text-base font-bold text-slate-900">Catalogue des Conducteurs &amp; Lignes (Arcs MT)</h2>
-                <p class="text-xs text-slate-500">Paramètres linéiques pour le calcul des chutes de tension (&Delta;U) et pertes Joules</p>
+                <span class="font-mono font-bold text-slate-900 text-sm block">${e.nom}</span>
+                <span class="text-slate-500 text-[11px]">R': ${e.r}&Omega;/km &middot; X': ${e.x}&Omega;/km &middot; Imax: ${e.iMax}A</span>
+                <span class="text-[10px] text-slate-400 block">Pose: ${e.pose}</span>
               </div>
-              <button
-                onclick="window.app.toggleNewConducteurModal(true)"
-                class="px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs cursor-pointer"
-              >
-                + Ajouter une Section
-              </button>
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-blue-50 text-blue-800 font-semibold">${e.section} mm²</span>
+                <button onclick="window.app.deleteConducteur(${t})" class="text-slate-400 hover:text-red-500 text-sm px-1 font-bold cursor-pointer">&times;</button>
+              </div>
             </div>
-
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="bg-slate-50 text-slate-700 border-y border-slate-200">
-                  <tr>
-                    <th class="py-2.5 px-3 font-semibold">Désignation</th>
-                    <th class="py-2.5 px-3 font-semibold text-right">Section (mm²)</th>
-                    <th class="py-2.5 px-3 font-semibold">Nature</th>
-                    <th class="py-2.5 px-3 font-semibold text-right">Résistance R' (&Omega;/km)</th>
-                    <th class="py-2.5 px-3 font-semibold text-right">Réactance X' (&Omega;/km)</th>
-                    <th class="py-2.5 px-3 font-semibold text-right">Intensité Admissible (A)</th>
-                    <th class="py-2.5 px-3 font-semibold">Type de Pose</th>
-                    <th class="py-2.5 px-3 font-semibold text-center">Action</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                  ${t.map((e,t)=>`
-                    <tr class="hover:bg-slate-50/70">
-                      <td class="py-2.5 px-3 font-mono font-bold text-slate-900">${e.nom}</td>
-                      <td class="py-2.5 px-3 text-right font-mono font-bold text-blue-700">${e.section}</td>
-                      <td class="py-2.5 px-3 font-mono text-slate-700">${e.nat}</td>
-                      <td class="py-2.5 px-3 text-right font-mono text-slate-800">${e.r}</td>
-                      <td class="py-2.5 px-3 text-right font-mono text-slate-800">${e.x}</td>
-                      <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-700">${e.iMax} A</td>
-                      <td class="py-2.5 px-3 font-mono text-slate-600">${e.pose}</td>
-                      <td class="py-2.5 px-3 text-center">
-                        <button
-                          onclick="window.app.deleteConducteur(${t})"
-                          class="text-red-600 hover:text-red-800 text-[11px] font-semibold cursor-pointer"
-                        >
-                          Supprimer
-                        </button>
-                      </td>
-                    </tr>
-                  `).join(``)}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          `).join(``)}
         </div>
       `:``}
 
-      <!-- Sous-Vue C : Nœuds & Organes MT -->
-      ${o.settingsSubTab===`noeuds`?`
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
-          <div>
-            <h2 class="text-base font-bold text-slate-900">Référentiel des Nœuds &amp; Organes de Coupure</h2>
-            <p class="text-xs text-slate-500">Correspondance des préfixes de codification dBase et appareillages associés</p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            ${n.map(e=>`
-              <div class="p-3.5 rounded-lg border border-slate-200 bg-slate-50 flex items-start gap-3">
-                <span class="w-8 h-8 rounded-lg flex items-center justify-center font-mono font-bold text-sm text-white shrink-0" style="background-color: ${e.couleur}">
-                  ${e.prefix}
-                </span>
-                <div class="space-y-0.5 flex-1">
-                  <div class="flex items-center justify-between">
-                    <strong class="text-slate-900 text-xs">${e.label}</strong>
-                    <span class="font-mono text-[10px] text-slate-500">${e.tension}</span>
-                  </div>
-                  <p class="text-slate-600 text-[11px]">Appareillage : <span class="font-medium text-slate-800">${e.organe}</span></p>
-                </div>
-              </div>
-            `).join(``)}
-          </div>
-        </div>
-      `:``}
-
-      <!-- Sous-Vue D : Seuils & Normes Réseau -->
+      <!-- 3. Sous-Onglet Seuils MT -->
       ${o.settingsSubTab===`seuils`?`
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-6">
-          <div>
-            <h2 class="text-base font-bold text-slate-900">Seuils Électriques &amp; Normes d'Exploitation HTA</h2>
-            <p class="text-xs text-slate-500">Limites de chute de tension, cosinus phi et plages de tension admissibles</p>
-          </div>
-
-          <form onsubmit="window.app.saveSeuils(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-              <label class="block text-slate-700 font-semibold text-[11px]">Tension Nominale MT (kV)</label>
-              <input
-                id="inputTensionNominale"
-                type="number"
-                step="0.5"
-                value="${r.tensionNominale}"
-                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
-              />
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3 text-xs">
+          <h2 class="font-bold text-slate-800 text-xs uppercase tracking-wide">Seuils Électriques HTA (30 kV)</h2>
+          <form onsubmit="window.app.saveSeuils(event)" class="space-y-3">
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Tension Nominale MT (kV)</label>
+              <input id="inputTensionNominale" type="number" step="0.5" value="${n.tensionNominale}" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Chute de Tension Max Urbaine (%)</label>
+              <input id="inputChuteTensionMax" type="number" step="0.1" value="${n.chuteTensionMax}" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Facteur de Puissance (cos &phi;)</label>
+              <input id="inputCosPhi" type="number" step="0.01" value="${n.cosPhi}" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
             </div>
 
-            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-              <label class="block text-slate-700 font-semibold text-[11px]">Tension Minimale Admissible (kV)</label>
-              <input
-                id="inputTensionMin"
-                type="number"
-                step="0.5"
-                value="${r.tensionMin}"
-                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
-              />
-            </div>
-
-            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-              <label class="block text-slate-700 font-semibold text-[11px]">Tension Maximale Admissible (kV)</label>
-              <input
-                id="inputTensionMax"
-                type="number"
-                step="0.5"
-                value="${r.tensionMax}"
-                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
-              />
-            </div>
-
-            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-              <label class="block text-slate-700 font-semibold text-[11px]">Chute de Tension Max Urbaine (%)</label>
-              <input
-                id="inputChuteTensionMax"
-                type="number"
-                step="0.1"
-                value="${r.chuteTensionMax}"
-                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
-              />
-            </div>
-
-            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-              <label class="block text-slate-700 font-semibold text-[11px]">Chute de Tension Max Rurale (%)</label>
-              <input
-                id="inputChuteTensionMaxRurale"
-                type="number"
-                step="0.1"
-                value="${r.chuteTensionMaxRurale}"
-                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
-              />
-            </div>
-
-            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-              <label class="block text-slate-700 font-semibold text-[11px]">Facteur de Puissance Moyen (cos &phi;)</label>
-              <input
-                id="inputCosPhi"
-                type="number"
-                step="0.01"
-                value="${r.cosPhi}"
-                class="w-full bg-white text-slate-900 rounded p-1.5 border border-slate-300 font-mono"
-              />
-            </div>
-
-            <div class="sm:col-span-2 lg:col-span-3 flex justify-end gap-2 pt-2 border-t border-slate-200">
-              <button
-                type="submit"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-xs transition-colors cursor-pointer"
-              >
-                Enregistrer les Paramètres d'Exploitation
-              </button>
-            </div>
+            <button type="submit" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer">
+              Enregistrer les Seuils
+            </button>
           </form>
         </div>
       `:``}
 
-      <!-- Modal Ajout Transfo -->
-      ${o.showNewTransfoModal?`
-        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div class="bg-white rounded-xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-              <h3 class="text-sm font-bold text-slate-900">Ajouter un Calibre Transformateur</h3>
-              <button onclick="window.app.toggleNewTransfoModal(false)" class="text-slate-400 hover:text-slate-700 cursor-pointer">&times;</button>
-            </div>
-
-            <form onsubmit="window.app.addNewTransfo(event)" class="space-y-3 text-xs">
-              <div>
-                <label class="block text-slate-700 font-semibold">Puissance (kVA)</label>
-                <input id="newTransfoKva" type="number" required placeholder="ex: 800" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <label class="block text-slate-700 font-semibold">Pertes P0 (W)</label>
-                  <input id="newTransfoP0" type="number" value="1300" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
-                </div>
-                <div>
-                  <label class="block text-slate-700 font-semibold">Pertes Pk (W)</label>
-                  <input id="newTransfoPk" type="number" value="8000" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
-                </div>
-              </div>
-              <div>
-                <label class="block text-slate-700 font-semibold">Type de Pose</label>
-                <select id="newTransfoType" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300">
-                  <option value="MS">Cabine Maçonnée (MS)</option>
-                  <option value="AC">Haut de Poteau (AC)</option>
-                  <option value="COMPACT">Poste Urbain Compact</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-slate-700 font-semibold">Description / Usage</label>
-                <input id="newTransfoDesc" type="text" placeholder="ex: Industrie moyenne" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300" />
-              </div>
-
-              <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
-                <button type="button" onclick="window.app.toggleNewTransfoModal(false)" class="px-3 py-1.5 rounded border border-slate-300 text-slate-600">Annuler</button>
-                <button type="submit" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow-xs">Ajouter</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      `:``}
-
-      <!-- Modal Ajout Conducteur -->
-      ${o.showNewConducteurModal?`
-        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div class="bg-white rounded-xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-              <h3 class="text-sm font-bold text-slate-900">Ajouter une Section de Conducteur</h3>
-              <button onclick="window.app.toggleNewConducteurModal(false)" class="text-slate-400 hover:text-slate-700 cursor-pointer">&times;</button>
-            </div>
-
-            <form onsubmit="window.app.addNewConducteur(event)" class="space-y-3 text-xs">
-              <div>
-                <label class="block text-slate-700 font-semibold">Nom Conducteur</label>
-                <input id="newCondNom" type="text" required placeholder="ex: Almélec 93 mm²" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300" />
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <label class="block text-slate-700 font-semibold">Section (mm²)</label>
-                  <input id="newCondSection" type="number" required placeholder="93" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
-                </div>
-                <div>
-                  <label class="block text-slate-700 font-semibold">Nature Métal</label>
-                  <select id="newCondNat" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300">
-                    <option value="AM">Almélec (AM)</option>
-                    <option value="CU">Cuivre (CU)</option>
-                    <option value="AL">Aluminium (AL)</option>
-                  </select>
-                </div>
-              </div>
-              <div class="grid grid-cols-3 gap-2">
-                <div>
-                  <label class="block text-slate-700 font-semibold">R' (&Omega;/km)</label>
-                  <input id="newCondR" type="number" step="0.01" value="0.35" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
-                </div>
-                <div>
-                  <label class="block text-slate-700 font-semibold">X' (&Omega;/km)</label>
-                  <input id="newCondX" type="number" step="0.01" value="0.35" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
-                </div>
-                <div>
-                  <label class="block text-slate-700 font-semibold">I max (A)</label>
-                  <input id="newCondImax" type="number" value="280" class="w-full bg-slate-50 rounded p-1.5 border border-slate-300 font-mono" />
-                </div>
-              </div>
-
-              <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
-                <button type="button" onclick="window.app.toggleNewConducteurModal(false)" class="px-3 py-1.5 rounded border border-slate-300 text-slate-600">Annuler</button>
-                <button type="submit" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow-xs">Ajouter</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      `:``}
+      <!-- 4. Sous-Onglet Tables DBase Historiques -->
+      ${o.settingsSubTab===`tables`?g():``}
     </div>
-  `}function _(){let e=r[o.explorerTable]||r.Poste_htabt_lig,t=o.explorerSheet===`corrigé`&&e.rowsCorrige?.length>0?e.rowsCorrige:e.rows||[],n=o.explorerSearch.trim()?t.filter(e=>Object.values(e).some(e=>String(e??``).toLowerCase().includes(o.explorerSearch.toLowerCase()))):t,i=Math.max(1,Math.ceil(n.length/o.explorerPageSize)),a=(o.explorerPage-1)*o.explorerPageSize,s=n.slice(a,a+o.explorerPageSize),c=t.length>0?Object.keys(t[0]):[];return`
-    <div class="max-w-7xl mx-auto px-6 py-8 space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">12 Tables Extraites &middot; Thème Clair</span>
-          <h1 class="text-2xl font-bold tracking-tight text-slate-900">Explorateur des Données</h1>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <button onclick="window.app.exportExplorerCsv()" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 shadow-xs cursor-pointer">
-            Exporter CSV
+  `}function g(){let e=(n[o.tableSelected]||n.Poste_htabt_lig).rows||[],t=o.tableSearch.trim()?e.filter(e=>Object.values(e).some(e=>String(e??``).toLowerCase().includes(o.tableSearch.toLowerCase()))):e,r=Math.max(1,Math.ceil(t.length/o.tablePageSize)),i=(o.tablePage-1)*o.tablePageSize,a=t.slice(i,i+o.tablePageSize),s=e.length>0?Object.keys(e[0]):[];return`
+    <div class="space-y-3 pt-1">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <span class="text-xs font-bold text-slate-700">12 Fichiers Extraits DBase</span>
+        <div class="flex items-center gap-1.5">
+          <button onclick="window.app.exportCurrentCsv()" class="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg shadow-2xs cursor-pointer">
+            Export CSV
           </button>
-          <button onclick="window.app.exportExplorerJson()" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 shadow-xs cursor-pointer">
-            Exporter JSON
+          <button onclick="window.app.exportCurrentJson()" class="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg shadow-2xs cursor-pointer">
+            Export JSON
           </button>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-1">
-          <span class="text-xs font-bold text-slate-900 uppercase block mb-2 px-1">Sélectionner une Table</span>
-          ${Object.keys(r).map(e=>`
+      <div class="flex gap-2">
+        <select
+          onchange="window.app.selectTable(this.value)"
+          class="flex-1 bg-white text-slate-900 text-xs font-mono font-bold rounded-xl p-2 border border-slate-300"
+        >
+          ${Object.keys(n).map(e=>`
+            <option value="${e}" ${e===o.tableSelected?`selected`:``}>
+              ${n[e].fileName} (${n[e].totalRows} lig.)
+            </option>
+          `).join(``)}
+        </select>
+
+        <input
+          type="text"
+          placeholder="Filtrer..."
+          value="${c(o.tableSearch)}"
+          oninput="window.app.setTableSearch(this.value)"
+          class="w-32 bg-white text-slate-900 text-xs rounded-xl px-2 py-1.5 border border-slate-300"
+        />
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden flex flex-col">
+        <div class="overflow-x-auto min-h-[280px]">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-700 border-b border-slate-200">
+              <tr>
+                <th class="py-2 px-2.5 font-semibold w-8 text-center">#</th>
+                ${s.slice(0,6).map(e=>`<th class="py-2 px-2.5 font-semibold font-mono whitespace-nowrap">${e}</th>`).join(``)}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              ${a.map((e,t)=>`
+                <tr class="hover:bg-slate-50/80">
+                  <td class="py-2 px-2.5 text-center text-[10px] text-slate-400 font-mono">${i+t+1}</td>
+                  ${s.slice(0,6).map(t=>`
+                    <td class="py-2 px-2.5 font-mono text-[11px] whitespace-nowrap text-slate-800">
+                      ${c(e[t]??`-`)}
+                    </td>
+                  `).join(``)}
+                </tr>
+              `).join(``)}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="p-2.5 border-t border-slate-200 flex items-center justify-between text-xs bg-slate-50">
+          <span class="text-[11px] text-slate-500 font-mono">Page ${o.tablePage} / ${r} (${t.length} lignes)</span>
+          <div class="flex gap-1">
             <button
-              onclick="window.app.setExplorerTable('${e}')"
-              class="w-full text-left px-3 py-2 rounded-lg text-xs font-mono transition-colors flex items-center justify-between cursor-pointer ${o.explorerTable===e?`bg-blue-50 text-blue-900 font-bold border border-blue-200`:`text-slate-700 hover:bg-slate-50 border border-transparent`}"
+              onclick="window.app.setTablePage(${o.tablePage-1})"
+              ${o.tablePage<=1?`disabled`:``}
+              class="px-2 py-1 rounded bg-white border border-slate-300 text-xs font-semibold disabled:opacity-40 cursor-pointer"
+            >&larr;</button>
+            <button
+              onclick="window.app.setTablePage(${o.tablePage+1})"
+              ${o.tablePage>=r?`disabled`:``}
+              class="px-2 py-1 rounded bg-white border border-slate-300 text-xs font-semibold disabled:opacity-40 cursor-pointer"
+            >&rarr;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `}function _(){if(!o.showQuickSearchModal)return``;let e=o.quickSearchQuery.trim().toLowerCase(),n=[];if(e.length>=2)for(let r of t){r.id.toLowerCase().includes(e)&&n.push({type:`DEPART`,id:r.id,label:`Départ ${r.id} (${r.posteCount}P)`});for(let t of r.samplePostes)(t.id.toLowerCase().includes(e)||t.nom&&t.nom.toLowerCase().includes(e))&&n.push({type:`POSTE`,id:t.id,depId:r.id,label:`${t.id} &middot; ${t.nom||`Poste`}`,extra:`${r.id}`});if(n.length>20)break}return`
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-start justify-center p-4 pt-16">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-md overflow-hidden flex flex-col space-y-2 p-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <span class="text-xs font-bold text-slate-800">🔍 Recherche Rapide d'Ouvrage MT</span>
+          <button onclick="window.app.closeQuickSearch()" class="text-slate-400 hover:text-slate-800 font-bold text-base px-1 cursor-pointer">&times;</button>
+        </div>
+
+        <input
+          id="quickSearchInput"
+          type="text"
+          autofocus
+          placeholder="Ex : 121P8002, Bentabouche, 127H1C3..."
+          value="${c(o.quickSearchQuery)}"
+          oninput="window.app.handleQuickSearch(this.value)"
+          class="w-full bg-slate-50 text-slate-900 text-xs rounded-xl px-3 py-2 border border-slate-300 focus:bg-white focus:outline-blue-500"
+        />
+
+        <div class="max-h-[300px] overflow-y-auto space-y-1 pt-1">
+          ${e.length<2?`
+            <div class="p-4 text-center text-xs text-slate-400">Tapez au moins 2 caractères...</div>
+          `:n.length===0?`
+            <div class="p-4 text-center text-xs text-slate-400">Aucun résultat trouvé pour "${c(e)}"</div>
+          `:n.map(e=>`
+            <div
+              onclick="window.app.selectSearchResult('${e.type}', '${e.id}', '${e.depId||e.id}')"
+              class="p-2 rounded-xl hover:bg-blue-50 transition-colors flex items-center justify-between cursor-pointer text-xs"
             >
-              <span class="truncate">${r[e].fileName}</span>
-              <span class="text-[11px] font-sans text-slate-500 tabular-nums">${r[e].totalRows}</span>
-            </button>
+              <div>
+                <span class="font-mono font-bold text-slate-900">${e.id}</span>
+                <span class="text-slate-600 block text-[11px]">${e.label}</span>
+              </div>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${e.type===`DEPART`?`bg-purple-100 text-purple-800`:`bg-amber-100 text-amber-800`}">
+                ${e.type}
+              </span>
+            </div>
           `).join(``)}
         </div>
-
-        <div class="lg:col-span-3 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col overflow-hidden">
-          <div class="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4 bg-slate-50/50">
-            <div class="flex items-center gap-3">
-              <span class="font-mono text-sm font-bold text-slate-900">${e.fileName}</span>
-              ${e.sheets?.length>1?`
-                <div class="flex items-center p-0.5 bg-slate-200 rounded-lg text-xs">
-                  <button onclick="window.app.setExplorerSheet('anomalie')" class="px-2 py-0.5 rounded cursor-pointer ${o.explorerSheet===`anomalie`?`bg-white font-bold shadow-xs`:`text-slate-600`}">anomalie (${e.totalRows})</button>
-                  <button onclick="window.app.setExplorerSheet('corrigé')" class="px-2 py-0.5 rounded cursor-pointer ${o.explorerSheet===`corrigé`?`bg-white font-bold shadow-xs`:`text-slate-600`}">corrigé (${e.totalRowsCorrige})</button>
-                </div>
-              `:``}
-            </div>
-
-            <input
-              type="text"
-              placeholder="Filtrer..."
-              value="${l(o.explorerSearch)}"
-              oninput="window.app.setExplorerSearch(this.value)"
-              class="bg-white text-slate-900 text-xs rounded-lg px-3 py-1.5 border border-slate-300 w-52"
-            />
-          </div>
-
-          <div class="flex-1 overflow-x-auto min-h-[400px]">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-slate-100 text-slate-700 border-b border-slate-200 sticky top-0">
-                <tr>
-                  <th class="py-2.5 px-3 font-semibold text-slate-500 w-10 text-center">#</th>
-                  ${c.map(e=>`<th class="py-2.5 px-3 font-semibold font-mono whitespace-nowrap">${e}</th>`).join(``)}
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100">
-                ${s.map((e,t)=>`
-                  <tr class="hover:bg-blue-50/40 transition-colors">
-                    <td class="py-2 px-3 text-center font-mono text-[11px] text-slate-400">${a+t+1}</td>
-                    ${c.map(t=>`
-                      <td class="py-2 px-3 whitespace-nowrap max-w-xs truncate ${t===`code`||t===`n_depart`?`font-mono font-bold text-slate-900`:t===`anomalie`&&e[t]?`text-amber-800 bg-amber-50 font-mono text-[11px]`:`text-slate-700`}">
-                        ${e[t]!==void 0&&e[t]!==null?l(String(e[t])):`—`}
-                      </td>
-                    `).join(``)}
-                  </tr>
-                `).join(``)}
-              </tbody>
-            </table>
-          </div>
-
-          <div class="p-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600 bg-slate-50/50">
-            <span>Affichage de <strong>${s.length}</strong> sur <strong>${n.length}</strong> lignes</span>
-            <div class="flex items-center gap-2">
-              <button onclick="window.app.setExplorerPage(${o.explorerPage-1})" ${o.explorerPage<=1?`disabled`:``} class="px-2 py-1 rounded border border-slate-300 bg-white disabled:opacity-40 cursor-pointer">&larr;</button>
-              <span class="font-mono">Page ${o.explorerPage} / ${i}</span>
-              <button onclick="window.app.setExplorerPage(${o.explorerPage+1})" ${o.explorerPage>=i?`disabled`:``} class="px-2 py-1 rounded border border-slate-300 bg-white disabled:opacity-40 cursor-pointer">&rarr;</button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
-  `}function v(){return o.showReportModal?`
-    <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 space-y-4 max-h-[85vh] flex flex-col">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-200 shrink-0">
-          <h3 class="text-base font-bold text-slate-900">Rapport de Synthèse d'Architecture Réseau (Thème Clair)</h3>
-          <button onclick="window.app.toggleReportModal(false)" class="text-slate-400 hover:text-slate-700 cursor-pointer">&times;</button>
+  `}function v(){return o.showNewTransfoModal?`
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-sm p-4 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <strong class="text-xs font-bold text-slate-900">Ajouter un Calibre Transfo MT</strong>
+          <button onclick="window.app.toggleNewTransfoModal(false)" class="text-slate-400 hover:text-slate-800 font-bold">&times;</button>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-4 bg-slate-50 border border-slate-200 rounded-lg font-mono text-xs text-slate-800 whitespace-pre-wrap leading-relaxed">
-          ${l(s)}
-        </div>
+        <form onsubmit="window.app.addNewTransfo(event)" class="space-y-2 text-xs">
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Puissance (kVA)</label>
+            <input id="newTransfoKva" type="number" required placeholder="Ex : 800" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Pertes à vide P0 (W)</label>
+              <input id="newTransfoP0" type="number" placeholder="1300" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Pertes en charge Pk (W)</label>
+              <input id="newTransfoPk" type="number" placeholder="8500" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Type de structure</label>
+            <select id="newTransfoType" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300">
+              <option value="MS">Cabine Maçonnée (MS)</option>
+              <option value="AC">Haut de Poteau (AC)</option>
+              <option value="MA">Poste Urbain Mobile (MA)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Description / Usage</label>
+            <input id="newTransfoDesc" type="text" placeholder="Ex : Zone industrielle" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300" />
+          </div>
 
-        <div class="pt-3 border-t border-slate-200 flex items-center justify-between shrink-0">
-          <button
-            onclick="window.app.copyReport()"
-            class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 cursor-pointer"
-          >
-            ${o.reportCopied?`Copié dans le presse-papier !`:`Copier le texte`}
-          </button>
-          <button
-            onclick="window.app.downloadReport()"
-            class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs cursor-pointer"
-          >
-            Télécharger (.md)
-          </button>
-        </div>
+          <div class="pt-2 flex gap-2">
+            <button type="button" onclick="window.app.toggleNewTransfoModal(false)" class="flex-1 py-2 bg-slate-100 font-semibold text-slate-700 rounded-xl">Annuler</button>
+            <button type="submit" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-xs">Ajouter</button>
+          </div>
+        </form>
       </div>
     </div>
-  `:``}function y(){let e=document.getElementById(`root`);if(!e)return;let t=``;o.activeTab===`dashboard`?t=f():o.activeTab===`topology`?t=p():o.activeTab===`mobile`?t=m():o.activeTab===`structural`?t=h():o.activeTab===`settings`?t=g():o.activeTab===`explorer`&&(t=_()),e.innerHTML=`
-    <div class="min-h-screen bg-slate-50 flex flex-col text-slate-900">
-      ${d()}
+  `:``}function y(){return o.showNewConducteurModal?`
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-sm p-4 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <strong class="text-xs font-bold text-slate-900">Ajouter une Section de Ligne</strong>
+          <button onclick="window.app.toggleNewConducteurModal(false)" class="text-slate-400 hover:text-slate-800 font-bold">&times;</button>
+        </div>
+
+        <form onsubmit="window.app.addNewConducteur(event)" class="space-y-2 text-xs">
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Nom usuel</label>
+            <input id="newCondNom" type="text" required placeholder="Ex : Almélec 93 mm²" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Section (mm²)</label>
+              <input id="newCondSection" type="number" required placeholder="93" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Nature</label>
+              <select id="newCondNat" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono">
+                <option value="AM">AM (Almélec)</option>
+                <option value="AL">AL (Aluminium)</option>
+                <option value="CU">CU (Cuivre)</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-1.5">
+            <div>
+              <label class="block text-slate-600 font-semibold text-[10px] mb-1">R' (&Omega;/km)</label>
+              <input id="newCondR" type="number" step="0.01" placeholder="0.35" class="w-full bg-slate-50 rounded-lg p-1.5 border border-slate-300 font-mono text-[11px]" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[10px] mb-1">X' (&Omega;/km)</label>
+              <input id="newCondX" type="number" step="0.01" placeholder="0.36" class="w-full bg-slate-50 rounded-lg p-1.5 border border-slate-300 font-mono text-[11px]" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[10px] mb-1">Imax (A)</label>
+              <input id="newCondImax" type="number" placeholder="280" class="w-full bg-slate-50 rounded-lg p-1.5 border border-slate-300 font-mono text-[11px]" />
+            </div>
+          </div>
+
+          <div class="pt-2 flex gap-2">
+            <button type="button" onclick="window.app.toggleNewConducteurModal(false)" class="flex-1 py-2 bg-slate-100 font-semibold text-slate-700 rounded-xl">Annuler</button>
+            <button type="submit" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-xs">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `:``}function b(){let e=document.getElementById(`root`);if(!e)return;let t=``;o.activeTab===`home`?t=d():o.activeTab===`unifilaire`?t=f():o.activeTab===`ouvrages`?t=p():o.activeTab===`terrain`?t=m():o.activeTab===`settings`&&(t=h()),e.innerHTML=`
+    <div class="min-h-screen bg-slate-50 text-slate-900 pb-20 flex flex-col antialiased">
+      ${l()}
       <main class="flex-1">
         ${t}
       </main>
+      ${u()}
+
+      <!-- Modals Flottantes -->
+      ${_()}
       ${v()}
+      ${y()}
     </div>
-  `}window.app={setTab:e=>u(e),selectDepart:e=>{o.selectedDepartId=e,o.selectedNode=null,o.selectedEdge=null,o.activeTab=`topology`,y()},setLayoutMode:e=>{o.layoutMode=e,y()},toggleJunctions:()=>{o.showJunctions=!o.showJunctions,y()},zoomCanvas:e=>{o.zoom=Math.min(Math.max(.2,o.zoom+e),3.5),y()},fitView:()=>{o.zoom=1,o.pan={x:80,y:150},y()},resetView:()=>{o.zoom=1,o.pan={x:60,y:120},o.selectedNode=null,o.selectedEdge=null,y()},setSearchQuery:e=>{o.searchQuery=e,y()},selectNode:t=>{let n=e.departs[o.selectedDepartId]?.nodes.find(e=>e.id===t);n&&(o.selectedNode=n,o.selectedEdge=null,y())},selectNodeById:t=>{let n=e.departs[o.selectedDepartId]?.nodes.find(e=>e.id===t);n&&(o.selectedNode=n,o.selectedEdge=null,o.searchQuery=``,y())},selectEdge:t=>{let n=e.departs[o.selectedDepartId]?.edges.find(e=>e.id===t);n&&(o.selectedEdge=n,o.selectedNode=null,y())},clearSelection:()=>{o.selectedNode=null,o.selectedEdge=null,y()},handleMouseDown:e=>{e.button===0&&(o.isDragging=!0,o.dragStart={x:e.clientX-o.pan.x,y:e.clientY-o.pan.y})},handleMouseMove:e=>{if(!o.isDragging)return;o.pan.x=e.clientX-o.dragStart.x,o.pan.y=e.clientY-o.dragStart.y;let t=document.getElementById(`networkSvg`);t&&(t.style.transform=`translate(${o.pan.x}px, ${o.pan.y}px) scale(${o.zoom})`)},handleMouseUp:()=>{o.isDragging=!1},setSettingsSubTab:e=>{o.settingsSubTab=e,y()},toggleNewTransfoModal:e=>{o.showNewTransfoModal=e,y()},toggleNewConducteurModal:e=>{o.showNewConducteurModal=e,y()},addNewTransfo:e=>{e.preventDefault();let t=Number(document.getElementById(`newTransfoKva`).value),n=Number(document.getElementById(`newTransfoP0`).value)||1e3,r=Number(document.getElementById(`newTransfoPk`).value)||6e3,i=document.getElementById(`newTransfoType`).value,a=document.getElementById(`newTransfoDesc`).value||`Nouveau transformateur`,s=Number((t/(30*Math.sqrt(3))).toFixed(2));o.settings.transfos.push({kva:t,ucc:4,p0:n,pk:r,in30:s,type:i,desc:a}),o.settings.transfos.sort((e,t)=>e.kva-t.kva),o.showNewTransfoModal=!1,o.settingsSavedNotice=!0;try{localStorage.setItem(`gdo_mt_settings`,JSON.stringify(o.settings))}catch{}y(),setTimeout(()=>{o.settingsSavedNotice=!1,y()},3e3)},deleteTransfo:e=>{o.settings.transfos.splice(e,1);try{localStorage.setItem(`gdo_mt_settings`,JSON.stringify(o.settings))}catch{}y()},addNewConducteur:e=>{e.preventDefault();let t=document.getElementById(`newCondNom`).value,n=Number(document.getElementById(`newCondSection`).value),r=document.getElementById(`newCondNat`).value,i=Number(document.getElementById(`newCondR`).value),a=Number(document.getElementById(`newCondX`).value),s=Number(document.getElementById(`newCondImax`).value),c=`${r}_${n}`,l=r===`AL`&&n>=150?`SOUTERRAIN`:`AÉRIEN NU`;o.settings.conducteurs.push({code:c,nom:t,section:n,nat:r,r:i,x:a,iMax:s,pose:l}),o.settings.conducteurs.sort((e,t)=>e.section-t.section),o.showNewConducteurModal=!1,o.settingsSavedNotice=!0;try{localStorage.setItem(`gdo_mt_settings`,JSON.stringify(o.settings))}catch{}y(),setTimeout(()=>{o.settingsSavedNotice=!1,y()},3e3)},deleteConducteur:e=>{o.settings.conducteurs.splice(e,1);try{localStorage.setItem(`gdo_mt_settings`,JSON.stringify(o.settings))}catch{}y()},saveSeuils:e=>{e.preventDefault(),o.settings.seuils.tensionNominale=Number(document.getElementById(`inputTensionNominale`).value)||30,o.settings.seuils.tensionMin=Number(document.getElementById(`inputTensionMin`).value)||27,o.settings.seuils.tensionMax=Number(document.getElementById(`inputTensionMax`).value)||33,o.settings.seuils.chuteTensionMax=Number(document.getElementById(`inputChuteTensionMax`).value)||5,o.settings.seuils.chuteTensionMaxRurale=Number(document.getElementById(`inputChuteTensionMaxRurale`).value)||7,o.settings.seuils.cosPhi=Number(document.getElementById(`inputCosPhi`).value)||.9,o.settingsSavedNotice=!0;try{localStorage.setItem(`gdo_mt_settings`,JSON.stringify(o.settings))}catch{}y(),setTimeout(()=>{o.settingsSavedNotice=!1,y()},3e3)},resetDefaultSettings:()=>{o.settings=JSON.parse(JSON.stringify(i));try{localStorage.removeItem(`gdo_mt_settings`)}catch{}o.settingsSavedNotice=!0,y(),setTimeout(()=>{o.settingsSavedNotice=!1,y()},3e3)},setExplorerTable:e=>{o.explorerTable=e,o.explorerSheet=`anomalie`,o.explorerPage=1,o.explorerSearch=``,y()},setExplorerSheet:e=>{o.explorerSheet=e,o.explorerPage=1,y()},setExplorerSearch:e=>{o.explorerSearch=e,o.explorerPage=1,y()},setExplorerPage:e=>{o.explorerPage=Math.max(1,e),y()},exportExplorerCsv:()=>{let e=r[o.explorerTable],t=o.explorerSheet===`corrigé`?e.rowsCorrige:e.rows;if(!t||t.length===0)return;let n=Object.keys(t[0]),i=[n.join(`,`),...t.map(e=>n.map(t=>`"${String(e[t]??``).replace(/"/g,`""`)}"`).join(`,`))].join(`
-`),a=new Blob([i],{type:`text/csv;charset=utf-8;`}),s=URL.createObjectURL(a),c=document.createElement(`a`);c.href=s,c.download=`${o.explorerTable}_${o.explorerSheet}.csv`,c.click(),URL.revokeObjectURL(s)},exportExplorerJson:()=>{let e=r[o.explorerTable],t=o.explorerSheet===`corrigé`?e.rowsCorrige:e.rows,n=new Blob([JSON.stringify(t,null,2)],{type:`application/json`}),i=URL.createObjectURL(n),a=document.createElement(`a`);a.href=i,a.download=`${o.explorerTable}_${o.explorerSheet}.json`,a.click(),URL.revokeObjectURL(i)},setMobileDepart:e=>{o.mobileDepartId=e,o.mobileSelectedPosteId=``,y()},setMobileSearch:e=>{o.mobileSearchQuery=e,y()},selectMobilePoste:e=>{o.mobileSelectedPosteId=e,y()},saveMobileIntervention:e=>{e.preventDefault();let t=document.getElementById(`mobileAnomalieSelect`),n=document.getElementById(`mobileNoteInput`),r={id:`INT-${String(o.mobileInterventions.length+1).padStart(3,`0`)}`,posteId:o.mobileSelectedPosteId||`125P8002`,date:new Date().toLocaleDateString(`fr-FR`)+` `+new Date().toLocaleTimeString(`fr-FR`,{hour:`2-digit`,minute:`2-digit`}),type:t?t.value:`RAS`,note:n&&n.value?n.value:`Intervention enregistrée.`};o.mobileInterventions.unshift(r),y()},toggleReportModal:e=>{o.showReportModal=e,o.reportCopied=!1,y()},copyReport:()=>{navigator.clipboard.writeText(s),o.reportCopied=!0,y(),setTimeout(()=>{o.reportCopied=!1,y()},2e3)},downloadReport:()=>{let e=new Blob([s],{type:`text/markdown;charset=utf-8;`}),t=URL.createObjectURL(e),n=document.createElement(`a`);n.href=t,n.download=`Rapport_Synthese_GDO_MT.md`,n.click(),URL.revokeObjectURL(t)}},document.addEventListener(`DOMContentLoaded`,()=>{y()}),(document.readyState===`complete`||document.readyState===`interactive`)&&y();
+  `}window.app={setTab:e=>{o.activeTab=e,b()},setAgency:e=>{o.selectedAgency=e,b()},openDepart:e=>{o.selectedDepartId=e,o.activeTab=`unifilaire`,o.selectedNode=null,o.selectedEdge=null,o.showBottomSheet=!1,b()},selectDepart:e=>{o.selectedDepartId=e,o.selectedNode=null,o.selectedEdge=null,o.showBottomSheet=!1,b()},toggleJunctions:()=>{o.showJunctions=!o.showJunctions,b()},zoomCanvas:e=>{o.zoom=Math.min(Math.max(.2,o.zoom+e),3.5),b()},fitView:()=>{o.zoom=1,o.pan={x:30,y:70},b()},selectNode:t=>{let n=e.departs[o.selectedDepartId]?.nodes.find(e=>e.id===t);n&&(o.selectedNode=n,o.selectedEdge=null,o.showBottomSheet=!0,b())},selectEdge:t=>{let n=e.departs[o.selectedDepartId]?.edges.find(e=>e.id===t);n&&(o.selectedEdge=n,o.selectedNode=null,o.showBottomSheet=!0,b())},closeBottomSheet:()=>{o.showBottomSheet=!1,b()},handleMouseDown:e=>{e.button===0&&(o.isDragging=!0,o.dragStart={x:e.clientX-o.pan.x,y:e.clientY-o.pan.y})},handleMouseMove:e=>{if(!o.isDragging)return;o.pan.x=e.clientX-o.dragStart.x,o.pan.y=e.clientY-o.dragStart.y;let t=document.getElementById(`networkSvg`);t&&(t.style.transform=`translate(${o.pan.x}px, ${o.pan.y}px) scale(${o.zoom})`)},handleMouseUp:()=>{o.isDragging=!1},setOuvragesFilter:e=>{o.ouvragesFilterType=e,b()},setOuvragesSearch:e=>{o.ouvragesSearch=e,b()},showOuvrageOnMap:t=>{o.activeTab=`unifilaire`,o.selectedNode=null;let n=e.departs[o.selectedDepartId]?.nodes.find(e=>e.id===t);n&&(o.selectedNode=n,o.showBottomSheet=!0),b()},createInterventionForPoste:(e,t)=>{o.newVisitPosteId=e,o.activeTab=`terrain`,o.showBottomSheet=!1,b()},saveIntervention:e=>{e.preventDefault();let t=document.getElementById(`fieldVisitPoste`)?.value||o.newVisitPosteId,n=document.getElementById(`fieldVisitType`)?.value||`Inspection Visuelle`,r=document.getElementById(`fieldVisitStatut`)?.value||`RAS`,i=document.getElementById(`fieldVisitNotes`)?.value||`Contrôle effectué sans anomalie.`,a={id:`INT-${Date.now().toString().slice(-4)}`,posteId:t,posteNom:t,date:new Date().toLocaleDateString(`fr-FR`)+` `+new Date().toLocaleTimeString(`fr-FR`,{hour:`2-digit`,minute:`2-digit`}),type:n,statut:r,note:i};o.interventions.unshift(a);try{localStorage.setItem(`gdo_mt_interventions`,JSON.stringify(o.interventions))}catch{}o.visitSuccessNotice=!0,b(),setTimeout(()=>{o.visitSuccessNotice=!1,b()},3e3)},deleteIntervention:e=>{o.interventions=o.interventions.filter(t=>t.id!==e);try{localStorage.setItem(`gdo_mt_interventions`,JSON.stringify(o.interventions))}catch{}b()},exportInterventions:()=>{let e=new Blob([JSON.stringify(o.interventions,null,2)],{type:`application/json`}),t=URL.createObjectURL(e),n=document.createElement(`a`);n.href=t,n.download=`Visites_GPARC_Mobile_${new Date().toISOString().slice(0,10)}.json`,n.click(),URL.revokeObjectURL(t)},setSettingsSubTab:e=>{o.settingsSubTab=e,b()},resetDefaultSettings:()=>{o.settings=JSON.parse(JSON.stringify(r));try{localStorage.removeItem(`gdo_mt_settings`)}catch{}b()},toggleNewTransfoModal:e=>{o.showNewTransfoModal=e,b()},addNewTransfo:e=>{e.preventDefault();let t=Number(document.getElementById(`newTransfoKva`).value),n=Number(document.getElementById(`newTransfoP0`).value)||1e3,r=Number(document.getElementById(`newTransfoPk`).value)||6e3,i=document.getElementById(`newTransfoType`).value,a=document.getElementById(`newTransfoDesc`).value||`Calibre normalisé`,s=Number((t/(30*Math.sqrt(3))).toFixed(2));o.settings.transfos.push({kva:t,ucc:4,p0:n,pk:r,in30:s,type:i,desc:a}),o.settings.transfos.sort((e,t)=>e.kva-t.kva),o.showNewTransfoModal=!1;try{localStorage.setItem(`gdo_mt_settings`,JSON.stringify(o.settings))}catch{}b()},deleteTransfo:e=>{o.settings.transfos.splice(e,1);try{localStorage.setItem(`gdo_mt_settings`,JSON.stringify(o.settings))}catch{}b()},toggleNewConducteurModal:e=>{o.showNewConducteurModal=e,b()},addNewConducteur:e=>{e.preventDefault();let t=document.getElementById(`newCondNom`).value,n=Number(document.getElementById(`newCondSection`).value),r=document.getElementById(`newCondNat`).value,i=Number(document.getElementById(`newCondR`).value)||.35,a=Number(document.getElementById(`newCondX`).value)||.36,s=Number(document.getElementById(`newCondImax`).value)||280,c=`${r}_${n}`,l=r===`AL`&&n>=150?`SOUTERRAIN`:`AÉRIEN NU`;o.settings.conducteurs.push({code:c,nom:t,section:n,nat:r,r:i,x:a,iMax:s,pose:l}),o.settings.conducteurs.sort((e,t)=>e.section-t.section),o.showNewConducteurModal=!1;try{localStorage.setItem(`gdo_mt_settings`,JSON.stringify(o.settings))}catch{}b()},deleteConducteur:e=>{o.settings.conducteurs.splice(e,1);try{localStorage.setItem(`gdo_mt_settings`,JSON.stringify(o.settings))}catch{}b()},saveSeuils:e=>{e.preventDefault(),o.settings.seuils.tensionNominale=Number(document.getElementById(`inputTensionNominale`).value)||30,o.settings.seuils.chuteTensionMax=Number(document.getElementById(`inputChuteTensionMax`).value)||5,o.settings.seuils.cosPhi=Number(document.getElementById(`inputCosPhi`).value)||.9;try{localStorage.setItem(`gdo_mt_settings`,JSON.stringify(o.settings))}catch{}b()},selectTable:e=>{o.tableSelected=e,o.tablePage=1,o.tableSearch=``,b()},setTableSearch:e=>{o.tableSearch=e,o.tablePage=1,b()},setTablePage:e=>{o.tablePage=Math.max(1,e),b()},exportCurrentCsv:()=>{let e=n[o.tableSelected].rows;if(!e||e.length===0)return;let t=Object.keys(e[0]),r=[t.join(`,`),...e.map(e=>t.map(t=>`"${String(e[t]??``).replace(/"/g,`""`)}"`).join(`,`))].join(`
+`),i=new Blob([r],{type:`text/csv;charset=utf-8;`}),a=URL.createObjectURL(i),s=document.createElement(`a`);s.href=a,s.download=`${o.tableSelected}.csv`,s.click(),URL.revokeObjectURL(a)},exportCurrentJson:()=>{let e=n[o.tableSelected].rows,t=new Blob([JSON.stringify(e,null,2)],{type:`application/json`}),r=URL.createObjectURL(t),i=document.createElement(`a`);i.href=r,i.download=`${o.tableSelected}.json`,i.click(),URL.revokeObjectURL(r)},openQuickSearch:()=>{o.showQuickSearchModal=!0,o.quickSearchQuery=``,b(),setTimeout(()=>{document.getElementById(`quickSearchInput`)?.focus()},100)},closeQuickSearch:()=>{o.showQuickSearchModal=!1,b()},handleQuickSearch:e=>{o.quickSearchQuery=e,b();let t=document.getElementById(`quickSearchInput`);t&&(t.focus(),t.setSelectionRange(e.length,e.length))},selectSearchResult:(e,t,n)=>{o.showQuickSearchModal=!1,e===`DEPART`?window.app.openDepart(t):(o.selectedDepartId=n,o.activeTab=`unifilaire`,b(),window.app.selectNode(t))}},document.addEventListener(`DOMContentLoaded`,()=>{b()}),(document.readyState===`complete`||document.readyState===`interactive`)&&b();
