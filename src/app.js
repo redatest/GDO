@@ -96,8 +96,9 @@ function loadStoredInterventions() {
 // --- ÉTAT GLOBAL DE L'APPLICATION ---
 const state = {
   activeTab: 'home', // 'home' | 'unifilaire' | 'ouvrages' | 'terrain' | 'settings'
-  selectedDepartId: '127H1C3',
+  selectedDepartId: '121H5C1',
   selectedAgency: 'ALL', // 'ALL' | '121' | '123' | '125' | '127'
+  schemaAgencyInitialized: false,
   
   // Recherche rapide globale (Header)
   showQuickSearchModal: false,
@@ -219,7 +220,7 @@ function normalizeNetworkData(data) {
     summary.etoilCount = depart.etoilCount;
     summary.totalPowerKva = depart.totalPowerKva;
   }
-  departsSummary.sort((a, b) => b.arcCount - a.arcCount);
+  departsSummary.sort((a, b) => String(a.id || '').localeCompare(String(b.id || ''), 'fr', { numeric: true, sensitivity: 'base' }));
 
   if (correctedCellTypes || addedVirtualSources) {
     console.info('Normalisation topologique de compatibilité:', {
@@ -2191,6 +2192,15 @@ function renderOvragesViewSafe() {
 // --- MÉTHODES GLOBALES ACCESSIBLES ---
 window.app = {
   setTab: (tabId) => {
+    if (tabId === 'unifilaire' && !state.schemaAgencyInitialized) {
+      departsSummary.sort((a, b) => String(a.id || '').localeCompare(String(b.id || ''), 'fr', { numeric: true, sensitivity: 'base' }));
+      state.selectedAgency = '121';
+      state.selectedDepartId = departsSummary.find(d => String(d.agency || d.id.slice(0, 3)) === '121')?.id || '121H5C1';
+      state.selectedNode = null;
+      state.selectedEdge = null;
+      state.showBottomSheet = false;
+      state.schemaAgencyInitialized = true;
+    }
     state.activeTab = tabId;
     renderApp();
     if (['unifilaire', 'ouvrages', 'terrain'].includes(tabId)) {
