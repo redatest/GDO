@@ -2554,7 +2554,15 @@ window.app = {
 
   // Terrain & Visites (GDO-MT)
   createInterventionForPoste: (nodeId, nodeNom) => {
-    state.newVisitPosteId = nodeId;
+    state.newVisitPosteId = String(nodeId || '');
+    // Depuis le catalogue global, aligner le départ sur celui du poste choisi.
+    // Sinon le select du formulaire pourrait sélectionner le premier poste du départ courant.
+    for (const [depId, depart] of Object.entries(networkData.departs || {})) {
+      if ((depart.nodes || []).some(node => String(node.id) === String(nodeId))) {
+        state.selectedDepartId = depId;
+        break;
+      }
+    }
     state.activeTab = 'terrain';
     state.showBottomSheet = false;
     renderApp();
