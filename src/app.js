@@ -1,0 +1,2722 @@
+/**
+ * GPARC-Mobile MT — Application Web Mobile de Gestion des Ouvrages Moyenne Tension
+ * Wilaya de Guelma (24) — Direction de Distribution de l'Électricité (SDO)
+ *
+ * Interface 100% GPARC-Mobile :
+ * - Navigation mobile dock (Accueil, Schéma MT, Parc Ouvrages, Carnet Terrain, Paramètres & Tables)
+ * - Thème Clair haute visibilité pour agents de terrain
+ * - Pure HTML5 & JavaScript Vanilla (Zéro TypeScript, Zéro Node.js serveur, compatible GitHub Pages)
+ */
+
+let networkData = { sources: {}, departs: {}, stats: { totalDeparts: 49, totalPostes: 2660, totalTransformers: 2800, totalIacms: 1638, openIacms: 39, totalArcs: 7501, totalTroncons: 1372, lastUpdate: '31/12/2025' } };
+let networkDataLoadPromise = null;
+import { departsSummary } from './data/departsSummary.js';
+import { tableSchemas } from './data/tableSchemas.js';
+let fullTablesData = {};
+let fullTablesLoadPromise = null;
+let initialStorageWarning = '';
+
+// --- RÉFÉRENTIEL DES PARAMÈTRES RÉSEAU MT ---
+const DEFAULT_SETTINGS = {
+  transfos: [
+    { kva: 50, ucc: 4.0, p0: 145, pk: 1050, in30: 0.96, type: 'AC', desc: 'Poste haut de poteau rural' },
+    { kva: 100, ucc: 4.0, p0: 260, pk: 1750, in30: 1.92, type: 'AC/MS', desc: 'Poste agricole / village' },
+    { kva: 160, ucc: 4.0, p0: 390, pk: 2350, in30: 3.08, type: 'MS', desc: 'Cabine maçonnée standard' },
+    { kva: 250, ucc: 4.0, p0: 530, pk: 3250, in30: 4.81, type: 'MS', desc: 'Agglomération moyenne' },
+    { kva: 400, ucc: 4.0, p0: 750, pk: 4600, in30: 7.70, type: 'MS', desc: 'Centre urbain / industrie' },
+    { kva: 630, ucc: 4.0, p0: 1100, pk: 6500, in30: 12.12, type: 'MS', desc: 'Zone industrielle / hôpital' },
+    { kva: 1000, ucc: 5.0, p0: 1700, pk: 10500, in30: 19.24, type: 'MS', desc: 'Grosse unité industrielle' }
+  ],
+  conducteurs: [
+    { code: 'AM_36', nom: 'Almélec 36 mm²', section: 36, nat: 'AM', r: 0.92, x: 0.38, iMax: 155, pose: 'AÉRIEN NU' },
+    { code: 'AM_75', nom: 'Almélec 75 mm²', section: 75, nat: 'AM', r: 0.44, x: 0.36, iMax: 245, pose: 'AÉRIEN NU' },
+    { code: 'AM_117', nom: 'Almélec 117 mm²', section: 117, nat: 'AM', r: 0.28, x: 0.35, iMax: 330, pose: 'AÉRIEN NU' },
+    { code: 'AM_148', nom: 'Almélec 148 mm²', section: 148, nat: 'AM', r: 0.22, x: 0.34, iMax: 385, pose: 'AÉRIEN NU' },
+    { code: 'CU_25', nom: 'Cuivre 25 mm²', section: 25, nat: 'CU', r: 0.72, x: 0.39, iMax: 140, pose: 'AÉRIEN NU' },
+    { code: 'CU_50', nom: 'Cuivre 50 mm²', section: 50, nat: 'CU', r: 0.36, x: 0.37, iMax: 215, pose: 'AÉRIEN NU' },
+    { code: 'SOUT_150', nom: 'Câble Souterrain Alu 150 mm²', section: 150, nat: 'AL', r: 0.21, x: 0.12, iMax: 320, pose: 'SOUTERRAIN' },
+    { code: 'SOUT_240', nom: 'Câble Souterrain Alu 240 mm²', section: 240, nat: 'AL', r: 0.13, x: 0.11, iMax: 415, pose: 'SOUTERRAIN' }
+  ],
+  seuils: {
+    tensionNominale: 30.0,
+    tensionMin: 27.0,
+    tensionMax: 33.0,
+    chuteTensionMax: 5.0,
+    chuteTensionMaxRurale: 7.0,
+    cosPhi: 0.90
+  }
+};
+
+function loadStoredSettings() {
+  try {
+    const saved = localStorage.getItem('gdo_mt_settings');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && Array.isArray(parsed.transfos) && Array.isArray(parsed.conducteurs) && parsed.seuils) return parsed;
+      initialStorageWarning = 'Les paramètres enregistrés sont invalides. Les valeurs par défaut sont utilisées.';
+    }
+  } catch (error) {
+    initialStorageWarning = 'Impossible de lire les paramètres locaux. Les valeurs par défaut sont utilisées.';
+  }
+  return JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+}
+
+function loadStoredInterventions() {
+  try {
+    const saved = localStorage.getItem('gdo_mt_interventions');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return parsed;
+      initialStorageWarning = 'Le carnet de visites enregistré est invalide. Les données de démonstration sont utilisées.';
+    }
+  } catch (error) {
+    initialStorageWarning = 'Impossible de lire le carnet de visites local. Les données de démonstration sont utilisées.';
+  }
+  return [
+    {
+      id: 'INT-2026-001',
+      posteId: '121P8036',
+      posteNom: 'Pge Bentabouche',
+      date: '28/10/2026 09:30',
+      type: 'Contrôle Huile Transfo',
+      statut: 'RAS',
+      note: 'Niveau d\'huile normal, pas de fuite au niveau des traversées. Disjoncteur BT OK.'
+    },
+    {
+      id: 'INT-2026-002',
+      posteId: '121P8519',
+      posteNom: '30 LOGTS BENTABOUCHE',
+      date: '27/10/2026 14:15',
+      type: 'Vérification Parafoudres & Prise de Terre',
+      statut: 'Anomalie Mineure',
+      note: 'Résistance de terre mesurée à 8.2 ohms. Nettoyage de la tresse de mise à la masse recommandé.'
+    }
+  ];
+}
+
+// --- ÉTAT GLOBAL DE L'APPLICATION ---
+const state = {
+  activeTab: 'home', // 'home' | 'unifilaire' | 'ouvrages' | 'terrain' | 'settings'
+  selectedDepartId: '127H1C3',
+  selectedAgency: 'ALL', // 'ALL' | '121' | '123' | '125' | '127'
+  
+  // Recherche rapide globale (Header)
+  showQuickSearchModal: false,
+  quickSearchQuery: '',
+
+  // Schéma Unifilaire
+  showJunctions: false,
+  poseFilter: 'ALL', // 'ALL' | 'SOUT_HIGHLIGHT' | 'AER_ONLY'
+  showPoseLegend: false,
+  zoom: 1,
+  pan: { x: 30, y: 70 },
+  isDragging: false,
+  dragMoved: false,
+  dragStart: { x: 0, y: 0, startX: 0, startY: 0 },
+  touchInitialDist: 0,
+  touchInitialZoom: 1,
+  touchInitialPan: { x: 30, y: 70 },
+  touchCenter: { x: 0, y: 0 },
+  selectedNode: null,
+  selectedEdge: null,
+  showBottomSheet: false,
+
+  // Ouvrages (Parc MT)
+  ouvragesFilterType: 'P', // 'P' (Postes HTA/BT) | 'J' (IACM) | 'T' (Transfos) | 'L' (Tronçons) | 'E' (Étoilements)
+  ouvragesScope: 'DEPART', // 'DEPART' | 'ALL'
+  ouvragesSearch: '',
+
+  // Terrain & Visites (GPARC-Mobile)
+  interventions: loadStoredInterventions(),
+  newVisitPosteId: '121P8036',
+  newVisitType: 'Inspection Visuelle Générale',
+  newVisitStatut: 'RAS',
+  newVisitNote: '',
+  visitSuccessNotice: false,
+
+  // Paramètres & Tables
+  settingsSubTab: 'transfos', // 'transfos' | 'conducteurs' | 'seuils' | 'tables'
+  settings: loadStoredSettings(),
+  settingsSavedNotice: false,
+  showNewTransfoModal: false,
+  showNewConducteurModal: false,
+
+  // Tables Réseau & DBase
+  tableSelected: 'POSTE_2025',
+  tablePage: 1,
+  tablePageSize: 15,
+  tableSearch: '',
+  storageWarning: initialStorageWarning,
+  dataLoadError: '',
+  networkDataError: ''
+};
+
+function normalizeNetworkData(data) {
+  const cellId = /^[0-9]{3}[HO][0-9]+[BC][0-9]+$/;
+  let correctedCellTypes = 0;
+  let addedVirtualSources = 0;
+
+  for (const [departId, depart] of Object.entries(data.departs || {})) {
+    for (const node of depart.nodes || []) {
+      if (node.id !== departId && cellId.test(node.id) && node.type === 'POSTE_SOURCE') {
+        node.type = 'CELLULE';
+        node.prefix = node.id.match(/[BC][0-9]+$/)?.[0]?.[0] || 'C';
+        node.meta = null;
+        correctedCellTypes += 1;
+      }
+    }
+
+    if (!(depart.nodes || []).some(node => node.type === 'POSTE_SOURCE')) {
+      const sourcePrefix = departId.substring(0, 5);
+      const virtualSourceId = `${sourcePrefix}_SOURCE`;
+      const firstNodeId = depart.nodes?.[0]?.id;
+      if (firstNodeId) {
+        const source = data.sources?.[sourcePrefix];
+        depart.nodes.unshift({
+          id: virtualSourceId,
+          type: 'POSTE_SOURCE',
+          isVirtual: true,
+          prefix: 'H',
+          meta: { nom: source?.nom || `Source ${sourcePrefix}`, u_prim: source?.u_prim || 60, u_second: 30 }
+        });
+        depart.edges.unshift({
+          id: `${virtualSourceId}-${firstNodeId}:1`,
+          from: virtualSourceId,
+          to: firstNodeId,
+          cPar: '1',
+          longueur: 0,
+          nat_cond: '-',
+          section: 0,
+          struct: 'VIRTUEL',
+          structRaw: 'VIRTUEL',
+          structLabel: 'Racine virtuelle — raccordement physique non renseigné',
+          poseLabel: 'Ancrage graphique',
+          isSouterrain: false,
+          isVirtual: true,
+          tension: 30,
+          an_mes: ''
+        });
+        addedVirtualSources += 1;
+      }
+    }
+
+    depart.arcCount = depart.edges.filter(edge => !edge.isVirtual).length;
+    depart.nodeCount = depart.nodes.filter(node => !node.isVirtual).length;
+  }
+
+  data.stats.totalDeparts = Object.keys(data.departs || {}).length;
+  data.stats.totalArcs = Object.values(data.departs || {}).reduce((sum, depart) => sum + depart.edges.filter(edge => !edge.isVirtual).length, 0);
+
+  const summaryById = new Map(departsSummary.map(item => [item.id, item]));
+  for (const [departId, depart] of Object.entries(data.departs || {})) {
+    const summary = summaryById.get(departId);
+    if (!summary) continue;
+    summary.arcCount = depart.arcCount;
+    summary.nodeCount = depart.nodeCount;
+    summary.totalLengthKm = depart.totalLengthKm;
+    summary.posteCount = depart.posteCount;
+    summary.iacmCount = depart.iacmCount;
+    summary.openIacmCount = depart.openIacmCount;
+    summary.etoilCount = depart.etoilCount;
+    summary.totalPowerKva = depart.totalPowerKva;
+  }
+  departsSummary.sort((a, b) => b.arcCount - a.arcCount);
+
+  if (correctedCellTypes || addedVirtualSources) {
+    console.info('Normalisation topologique de compatibilité:', {
+      correctedCellTypes,
+      addedVirtualSources,
+      totalArcs: data.stats.totalArcs
+    });
+  }
+  return data;
+}
+
+async function ensureNetworkData() {
+  if (Object.keys(networkData.departs).length) return true;
+  if (!networkDataLoadPromise) {
+    networkDataLoadPromise = import('./data/networkData.js')
+      .then((module) => {
+        networkData = normalizeNetworkData(module.networkData || { sources: {}, departs: {}, stats: {} });
+        state.networkDataError = Object.keys(networkData.departs).length
+          ? ''
+          : 'Le référentiel topologique est vide.';
+        return Object.keys(networkData.departs).length > 0;
+      })
+      .catch((error) => {
+        console.error('Échec du chargement du réseau MT:', error);
+        state.networkDataError = 'Impossible de charger le réseau MT. Vérifiez la connexion puis réessayez.';
+        return false;
+      })
+      .finally(() => {
+        networkDataLoadPromise = null;
+        renderApp();
+      });
+  }
+  return networkDataLoadPromise;
+}
+
+async function ensureFullTablesData() {
+  if (Object.keys(fullTablesData).length) return true;
+  if (!fullTablesLoadPromise) {
+    fullTablesLoadPromise = import('./data/fullTablesData.js')
+      .then((module) => {
+        fullTablesData = module.fullTablesData || {};
+        state.dataLoadError = Object.keys(fullTablesData).length ? '' : 'Le référentiel des tables est vide.';
+        return Object.keys(fullTablesData).length > 0;
+      })
+      .catch((error) => {
+        console.error('Échec du chargement des tables réseau:', error);
+        state.dataLoadError = 'Impossible de charger les tables réseau. Vérifiez la connexion puis réessayez.';
+        return false;
+      })
+      .finally(() => {
+        fullTablesLoadPromise = null;
+        renderApp();
+      });
+  }
+  return fullTablesLoadPromise;
+}
+
+function persistLocalStorage(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    state.storageWarning = '';
+    return true;
+  } catch (error) {
+    console.error('Échec de sauvegarde locale:', error);
+    state.storageWarning = 'Sauvegarde locale impossible : les changements ne survivront pas à la fermeture du navigateur. Exportez vos données et vérifiez l’espace de stockage.';
+    return false;
+  }
+}
+
+function removeStoredValue(key) {
+  try {
+    localStorage.removeItem(key);
+    state.storageWarning = '';
+    return true;
+  } catch (error) {
+    console.error('Échec de suppression locale:', error);
+    state.storageWarning = 'Impossible de modifier le stockage local du navigateur.';
+    return false;
+  }
+}
+
+function formatNumber(num) {
+  if (num === undefined || num === null) return '0';
+  return Number(num).toLocaleString('fr-FR');
+}
+
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeJsString(value) {
+  return String(value ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, '\\x27')
+    .replace(/\r/g, '\\r')
+    .replace(/\n/g, '\\n')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+// --- EN-TÊTE GPARC-MOBILE (TOP BAR) ---
+function renderMobileTopBar() {
+  return `
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 py-2 shadow-xs">
+      <div class="max-w-screen-2xl mx-auto flex items-center justify-between gap-3 md:gap-6">
+        <!-- Logo & Identité GDO-MT -->
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-black text-xs shadow-xs tracking-wider">
+            GP
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm md:text-base font-black tracking-tight text-slate-900 leading-none">GDO-MT</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">MT 30kV</span>
+            </div>
+            <span class="text-[10px] text-slate-500 font-medium">SDO &middot; Wilaya de Guelma (24)</span>
+          </div>
+        </div>
+
+        <!-- Outils & Sélecteur d'Agence -->
+        <div class="flex items-center gap-1.5">
+          <button
+            onclick="window.app.openQuickSearch()"
+            title="Recherche rapide d'ouvrage"
+            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold border border-slate-200 cursor-pointer"
+          >
+            🔍
+          </button>
+
+          <select
+            onchange="window.app.setAgency(this.value)"
+            class="bg-slate-50 text-slate-800 text-[11px] font-semibold rounded-lg px-2 py-1 border border-slate-300 cursor-pointer shadow-2xs max-w-[130px]"
+          >
+            <option value="ALL" ${state.selectedAgency === 'ALL' ? 'selected' : ''}>Toutes agences</option>
+            <option value="121" ${state.selectedAgency === '121' ? 'selected' : ''}>121 &middot; Guelma</option>
+            <option value="123" ${state.selectedAgency === '123' ? 'selected' : ''}>123 &middot; Oued Zenati</option>
+            <option value="125" ${state.selectedAgency === '125' ? 'selected' : ''}>125 &middot; Bouchegouf</option>
+            <option value="127" ${state.selectedAgency === '127' ? 'selected' : ''}>127 &middot; District Est</option>
+          </select>
+        </div>
+      </div>
+    </header>
+  `;
+}
+
+// --- DOCK DE NAVIGATION GPARC-MOBILE (BOTTOM BAR) ---
+function renderMobileBottomBar() {
+  const navItems = [
+    { id: 'home', label: 'Accueil', icon: '🏠' },
+    { id: 'unifilaire', label: 'Schéma MT', icon: '⚡' },
+    { id: 'ouvrages', label: 'Ouvrages', icon: '🏢' },
+    { id: 'terrain', label: 'Visites', icon: '📝' },
+    { id: 'settings', label: 'Paramètres', icon: '⚙️' }
+  ];
+
+  return `
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 shadow-lg">
+      <div class="max-w-3xl mx-auto grid grid-cols-5 gap-2 md:gap-4">
+        ${navItems.map(item => {
+          const isActive = state.activeTab === item.id;
+          return `
+            <button
+              onclick="window.app.setTab('${escapeJsString(item.id)}')"
+              class="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-2 py-1.5 md:py-2.5 px-1 md:px-4 rounded-xl transition-all cursor-pointer select-none ${
+                isActive
+                  ? 'text-blue-600 font-bold bg-blue-50/80 shadow-2xs'
+                  : 'text-slate-500 hover:text-slate-900'
+              }"
+            >
+              <span class="text-base md:text-lg leading-none mb-0.5 md:mb-0">${item.icon}</span>
+              <span class="text-[10px] md:text-sm leading-tight truncate tracking-tight">${item.label}</span>
+            </button>
+          `;
+        }).join('')}
+      </div>
+    </nav>
+  `;
+}
+
+// --- VUE 1 : ACCUEIL MOBILE GPARC ---
+function renderHomeView() {
+  const totalKm = departsSummary.reduce((acc, d) => acc + d.totalLengthKm, 0).toFixed(1);
+  const totalPostes = networkData.stats?.totalPostes || 2660;
+  const totalPower = departsSummary.reduce((acc, d) => acc + d.totalPowerKva, 0);
+  const totalArcs = networkData.stats?.totalArcs || departsSummary.reduce((acc, d) => acc + d.arcCount, 0);
+  const totalIacms = networkData.stats?.totalIacms || 1638;
+  const openIacms = networkData.stats?.openIacms || 39;
+  const totalTransfos = networkData.stats?.totalTransformers || 2800;
+  const totalTroncons = networkData.stats?.totalTroncons || 1372;
+
+  const filteredDeparts = state.selectedAgency === 'ALL'
+    ? departsSummary
+    : departsSummary.filter(d => d.id.startsWith(state.selectedAgency));
+
+  return `
+    <div class="p-4 md:p-6 xl:p-8 space-y-4 md:space-y-6 max-w-screen-2xl mx-auto">
+      <!-- Bannière Principale GPARC-Mobile -->
+      <div class="p-4 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 text-white shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-100">
+              GPARC-Terrain Connecté &middot; Inventaire 2025
+            </span>
+          </div>
+          <span class="text-[10px] font-mono bg-white/20 px-2 py-0.5 rounded-full font-bold">
+            ${filteredDeparts.length} Départs MT
+          </span>
+        </div>
+
+        <div>
+          <h1 class="text-lg font-black tracking-tight">Réseau Moyenne Tension HTA (30 kV)</h1>
+          <p class="text-xs text-blue-100 leading-relaxed mt-0.5">
+            Cartographie unifilaire, caractéristiques physiques du parc 2025 (2 660 postes, 1 638 IACM) et fiches d'inspection terrain.
+          </p>
+        </div>
+
+        <!-- 3 Boutons d'Action Rapide de Terrain -->
+        <div class="pt-1 grid grid-cols-3 gap-2 text-xs">
+          <button
+            onclick="window.app.openDepart('${escapeJsString(filteredDeparts[0]?.id || '127H1C3')}')"
+            class="py-2 px-2 bg-white text-blue-700 font-bold rounded-xl shadow-xs text-center cursor-pointer flex flex-col items-center justify-center hover:bg-blue-50"
+          >
+            <span class="text-sm mb-0.5">⚡</span>
+            <span>Schéma MT</span>
+          </button>
+          <button
+            onclick="window.app.setTab('ouvrages')"
+            class="py-2 px-2 bg-blue-800/80 hover:bg-blue-800 text-white font-semibold rounded-xl text-center cursor-pointer flex flex-col items-center justify-center border border-white/10"
+          >
+            <span class="text-sm mb-0.5">🏢</span>
+            <span>Ouvrages (${formatNumber(totalPostes)})</span>
+          </button>
+          <button
+            onclick="window.app.setTab('terrain')"
+            class="py-2 px-2 bg-emerald-700 hover:bg-emerald-600 text-white font-semibold rounded-xl text-center cursor-pointer flex flex-col items-center justify-center border border-white/10"
+          >
+            <span class="text-sm mb-0.5">📝</span>
+            <span>Visite Terrain</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 6 Compteurs Statistiques 2025 -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Linéaire Total</span>
+          <div class="text-base font-mono font-bold text-slate-900">${totalKm} <span class="text-xs font-normal text-slate-500">km</span></div>
+          <span class="text-[10px] text-slate-500">${formatNumber(totalArcs)} arcs de ligne</span>
+        </div>
+
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Postes HTA/BT</span>
+          <div class="text-base font-mono font-bold text-amber-700">${formatNumber(totalPostes)}</div>
+          <span class="text-[10px] text-slate-500">Postes recensés 2025</span>
+        </div>
+
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Transformateurs</span>
+          <div class="text-base font-mono font-bold text-purple-700">${formatNumber(totalTransfos)}</div>
+          <span class="text-[10px] text-slate-500">${formatNumber(totalPower)} kVA installés</span>
+        </div>
+
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Appareils IACM</span>
+          <div class="text-base font-mono font-bold text-emerald-700">${formatNumber(totalIacms)}</div>
+          <span class="text-[10px] text-rose-600 font-semibold">${openIacms} points de coupure (O)</span>
+        </div>
+
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Tronçons Réseau</span>
+          <div class="text-base font-mono font-bold text-blue-700">${formatNumber(totalTroncons)}</div>
+          <span class="text-[10px] text-slate-500">Aérien &amp; Souterrain</span>
+        </div>
+
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Départs MT 30kV</span>
+          <div class="text-base font-mono font-bold text-indigo-700">${departsSummary.length}</div>
+          <span class="text-[10px] text-slate-500">Wilaya de Guelma (24)</span>
+        </div>
+      </div>
+
+      <!-- Liste Rapide des Départs MT -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700">Départs MT &middot; Agence ${state.selectedAgency} (${filteredDeparts.length})</h2>
+          <span class="text-[10px] text-slate-400">Touchez pour ouvrir le schéma</span>
+        </div>
+
+        <div class="space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
+          ${filteredDeparts.map(d => `
+            <div
+              onclick="window.app.openDepart('${escapeJsString(d.id)}')"
+              class="p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/30 transition-all flex items-center justify-between cursor-pointer"
+            >
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono font-bold text-xs text-slate-900">${d.id}</span>
+                  <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700">${d.posteCount} Postes</span>
+                  ${d.openIacmCount > 0 ? `
+                    <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-rose-50 text-rose-700 border border-rose-200">
+                      ${d.openIacmCount} IACM-O
+                    </span>
+                  ` : ''}
+                </div>
+                <span class="text-[11px] text-slate-500 block">${d.totalLengthKm} km &middot; ${d.arcCount} Arcs &middot; ${formatNumber(d.totalPowerKva)} kVA</span>
+              </div>
+              <span class="text-xs text-blue-600 font-bold px-2 py-1 rounded-lg bg-blue-50">&rarr;</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Postes Sources HTB / HTA (6 Postes Sources SDO) -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-2">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700">Postes Sources HTB / HTA (SDO Guelma)</h2>
+          <span class="text-[10px] text-slate-400">6 Postes Sources</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">125H3 &middot; NADOR</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">60/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 40 MVA &middot; 17 Départs rattachés</span>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">121H5 &middot; GUELMA VILLE</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">60/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 40 MVA &middot; 17 Départs rattachés</span>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">123H2 &middot; OUED ZENATI</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">60/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 20 MVA &middot; 8 Départs rattachés</span>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">127H1 &middot; BELKHEIR</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">60/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 40 MVA &middot; 5 Départs rattachés</span>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">125H2 &middot; MEDJEZ SFA</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">90/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 10 MVA &middot; 4 Départs rattachés</span>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">121H6 &middot; GUELMA NOUVEAU</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">60/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 40 MVA &middot; 2 Nouveaux Départs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// --- VUE 2 : SCHÉMA UNIFILAIRE MT AVEC BOTTOM SHEET ---
+function renderUnifilaireView() {
+  if (!Object.keys(networkData.departs).length) {
+    return '<div class="p-8 text-center text-sm font-semibold text-blue-800">' + escapeHtml(state.networkDataError || 'Chargement du réseau moyenne tension…') + '</div>';
+  }
+
+  // Le sélecteur du schéma doit respecter l'agence choisie dans l'en-tête.
+  const availableDeparts = state.selectedAgency === 'ALL'
+    ? departsSummary
+    : departsSummary.filter(d => String(d.agency || d.id.slice(0, 3)) === state.selectedAgency);
+  const selectedDepartIsAvailable = availableDeparts.some(d => d.id === state.selectedDepartId);
+  if (!selectedDepartIsAvailable && availableDeparts.length) {
+    state.selectedDepartId = availableDeparts[0].id;
+  }
+
+  const currentDepart = networkData.departs[state.selectedDepartId] || networkData.departs[availableDeparts[0]?.id] || networkData.departs['127H1C3'] || networkData.departs['125H3C20'];
+  if (!currentDepart) return '<div class="p-8 text-center text-slate-500">Départ MT introuvable</div>';
+
+  const nodes = currentDepart.nodes;
+  const rawEdges = currentDepart.edges;
+
+  let renderNodes = nodes;
+  let renderEdges = rawEdges;
+  if (!state.showJunctions) {
+    const essentialSet = new Set(nodes.filter(n => n.type !== 'JONCTION').map(n => n.id));
+    renderNodes = nodes.filter(n => essentialSet.has(n.id));
+    renderEdges = rawEdges.filter(e => essentialSet.has(e.from) && essentialSet.has(e.to));
+  }
+
+  // Racine du départ
+  let rootNode = nodes.find(n => n.type === 'POSTE_SOURCE') || nodes.find(n => n.type === 'CELLULE');
+  if (!rootNode) {
+    const prefixMatch = currentDepart.id.match(/^(\d+[A-Z]\d+)/);
+    if (prefixMatch) rootNode = nodes.find(n => n.id.startsWith(prefixMatch[1]));
+  }
+  if (!rootNode) rootNode = nodes[0];
+  const rootId = rootNode ? rootNode.id : nodes[0]?.id;
+
+  // Calcul du graphe topologique
+  const adj = {};
+  for (const e of rawEdges) {
+    if (!adj[e.from]) adj[e.from] = [];
+    if (!adj[e.to]) adj[e.to] = [];
+    adj[e.from].push(e.to);
+    adj[e.to].push(e.from);
+  }
+
+  const depthMap = {};
+  const parentMap = {};
+  const visited = new Set([rootId]);
+  const queue = [{ id: rootId, d: 0 }];
+  depthMap[rootId] = 0;
+  parentMap[rootId] = null;
+
+  while (queue.length > 0) {
+    const { id, d } = queue.shift();
+    for (const nbr of (adj[id] || [])) {
+      if (!visited.has(nbr)) {
+        visited.add(nbr);
+        depthMap[nbr] = d + 1;
+        parentMap[nbr] = id;
+        queue.push({ id: nbr, d: d + 1 });
+      }
+    }
+  }
+
+  const unreachableNodeCount = nodes.filter(n => !visited.has(n.id)).length;
+  const isolatedSeen = new Set();
+  let disconnectedComponentCount = 0;
+  let nextDisconnectedDepth = Math.max(0, ...Object.values(depthMap)) + 2;
+
+  // Placer chaque composante déconnectée comme un petit graphe cohérent,
+  // plutôt que d'attribuer une profondeur différente à chaque nœud isolé.
+  for (const node of nodes) {
+    if (visited.has(node.id) || isolatedSeen.has(node.id)) continue;
+    disconnectedComponentCount += 1;
+    const componentQueue = [{ id: node.id, depth: 0 }];
+    const componentNodes = [];
+    isolatedSeen.add(node.id);
+    let componentMaxDepth = 0;
+
+    while (componentQueue.length) {
+      const current = componentQueue.shift();
+      componentNodes.push(current);
+      componentMaxDepth = Math.max(componentMaxDepth, current.depth);
+      for (const neighbor of adj[current.id] || []) {
+        if (visited.has(neighbor) || isolatedSeen.has(neighbor)) continue;
+        isolatedSeen.add(neighbor);
+        componentQueue.push({ id: neighbor, depth: current.depth + 1 });
+      }
+    }
+
+    for (const item of componentNodes) {
+      depthMap[item.id] = nextDisconnectedDepth + item.depth;
+    }
+    nextDisconnectedDepth += componentMaxDepth + 2;
+  }
+
+  const inPathSet = new Set();
+  if (state.selectedNode) {
+    let curr = state.selectedNode.id;
+    while (curr) {
+      inPathSet.add(curr);
+      curr = parentMap[curr] || null;
+    }
+  }
+
+  const depthGroups = {};
+  for (const n of renderNodes) {
+    const d = depthMap[n.id] ?? 0;
+    if (!depthGroups[d]) depthGroups[d] = [];
+    depthGroups[d].push(n);
+  }
+
+  const calculatedNodes = [];
+  const maxDepth = Math.max(...Object.keys(depthGroups).map(Number), 0);
+  const xSpacing = 160;
+  const ySpacing = 68;
+
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+
+  for (let d = 0; d <= maxDepth; d++) {
+    const group = depthGroups[d] || [];
+    const totalH = group.length * ySpacing;
+    const startY = 260 - totalH / 2;
+    group.forEach((n, idx) => {
+      const nx = 80 + d * xSpacing;
+      const ny = startY + idx * ySpacing;
+      if (nx < minX) minX = nx;
+      if (nx > maxX) maxX = nx;
+      if (ny < minY) minY = ny;
+      if (ny > maxY) maxY = ny;
+
+      calculatedNodes.push({
+        ...n,
+        x: nx,
+        y: ny,
+        depth: d,
+        inPath: inPathSet.has(n.id)
+      });
+    });
+  }
+
+  if (isFinite(minX)) {
+    window._currentCalculatedBounds = { minX, maxX, minY, maxY };
+  }
+
+  const nodePosMap = new Map();
+  for (const n of calculatedNodes) nodePosMap.set(n.id, n);
+  window._currentNodePosMap = nodePosMap;
+
+  // Statistiques Souterrain / Aérien du départ MT sélectionné
+  const soutArcs = renderEdges.filter(e => e.isSouterrain && !e.isVirtual);
+  const aerArcs = renderEdges.filter(e => !e.isSouterrain && !e.isVirtual);
+  const soutKm = (soutArcs.reduce((acc, e) => acc + (e.longueur || 0), 0) / 1000).toFixed(1);
+  const aerKm = (aerArcs.reduce((acc, e) => acc + (e.longueur || 0), 0) / 1000).toFixed(1);
+
+  // Détection des Remontées Aéro-Souterraines (RAS) : Nœuds reliant du souterrain et de l'aérien
+  const nodeHasSout = new Set();
+  const nodeHasAer = new Set();
+  for (const e of renderEdges) {
+    if (e.isVirtual) continue;
+    if (e.isSouterrain) {
+      nodeHasSout.add(e.from);
+      nodeHasSout.add(e.to);
+    } else {
+      nodeHasAer.add(e.from);
+      nodeHasAer.add(e.to);
+    }
+  }
+  const rasNodeSet = new Set();
+  for (const nid of nodeHasSout) {
+    if (nodeHasAer.has(nid)) rasNodeSet.add(nid);
+  }
+
+  return `
+    <div class="flex flex-col h-[calc(100vh-105px)] bg-slate-50 text-slate-800 relative overflow-hidden">
+      <!-- Toolbar GPARC-Mobile pour Schéma MT -->
+      <div class="bg-white border-b border-slate-200 px-3 py-2 shrink-0 z-20 shadow-xs space-y-1.5">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <select
+              onchange="window.app.selectDepart(this.value)"
+              class="bg-slate-50 text-slate-900 text-xs font-mono font-bold rounded-lg px-2 py-1.5 border border-slate-300 max-w-[170px] truncate"
+            >
+              ${availableDeparts.map(d => `
+                <option value="${d.id}" ${d.id === state.selectedDepartId ? 'selected' : ''}>
+                  ${d.id} (${d.posteCount}P)
+                </option>
+              `).join('')}
+            </select>
+            <span class="text-[10px] text-slate-500 font-medium hidden sm:inline">
+              ${currentDepart.totalLengthKm} km
+            </span>
+          </div>
+
+          <div class="flex items-center gap-1">
+            <button
+              onclick="window.app.togglePoseLegend()"
+              class="px-2 py-1 text-[11px] font-semibold rounded-lg border transition-all ${
+                state.showPoseLegend ? 'bg-indigo-50 border-indigo-300 text-indigo-700' : 'bg-slate-50 border-slate-300 text-slate-600'
+              }"
+              title="Légende Souterrain / Aérien"
+            >
+              📖 Légende
+            </button>
+            <button
+              onclick="window.app.toggleJunctions()"
+              class="px-2 py-1 text-[11px] font-semibold rounded-lg border ${
+                state.showJunctions ? 'bg-blue-50 border-blue-300 text-blue-800' : 'bg-slate-50 border-slate-300 text-slate-600'
+              }"
+            >
+              Jonct. ${state.showJunctions ? 'ON' : 'OFF'}
+            </button>
+            <button
+              onclick="window.app.fitView()"
+              class="px-2 py-1 text-[11px] font-semibold rounded-lg bg-slate-50 border border-slate-300 text-slate-700"
+            >
+              Centrer
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtre rapide Tronçons MT : Tous / Souterrain / Aérien -->
+        <div class="flex items-center gap-1.5 overflow-x-auto text-[11px] font-medium no-scrollbar pt-0.5">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-0.5">Tronçons :</span>
+          <button
+            onclick="window.app.setPoseFilter('ALL')"
+            class="px-2.5 py-1 rounded-full border text-xs shrink-0 font-semibold transition-all ${
+              state.poseFilter === 'ALL'
+                ? 'bg-slate-800 text-white border-slate-800 shadow-xs'
+                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+            }"
+          >
+            Tous (${renderEdges.filter(e => !e.isVirtual).length})
+          </button>
+          <button
+            onclick="window.app.setPoseFilter('SOUT_HIGHLIGHT')"
+            class="px-2.5 py-1 rounded-full border text-xs shrink-0 font-semibold flex items-center gap-1 transition-all ${
+              state.poseFilter === 'SOUT_HIGHLIGHT'
+                ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs ring-2 ring-indigo-200'
+                : 'bg-indigo-50/80 text-indigo-800 border-indigo-200 hover:bg-indigo-100'
+            }"
+          >
+            <span>🚇 Souterrain</span>
+            <span class="font-mono text-[10px] font-bold ${state.poseFilter === 'SOUT_HIGHLIGHT' ? 'text-indigo-100' : 'text-indigo-600'}">(${soutKm} km)</span>
+          </button>
+          <button
+            onclick="window.app.setPoseFilter('AER_ONLY')"
+            class="px-2.5 py-1 rounded-full border text-xs shrink-0 font-semibold flex items-center gap-1 transition-all ${
+              state.poseFilter === 'AER_ONLY'
+                ? 'bg-amber-600 text-white border-amber-600 shadow-xs ring-2 ring-amber-200'
+                : 'bg-amber-50/80 text-amber-800 border-amber-200 hover:bg-amber-100'
+            }"
+          >
+            <span>⚡ Aérien</span>
+            <span class="font-mono text-[10px] font-bold ${state.poseFilter === 'AER_ONLY' ? 'text-amber-100' : 'text-amber-600'}">(${aerKm} km)</span>
+          </button>
+        </div>
+      </div>
+
+      ${disconnectedComponentCount > 0 ? `
+        <div role="alert" class="shrink-0 border-b border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
+          Avertissement topologique : ${disconnectedComponentCount} composante(s) séparée(s), ${unreachableNodeCount} nœud(s) non raccordé(s) à la racine de ce départ. Le traçage amont peut être incomplet ; vérifiez les données de référence.
+        </div>
+      ` : ''}
+      <!-- Canvas SVG Interactif -->
+      <div
+        id="svgContainer"
+        class="relative flex-1 bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none"
+        style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 24px 24px; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;"
+        onmousedown="window.app.handleMouseDown(event)"
+        onmousemove="window.app.handleMouseMove(event)"
+        onmouseup="window.app.handleMouseUp(event)"
+        onmouseleave="window.app.handleMouseUp(event)"
+        ontouchstart="window.app.handleTouchStart(event)"
+        ontouchmove="window.app.handleTouchMove(event)"
+        ontouchend="window.app.handleTouchEnd(event)"
+        ontouchcancel="window.app.handleTouchEnd(event)"
+      >
+        <!-- Légende Flottante Interactive Souterrain / Aérien -->
+        ${state.showPoseLegend ? `
+          <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-xs border border-slate-200 rounded-xl p-3 shadow-xl z-20 max-w-[270px] text-xs space-y-2 pointer-events-auto">
+            <div class="flex items-center justify-between font-bold text-slate-800 text-[11px] pb-1 border-b border-slate-100">
+              <span class="flex items-center gap-1">🏷️ Conventions Tronçons MT</span>
+              <button onclick="window.app.togglePoseLegend()" class="text-slate-400 hover:text-slate-600 font-bold px-1 cursor-pointer">&times;</button>
+            </div>
+            <div class="space-y-1.5 text-[10px]">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-1.5 bg-slate-700 rounded-full shrink-0"></div>
+                <div class="text-slate-700">
+                  <strong>⚡ Ligne Aérienne</strong> (Trait plein continu &middot; NU/AL)
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-2.5 border-b-2 border-dashed border-indigo-700 bg-indigo-100 rounded-xs shrink-0"></div>
+                <div class="text-indigo-900">
+                  <strong>🚇 Câble Souterrain</strong> (Fourreau + tirets indigo &middot; URSS/TNSS)
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full border border-purple-500 bg-purple-100 flex items-center justify-center text-[7px] font-bold text-purple-700 shrink-0">RAS</div>
+                <div class="text-purple-900">
+                  <strong>Remontée Aéro-Souterraine</strong> (Transition support / sol)
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="px-1.5 py-0.5 rounded bg-indigo-50 border border-indigo-200 text-indigo-700 font-mono text-[9px] font-bold shrink-0">SOUT T.128</span>
+                <div class="text-slate-600">
+                  Numéro de Tronçon & longueur en mètres
+                </div>
+              </div>
+            </div>
+            <div class="pt-1 border-t border-slate-100 text-[9px] text-slate-400">
+              💡 Touchez n'importe quel segment sur le schéma pour consulter sa fiche détaillée.
+            </div>
+          </div>
+        ` : ''}
+
+        <svg
+          id="networkSvg"
+          class="w-full h-full select-none block"
+          style="width: 100%; height: 100%; touch-action: none; overflow: visible !important;"
+        >
+          <!-- Conteneur Pan & Zoom Infini (sans clipping Android) -->
+          <g
+            id="networkViewport"
+            transform="translate(${state.pan.x}, ${state.pan.y}) scale(${state.zoom})"
+          >
+            <!-- Arcs MT (Tronçons Souterrains & Aériens) -->
+            <g class="edges">
+            ${renderEdges.map(edge => {
+              const u = nodePosMap.get(edge.from);
+              const v = nodePosMap.get(edge.to);
+              if (!u || !v) return '';
+
+              const isEdgeSelected = state.selectedEdge?.id === edge.id;
+              const isInPath = u.inPath && v.inPath;
+              const isVirtual = !!edge.isVirtual;
+              const isSout = !!edge.isSouterrain && !isVirtual;
+
+              let isDimmed = false;
+              if (!isVirtual && state.poseFilter === 'SOUT_HIGHLIGHT' && !isSout) {
+                isDimmed = true;
+              } else if (!isVirtual && state.poseFilter === 'AER_ONLY' && isSout) {
+                isDimmed = true;
+              }
+
+              const edgeOpacity = isVirtual ? '0.75' : (isDimmed ? '0.12' : (isEdgeSelected || isInPath ? '1' : '0.9'));
+              const cx = (u.x + v.x) / 2;
+              const cy = (u.y + v.y) / 2;
+
+              let strokeColor = isVirtual ? '#94a3b8' : (isInPath ? '#d97706' : (edge.nat_cond === 'CU' ? '#c2410c' : '#334155'));
+              if (isEdgeSelected) strokeColor = '#2563eb';
+              const strokeWidth = isVirtual ? 1.5 : (isInPath ? 3.5 : (isEdgeSelected ? 3.2 : (edge.section >= 117 ? 2.5 : 1.6)));
+
+              return `
+                <g class="cursor-pointer" onclick="window.app.selectEdge('${escapeJsString(edge.id)}')" opacity="${edgeOpacity}">
+                  ${isVirtual ? `
+                    <!-- Ancrage graphique virtuel : ce trait n'est pas une liaison électrique réelle. -->
+                    <line
+                      x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}"
+                      stroke="#94a3b8"
+                      stroke-width="1.5"
+                      stroke-dasharray="2 5"
+                    />
+                  ` : isSout ? `
+                    <!-- Fourreau / Tranchée souterraine (halo) -->
+                    <line
+                      x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}"
+                      stroke="${isEdgeSelected ? '#3b82f6' : (state.poseFilter === 'SOUT_HIGHLIGHT' ? '#6366f1' : '#818cf8')}"
+                      stroke-width="${isEdgeSelected ? '7' : '5'}"
+                      stroke-linecap="round"
+                      opacity="${isEdgeSelected ? '0.8' : '0.45'}"
+                    />
+                    <!-- Câble HTA souterrain (tirets d'ingénierie Sonelgaz) -->
+                    <line
+                      x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}"
+                      stroke="${isEdgeSelected ? '#1d4ed8' : (isInPath ? '#d97706' : '#4338ca')}"
+                      stroke-width="${isEdgeSelected ? '3' : '2.2'}"
+                      stroke-dasharray="6 3.5"
+                      stroke-linecap="butt"
+                    />
+                  ` : `
+                    <!-- Ligne aérienne MT (trait continu) -->
+                    <line
+                      x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}"
+                      stroke="${strokeColor}"
+                      stroke-width="${strokeWidth}"
+                      stroke-linecap="round"
+                    />
+                  `}
+
+                  <!-- Badge & Libellé Tronçon / Longueur -->
+                  ${state.zoom >= 0.65 ? `
+                    <g transform="translate(${cx}, ${cy})">
+                      ${isVirtual ? `
+                        <rect x="-46" y="-12" width="92" height="15" rx="3.5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="0.8" />
+                        <text x="0" y="-1.5" fill="#475569" font-size="7" font-family="monospace" font-weight="bold" text-anchor="middle">ANCRAGE VIRTUEL</text>
+                      ` : isSout ? `
+                        <rect
+                          x="-35" y="-12" width="70" height="15" rx="3.5"
+                          fill="${isEdgeSelected ? '#1e3a8a' : '#e0e7ff'}"
+                          stroke="${isEdgeSelected ? '#60a5fa' : '#818cf8'}"
+                          stroke-width="0.8"
+                        />
+                        <text
+                          x="0" y="-1.5"
+                          fill="${isEdgeSelected ? '#ffffff' : '#3730a3'}"
+                          font-size="7.5"
+                          font-family="monospace"
+                          font-weight="bold"
+                          text-anchor="middle"
+                        >
+                          SOUT ${edge.troncon ? 'T.' + edge.troncon : ''} ${edge.longueur > 0 ? '· ' + edge.longueur + 'm' : ''}
+                        </text>
+                      ` : `
+                        ${(edge.troncon || state.zoom >= 0.8) && edge.longueur > 0 ? `
+                          <rect
+                            x="-28" y="-11" width="56" height="14" rx="3"
+                            fill="${isEdgeSelected ? '#1e293b' : '#f8fafc'}"
+                            stroke="${isEdgeSelected ? '#94a3b8' : '#cbd5e1'}"
+                            stroke-width="0.7"
+                            opacity="0.9"
+                          />
+                          <text
+                            x="0" y="-1"
+                            fill="${isEdgeSelected ? '#f8fafc' : '#475569'}"
+                            font-size="7.5"
+                            font-family="monospace"
+                            font-weight="bold"
+                            text-anchor="middle"
+                          >
+                            ${edge.troncon ? 'T.' + edge.troncon + ' ' : ''}${edge.longueur}m
+                          </text>
+                        ` : ''}
+                      `}
+                    </g>
+                  ` : ''}
+                </g>
+              `;
+            }).join('')}
+          </g>
+
+          <!-- Nœuds MT -->
+          <g class="nodes">
+            ${calculatedNodes.map(node => {
+              const isSelected = state.selectedNode?.id === node.id;
+              const isRoot = node.id === rootId;
+              let r = node.type === 'POSTE_SOURCE' ? 15 : (node.type === 'POSTE_HTA_BT' ? 12 : (node.type === 'ETOILEMENT' ? 9 : (node.type === 'INTERRUPTEUR_AERIEN' ? 9 : 5)));
+
+              let fillColor = '#64748b';
+              let strokeColor = '#334155';
+              if (node.type === 'POSTE_SOURCE') {
+                fillColor = node.isVirtual ? '#e2e8f0' : '#7c3aed';
+                strokeColor = node.isVirtual ? '#64748b' : '#5b21b6';
+              } else if (node.type === 'POSTE_HTA_BT') {
+                fillColor = node.meta?.typePoste === 'MS' ? '#d97706' : '#ea580c';
+                strokeColor = '#78350f';
+              } else if (node.type === 'ETOILEMENT') {
+                fillColor = '#0d9488';
+                strokeColor = '#115e59';
+              } else if (node.type === 'INTERRUPTEUR_AERIEN') {
+                fillColor = node.meta?.isOpen ? '#fef2f2' : '#059669';
+                strokeColor = node.meta?.isOpen ? '#dc2626' : '#047857';
+              }
+
+              if (node.inPath) {
+                strokeColor = '#d97706';
+                fillColor = node.type === 'POSTE_HTA_BT' ? '#d97706' : fillColor;
+              }
+              if (isSelected) {
+                strokeColor = '#2563eb';
+                fillColor = '#2563eb';
+              }
+
+              return `
+                <g transform="translate(${node.x}, ${node.y})" class="cursor-pointer" onclick="window.app.selectNode('${escapeJsString(node.id)}')">
+                  ${(isSelected || isRoot) ? `
+                    <circle r="${r + 5}" fill="none" stroke="${strokeColor}" stroke-width="1.5" stroke-dasharray="3 3"/>
+                  ` : ''}
+
+                  ${node.type === 'POSTE_SOURCE' ? `
+                    <circle r="${r}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2"/>
+                    <circle r="${r - 5}" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+                    <text y="3" fill="${node.isVirtual ? '#475569' : '#ffffff'}" font-size="9" font-weight="bold" text-anchor="middle">${node.isVirtual ? 'V' : 'HT'}</text>
+                  ` : node.type === 'POSTE_HTA_BT' ? `
+                    <rect x="${-r}" y="${-r}" width="${r * 2}" height="${r * 2}" rx="3.5" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2"/>
+                    <text y="3.5" fill="#ffffff" font-size="9" font-weight="bold" font-family="monospace" text-anchor="middle">T</text>
+                  ` : node.type === 'ETOILEMENT' ? `
+                    <polygon points="0,${-r} ${r},${r} ${-r},${r}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="1.5"/>
+                  ` : node.type === 'INTERRUPTEUR_AERIEN' ? `
+                    ${node.meta?.isOpen ? `
+                      <circle r="${r}" fill="#fee2e2" stroke="#dc2626" stroke-width="2" stroke-dasharray="2 2"/>
+                      <line x1="-4" y1="-4" x2="4" y2="4" stroke="#dc2626" stroke-width="2"/>
+                      <line x1="-4" y1="4" x2="4" y2="-4" stroke="#dc2626" stroke-width="2"/>
+                      <text x="0" y="-12" fill="#dc2626" font-size="8" font-weight="bold" font-family="monospace" text-anchor="middle">OUVERT</text>
+                    ` : `
+                      <circle r="${r - 2}" fill="#059669" stroke="#047857" stroke-width="1.5"/>
+                      <text y="2.5" fill="#ffffff" font-size="7.5" font-weight="bold" text-anchor="middle">I</text>
+                    `}
+                  ` : `
+                    <circle r="${state.showJunctions ? r : 2}" fill="${state.showJunctions ? fillColor : '#94a3b8'}" stroke="${strokeColor}" stroke-width="${state.showJunctions ? 1 : 0}"/>
+                  `}
+
+                  <!-- Indicateur Remontée Aéro-Souterraine (RAS) -->
+                  ${rasNodeSet.has(node.id) ? `
+                    <g transform="translate(${r + 6}, ${-r})">
+                      <rect x="-9" y="-7" width="18" height="11" rx="2.5" fill="#f3e8ff" stroke="#a855f7" stroke-width="0.8"/>
+                      <text x="0" y="1" fill="#7e22ce" font-size="6.5" font-weight="bold" font-family="monospace" text-anchor="middle">RAS</text>
+                    </g>
+                  ` : ''}
+
+                  ${(node.type !== 'JONCTION' || state.showJunctions || state.zoom > 1.2 || isSelected) ? `
+                    <text x="0" y="${r + 12}" fill="${isSelected ? '#1d4ed8' : (node.meta?.isOpen ? '#dc2626' : '#0f172a')}" font-size="9.5" font-family="monospace" font-weight="${node.type === 'POSTE_HTA_BT' || isSelected ? 'bold' : 'normal'}" text-anchor="middle">
+                      ${escapeHtml(node.meta?.nom ? `${node.meta.nom} (${node.id})` : node.id)}
+                    </text>
+                  ` : ''}
+
+                  ${node.type === 'POSTE_HTA_BT' && node.meta?.p_instal ? `
+                    <text x="0" y="${-r - 4}" fill="#b45309" font-size="9" font-family="monospace" font-weight="bold" text-anchor="middle">
+                      ${node.meta.p_instal}k
+                    </text>
+                  ` : ''}
+                </g>
+              `;
+            }).join('')}
+          </g>
+        </g>
+      </svg>
+
+        <!-- Contrôles Flottants Zoom Tactile -->
+        <div class="absolute bottom-4 right-4 flex flex-col gap-1 z-10">
+          <button onclick="window.app.zoomCanvas(0.2)" class="w-9 h-9 rounded-xl bg-white shadow-md border border-slate-200 flex items-center justify-center text-slate-800 font-bold text-base cursor-pointer">+</button>
+          <button onclick="window.app.zoomCanvas(-0.2)" class="w-9 h-9 rounded-xl bg-white shadow-md border border-slate-200 flex items-center justify-center text-slate-800 font-bold text-base cursor-pointer">&minus;</button>
+        </div>
+      </div>
+
+      <!-- Bottom Sheet Tactile GPARC-Mobile (Fiche Ouvrage & Action Visite) -->
+      ${state.showBottomSheet && (state.selectedNode || state.selectedEdge) ? `
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl border-t border-slate-200 shadow-2xl p-4 z-30 max-h-[60vh] overflow-y-auto space-y-3">
+          <div class="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-1"></div>
+
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <div>
+              <span class="text-[10px] text-slate-400 font-mono uppercase block">
+                ${state.selectedEdge ? (state.selectedEdge.isSouterrain ? '🚇 Tronçon MT Souterrain' : '⚡ Tronçon MT Aérien') : (state.selectedNode?.type === 'POSTE_HTA_BT' ? 'Poste HTA/BT' : (state.selectedNode?.type === 'INTERRUPTEUR_AERIEN' ? 'Appareil IACM' : 'Fiche Ouvrage'))}
+              </span>
+              <strong class="font-mono text-base text-slate-900">${state.selectedEdge ? (state.selectedEdge.troncon ? `Tronçon N° ${state.selectedEdge.troncon}` : state.selectedEdge.id) : (state.selectedNode?.id)}</strong>
+              ${state.selectedNode?.meta?.nom ? `
+                <div class="text-xs font-bold text-amber-700">${escapeHtml(state.selectedNode.meta.nom)}</div>
+              ` : ''}
+            </div>
+            <button onclick="window.app.closeBottomSheet()" class="text-xs text-slate-500 hover:text-slate-800 px-2.5 py-1 rounded-lg bg-slate-100 font-bold cursor-pointer">Fermer</button>
+          </div>
+
+          ${state.selectedNode ? `
+            ${rasNodeSet.has(state.selectedNode.id) ? `
+              <div class="p-2.5 rounded-xl bg-purple-50 border border-purple-200 text-xs font-mono text-purple-900 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-[9px] shrink-0">RAS</span>
+                <div>
+                  <strong class="block">Remontée Aéro-Souterraine (RAS)</strong>
+                  <span class="text-[10px] text-purple-700">Point de transition technique entre tronçons souterrains et aériens.</span>
+                </div>
+              </div>
+            ` : ''}
+
+            ${state.selectedNode.type === 'POSTE_HTA_BT' ? `
+              <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <div><span class="text-slate-400 block text-[9px]">Tension Service</span><span class="text-slate-900 font-bold">30 kV / 400 V</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Puissance Installée (PI)</span><span class="text-amber-700 font-bold">${state.selectedNode.meta?.p_instal || 0} kVA</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Type de Poste</span><span class="text-slate-900">${state.selectedNode.meta?.typePosteLabel || (state.selectedNode.meta?.typePoste === 'MS' ? 'Cabine Maçonnée (MS)' : 'Aérien sur Poteau (MA)')}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Fonction</span><span class="text-slate-900">${state.selectedNode.meta?.fonctionLabel || 'Abonné (AB)'}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Protection MT</span><span class="text-slate-900">${state.selectedNode.meta?.protection || 'Sectionneur Fusibles'}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Commune / Localité</span><span class="text-slate-900 truncate block">${escapeHtml(state.selectedNode.meta?.localite || 'Wilaya de Guelma')}</span></div>
+              </div>
+
+              ${state.selectedNode.meta?.transformers && state.selectedNode.meta.transformers.length > 0 ? `
+                <div class="space-y-1.5 pt-1">
+                  <span class="text-[11px] font-bold text-slate-700 block">Transformateurs MT/BT (${state.selectedNode.meta.transformers.length}) :</span>
+                  <div class="space-y-1">
+                    ${state.selectedNode.meta.transformers.map((trf, tIdx) => `
+                      <div class="p-2 rounded-lg bg-purple-50/70 border border-purple-200 text-xs font-mono flex items-center justify-between">
+                        <div>
+                          <strong class="text-purple-950">${trf.puissanceKva || state.selectedNode.meta?.p_instal} kVA</strong>
+                          <span class="text-[11px] text-slate-600 block">${trf.marque || 'Constructeur agréé'} ${trf.numSerie ? '&middot; N° ' + trf.numSerie : ''}</span>
+                        </div>
+                        <div class="text-right text-[10px] text-slate-500">
+                          <span>${trf.anneeFab ? 'Année ' + trf.anneeFab : 'Service 30kV'}</span>
+                          ${trf.iNomMT ? `<span class="block text-purple-700 font-bold">${trf.iNomMT}A MT / ${trf.iNomBT}A BT</span>` : ''}
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              <div class="pt-1 flex gap-2">
+                <button
+                  onclick="window.app.createInterventionForPoste('${escapeJsString(state.selectedNode.id)}', '${escapeJsString(state.selectedNode.meta?.nom || state.selectedNode.id)}')"
+                  class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-xs text-center cursor-pointer"
+                >
+                  📝 Créer Fiche de Visite de Terrain
+                </button>
+              </div>
+            ` : state.selectedNode.type === 'INTERRUPTEUR_AERIEN' ? `
+              <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <div><span class="text-slate-400 block text-[9px]">Position Réseau</span><span class="${state.selectedNode.meta?.isOpen ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}">${state.selectedNode.meta?.positionLabel || (state.selectedNode.meta?.isOpen ? 'OUVERT (Coupure)' : 'FERMÉ (Passage)')}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Mode d'Actionnement</span><span class="text-slate-900 font-bold">${state.selectedNode.meta?.mode || 'Manuel (IACM-M)'}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Intensité Nominale</span><span class="text-slate-900">${state.selectedNode.meta?.intensiteNominale || 200} A</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Tension Isolement</span><span class="text-slate-900">36.0 kV (Service 30 kV)</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Asservissement</span><span class="text-slate-900">${state.selectedNode.meta?.asserv || 'Non asservi'}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Date de MES</span><span class="text-slate-900">${state.selectedNode.meta?.dateMES || '01-01-1988'}</span></div>
+              </div>
+            ` : `
+              <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs font-mono">
+                <span class="text-slate-500 block text-[10px]">Type d'élément</span>
+                <strong class="text-slate-800">${state.selectedNode.type} &middot; ${state.selectedNode.id}</strong>
+              </div>
+            `}
+          ` : ''}
+
+          ${state.selectedEdge ? `
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold ${
+                  state.selectedEdge.isVirtual
+                    ? 'bg-slate-100 text-slate-700 border border-slate-300'
+                    : state.selectedEdge.isSouterrain
+                      ? 'bg-indigo-100 text-indigo-800 border border-indigo-200'
+                      : 'bg-amber-100 text-amber-800 border border-amber-200'
+                }">
+                  ${state.selectedEdge.isVirtual ? 'ANCRAGE VIRTUEL — PAS DE LIAISON PHYSIQUE' : state.selectedEdge.isSouterrain ? 'CÂBLE SOUTERRAIN (HTA 30 kV)' : 'LIGNE AÉRIENNE (HTA 30 kV)'}
+                </span>
+                <span class="text-xs font-mono font-bold ${state.selectedEdge.isVirtual ? 'text-slate-600 bg-slate-100 border-slate-300' : 'text-emerald-700 bg-emerald-50 border-emerald-200'} px-2 py-0.5 rounded border">
+                  ${state.selectedEdge.isVirtual ? 'Non physique' : state.selectedEdge.longueur + ' mètres'}
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Numéro de Tronçon</span>
+                  <span class="text-slate-900 font-bold">${state.selectedEdge.troncon ? 'Tronçon ' + escapeHtml(state.selectedEdge.troncon) : 'Non numéroté'}</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Structure Technique</span>
+                  <span class="text-slate-900 font-bold">${escapeHtml(state.selectedEdge.structLabel || state.selectedEdge.structRaw || state.selectedEdge.struct)}</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Conducteur & Métal</span>
+                  <span class="text-slate-900 font-bold">${state.selectedEdge.nat_cond} ${state.selectedEdge.section} mm²</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Tension Nominale</span>
+                  <span class="text-slate-900 font-bold">${state.selectedEdge.tension || 30} kV</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Nœud Amont (De)</span>
+                  <span class="text-slate-900 font-bold truncate block">${state.selectedEdge.from}</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Nœud Aval (Vers)</span>
+                  <span class="text-slate-900 font-bold truncate block">${state.selectedEdge.to}</span>
+                </div>
+                ${state.selectedEdge.an_mes ? `
+                  <div>
+                    <span class="text-slate-400 block text-[9px]">Date de MES</span>
+                    <span class="text-slate-900 font-bold">${state.selectedEdge.an_mes}</span>
+                  </div>
+                ` : ''}
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Circuit Parallèle</span>
+                  <span class="text-slate-900 font-bold">C.Par ${state.selectedEdge.cPar || 1}</span>
+                </div>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+// --- VUE 3 : OUVRAGES (CATALOGUE PARC GPARC 2025) ---
+function renderOuvragesView() {
+  if (!Object.keys(networkData.departs).length) {
+    return '<div class="p-8 text-center text-sm font-semibold text-blue-800">' + escapeHtml(state.networkDataError || 'Chargement du référentiel des ouvrages…') + '</div>';
+  }
+  const currentDepart = networkData.departs[state.selectedDepartId] || networkData.departs['127H1C3'] || networkData.departs['125H3C20'];
+  const isGlobalScope = state.ouvragesScope === 'ALL';
+
+  let rawList = [];
+  const fType = state.ouvragesFilterType;
+
+  if (fType === 'P') {
+    if (isGlobalScope) {
+      rawList = fullTablesData['POSTE_2025']?.rows || [];
+    } else {
+      rawList = (currentDepart.nodes || []).filter(n => n.type === 'POSTE_HTA_BT').map(n => ({
+        id: n.id,
+        nom: n.meta?.nom || n.id,
+        localite: n.meta?.localite || '',
+        pi: n.meta?.p_instal || 0,
+        typePosteLabel: n.meta?.typePosteLabel || 'Poste HTA/BT',
+        depart: state.selectedDepartId
+      }));
+    }
+  } else if (fType === 'J') {
+    if (isGlobalScope) {
+      rawList = fullTablesData['IACM_2025']?.rows || [];
+    } else {
+      rawList = (currentDepart.nodes || []).filter(n => n.type === 'INTERRUPTEUR_AERIEN' || n.type === 'JONCTION').map(n => ({
+        code: n.id,
+        num: n.meta?.num || n.id,
+        district: currentDepart.agency,
+        positionLabel: n.meta?.positionLabel || (n.meta?.isOpen ? 'OUVERT (Coupure)' : 'FERMÉ (Passage)'),
+        isOpen: n.meta?.isOpen || false,
+        mode: n.meta?.mode || 'Manuel (M)',
+        intensiteNominale: n.meta?.intensiteNominale || 200,
+        depart: state.selectedDepartId
+      }));
+    }
+  } else if (fType === 'T') {
+    rawList = fullTablesData['TRANSFO_MTBT_2025']?.rows || [];
+  } else if (fType === 'L') {
+    rawList = fullTablesData['TRONCON_2025']?.rows || [];
+  } else if (fType === 'E') {
+    rawList = (currentDepart.nodes || []).filter(n => n.type === 'ETOILEMENT').map(n => ({
+      id: n.id,
+      nom: `Étoilement ${n.id}`,
+      localite: 'Piquage MT',
+      depart: state.selectedDepartId
+    }));
+  }
+
+  // Filtrage par texte de recherche
+  let filtered = rawList;
+  if (state.ouvragesSearch.trim()) {
+    const q = state.ouvragesSearch.toLowerCase();
+    filtered = rawList.filter(item => {
+      return Object.values(item).some(v => String(v ?? '').toLowerCase().includes(q));
+    });
+  }
+
+  const displayList = filtered.slice(0, 60);
+  const isLoadingGlobalData = (isGlobalScope || fType === 'T' || fType === 'L') && Object.keys(fullTablesData).length === 0;
+
+  return `
+    <div class="p-4 md:p-6 xl:p-8 space-y-3.5 md:space-y-5 max-w-screen-2xl mx-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-base font-bold text-slate-900">Catalogue des Ouvrages MT</h1>
+          <p class="text-xs text-slate-500">${isGlobalScope ? 'Ensemble du parc SDO Guelma (2025)' : `Départ ${state.selectedDepartId}`}</p>
+        </div>
+
+        <!-- Scope Switch (Départ vs Tout le parc) -->
+        <div class="flex items-center bg-slate-200 p-0.5 rounded-lg text-[11px] font-semibold">
+          <button
+            onclick="window.app.setOuvragesScope('DEPART')"
+            class="px-2 py-1 rounded-md transition-all cursor-pointer ${!isGlobalScope ? 'bg-white text-blue-700 shadow-2xs font-bold' : 'text-slate-600'}"
+          >
+            Départ
+          </button>
+          <button
+            onclick="window.app.setOuvragesScope('ALL')"
+            class="px-2 py-1 rounded-md transition-all cursor-pointer ${isGlobalScope ? 'bg-white text-blue-700 shadow-2xs font-bold' : 'text-slate-600'}"
+          >
+            Tout le Parc
+          </button>
+        </div>
+      </div>
+
+      <!-- Segmented Control Type d'Ouvrage -->
+      <div class="flex items-center p-1 bg-slate-200/90 rounded-xl text-xs gap-1 overflow-x-auto">
+        <button
+          onclick="window.app.setOuvragesFilter('P')"
+          class="flex-1 min-w-[70px] py-1.5 rounded-lg font-semibold transition-colors cursor-pointer text-center whitespace-nowrap ${fType === 'P' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          Postes
+        </button>
+        <button
+          onclick="window.app.setOuvragesFilter('J')"
+          class="flex-1 min-w-[70px] py-1.5 rounded-lg font-semibold transition-colors cursor-pointer text-center whitespace-nowrap ${fType === 'J' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          IACM
+        </button>
+        <button
+          onclick="window.app.setOuvragesFilter('T')"
+          class="flex-1 min-w-[70px] py-1.5 rounded-lg font-semibold transition-colors cursor-pointer text-center whitespace-nowrap ${fType === 'T' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          Transfos
+        </button>
+        <button
+          onclick="window.app.setOuvragesFilter('L')"
+          class="flex-1 min-w-[70px] py-1.5 rounded-lg font-semibold transition-colors cursor-pointer text-center whitespace-nowrap ${fType === 'L' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          Tronçons
+        </button>
+        <button
+          onclick="window.app.setOuvragesFilter('E')"
+          class="flex-1 min-w-[70px] py-1.5 rounded-lg font-semibold transition-colors cursor-pointer text-center whitespace-nowrap ${fType === 'E' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          Étoil.
+        </button>
+      </div>
+
+      <!-- Barre de recherche -->
+      <input
+        type="text"
+        id="ouvragesSearchInput"
+        placeholder="Filtrer (ex: BEA, 8002, ENEL, 400, Maouna)..."
+        value="${escapeHtml(state.ouvragesSearch)}"
+        oninput="window.app.setOuvragesSearch(this.value)"
+        class="w-full bg-white text-slate-900 text-xs rounded-xl px-3 py-2 border border-slate-300 shadow-2xs focus:outline-blue-500"
+      />
+
+      <!-- Liste des Ouvrages Mobile -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-[11px] font-bold text-slate-500">
+            ${filtered.length} élément(s) ${filtered.length > 60 ? `(affichage des 60 premiers)` : ''} :
+          </span>
+          ${fType === 'J' ? `
+            <span class="text-[10px] text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
+              ${filtered.filter(x => x.position === 'O' || x.isOpen || (x.positionLabel && x.positionLabel.includes('OUVERT'))).length} IACM Ouverts
+            </span>
+          ` : ''}
+        </div>
+
+        ${isLoadingGlobalData ? '<div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-center text-xs font-semibold text-blue-800">' + escapeHtml(state.dataLoadError || 'Chargement du référentiel complet des ouvrages…') + '</div>' : displayList.map(item => {
+          if (fType === 'P') {
+            const id = item.id || item.code;
+            const nom = item.nom || id;
+            const pi = item.pi || item.p_instal || 0;
+            const dep = item.depart || state.selectedDepartId;
+            return `
+              <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
+                <div class="truncate pr-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono font-bold text-xs text-slate-900">${id}</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900">
+                      ${pi} kVA
+                    </span>
+                    ${item.depart ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">${item.depart}</span>` : ''}
+                  </div>
+                  <span class="text-xs font-semibold text-slate-800 block truncate">${escapeHtml(nom)}</span>
+                  <span class="text-[10px] text-slate-400 block">${escapeHtml(item.localite || item.district || 'SDO Guelma')} &middot; ${item.typePosteLabel || 'Poste HTA/BT'}</span>
+                </div>
+
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onclick="window.app.showOuvrageOnMap('${escapeJsString(id)}', '${escapeJsString(dep)}')"
+                    class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
+                  >
+                    ⚡ Schéma
+                  </button>
+                  <button
+                    onclick="window.app.createInterventionForPoste('${escapeJsString(id)}', '${escapeJsString(nom)}')"
+                    class="px-2 py-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg cursor-pointer"
+                  >
+                    📝 Visite
+                  </button>
+                </div>
+              </div>
+            `;
+          } else if (fType === 'J') {
+            const code = item.code || `J${item.num}`;
+            const isOpen = item.position === 'O' || item.isOpen || (item.positionLabel && item.positionLabel.includes('OUVERT'));
+            const dep = item.depart || state.selectedDepartId;
+            return `
+              <div class="p-3 bg-white rounded-xl border ${isOpen ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200'} shadow-2xs flex items-center justify-between">
+                <div class="truncate pr-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono font-bold text-xs text-slate-900">${code}</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${isOpen ? 'bg-rose-100 text-rose-800 border border-rose-200' : 'bg-emerald-100 text-emerald-800'}">
+                      ${isOpen ? 'OUVERT (Coupure)' : 'FERMÉ (Passage)'}
+                    </span>
+                    ${item.depart ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">${item.depart}</span>` : ''}
+                  </div>
+                  <span class="text-xs font-semibold text-slate-700 block">${item.mode || 'Manuel (M)'} &middot; Inom ${item.intensiteNominale || 200} A</span>
+                  <span class="text-[10px] text-slate-400 block">District ${item.district || item.agence || '121'} &middot; MES: ${item.dateMES || '31-12-2025'}</span>
+                </div>
+
+                <div class="shrink-0">
+                  <button
+                    onclick="window.app.showOuvrageOnMap('${escapeJsString(code)}', '${escapeJsString(dep)}')"
+                    class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
+                  >
+                    ⚡ Schéma
+                  </button>
+                </div>
+              </div>
+            `;
+          } else if (fType === 'T') {
+            const pCode = item.codePoste || item.code || '';
+            const pwr = item.puissanceKva || 0;
+            return `
+              <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
+                <div class="truncate pr-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono font-bold text-xs text-slate-900">${pCode} &middot; Trf ${item.numTransfo || 1}</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-purple-100 text-purple-900">
+                      ${pwr} kVA
+                    </span>
+                  </div>
+                  <span class="text-xs font-semibold text-slate-700 block">${item.marque ? item.marque : 'Fabricant normalisé'} ${item.numSerie ? '&middot; S/N: ' + item.numSerie : ''}</span>
+                  <span class="text-[10px] text-slate-400 block">${item.anneeFab ? 'Fab: ' + item.anneeFab + ' &middot; ' : ''}${item.iNomMT ? item.iNomMT + 'A MT' : '30 kV / 400 V'}</span>
+                </div>
+                <div class="shrink-0">
+                  <button
+                    onclick="window.app.showOuvrageOnMap('${escapeJsString(pCode)}', '')"
+                    class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
+                  >
+                    ⚡ Schéma
+                  </button>
+                </div>
+              </div>
+            `;
+          } else if (fType === 'L') {
+            return `
+              <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
+                <div class="truncate pr-2">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="font-mono font-bold text-xs text-slate-900">Tronçon ${item.troncon}</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-800 border border-slate-200">
+                      Total: ${formatNumber(item.totalM)} m
+                    </span>
+                    ${item.souterrainM > 0 ? `
+                      <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 border border-indigo-200">
+                        🚇 Sout: ${formatNumber(item.souterrainM)} m
+                      </span>
+                    ` : ''}
+                    ${item.aerienM > 0 ? `
+                      <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-200">
+                        ⚡ Aér: ${formatNumber(item.aerienM)} m
+                      </span>
+                    ` : ''}
+                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-50 text-slate-500">Agence ${item.agence}</span>
+                  </div>
+                  <span class="text-xs text-slate-600 block mt-1">
+                    Répartition : ${item.souterrainM > 0 && item.aerienM > 0 ? 'Mixte (Aérien + Câble Souterrain)' : (item.souterrainM > 0 ? 'Câble 100% Souterrain' : 'Ligne 100% Aérienne')}
+                  </span>
+                </div>
+              </div>
+            `;
+          } else {
+            return `
+              <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
+                <div>
+                  <span class="font-mono font-bold text-xs text-slate-900">${item.id}</span>
+                  <span class="text-xs text-slate-500 block">${item.nom}</span>
+                </div>
+                <button
+                  onclick="window.app.showOuvrageOnMap('${escapeJsString(item.id)}', '${escapeJsString(item.depart)}')"
+                  class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
+                >
+                  ⚡ Schéma
+                </button>
+              </div>
+            `;
+          }
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// --- VUE 4 : TERRAIN & VISITES (CARNET DE TERRAIN GPARC-MOBILE) ---
+function renderTerrainView() {
+  if (!Object.keys(networkData.departs).length) {
+    return '<div class="p-8 text-center text-sm font-semibold text-blue-800">' + escapeHtml(state.networkDataError || 'Chargement du réseau moyenne tension…') + '</div>';
+  }
+  const currentDepart = networkData.departs[state.selectedDepartId] || networkData.departs['127H1C3'];
+  const posteOptions = currentDepart.nodes.filter(n => n.type === 'POSTE_HTA_BT');
+
+  return `
+    <div class="p-4 space-y-4 max-w-2xl mx-auto">
+      <div>
+        <h1 class="text-base font-bold text-slate-900">Carnet de Terrain &amp; Visites Techniques</h1>
+        <p class="text-xs text-slate-500">Relevés d'anomalies, fiches d'inspection et contrôle des postes MT</p>
+      </div>
+
+      ${state.visitSuccessNotice ? `
+        <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between">
+          <span>&check; Visite enregistrée avec succès dans le stockage local !</span>
+          <button onclick="state.visitSuccessNotice = false; renderApp();" class="text-emerald-900 font-bold">&times;</button>
+        </div>
+      ` : ''}
+
+      <!-- Formulaire Tactile d'Inspection sur Site -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+          <span>📝 Nouvelle Fiche de Visite de Poste</span>
+        </h2>
+
+        <form onsubmit="window.app.saveIntervention(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Poste MT à inspecter</label>
+            <select
+              id="fieldVisitPoste"
+              class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono text-xs font-semibold"
+            >
+              ${posteOptions.map(p => `
+                <option value="${p.id}" ${p.id === state.newVisitPosteId ? 'selected' : ''}>
+                  ${p.id} &middot; ${p.meta?.nom || 'Poste'} (${p.meta?.p_instal || 160} kVA)
+                </option>
+              `).join('')}
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Type de Contrôle</label>
+              <select id="fieldVisitType" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs">
+                <option value="Inspection Visuelle Générale">Inspection Visuelle Générale</option>
+                <option value="Contrôle Huile Transfo">Contrôle Huile &amp; Étanchéité</option>
+                <option value="Vérification Fusibles MT / BT">Vérification Fusibles &amp; Disjoncteur</option>
+                <option value="Mesure Tension BT &amp; Équilibrage">Mesure Tension BT &amp; Équilibrage</option>
+                <option value="Contrôle Terre &amp; Parafoudres">Prise de Terre &amp; Parafoudres</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Constat Technique</label>
+              <select id="fieldVisitStatut" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs font-semibold">
+                <option value="RAS" class="text-emerald-700">Bon état (RAS)</option>
+                <option value="Anomalie Mineure" class="text-amber-700">Anomalie Mineure</option>
+                <option value="Anomalie Critique" class="text-red-700">Anomalie Critique (Urgent)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Observations &amp; Relevés de Terrain</label>
+            <textarea
+              id="fieldVisitNotes"
+              rows="3"
+              placeholder="Ex : Niveau d'huile OK, tension 232V/402V, serrage des cosses BT effectué..."
+              class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs text-slate-900"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer"
+          >
+            &check; Enregistrer la Visite dans GPARC Mobile
+          </button>
+        </form>
+      </div>
+
+      <!-- Historique des Visites Enregistrées -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-bold text-slate-700">Historique des Visites (${state.interventions.length})</span>
+          <button
+            onclick="window.app.exportInterventions()"
+            class="text-xs text-blue-600 font-bold cursor-pointer"
+          >
+            Export JSON
+          </button>
+        </div>
+
+        ${state.interventions.length === 0 ? `
+          <div class="p-6 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-400">
+            Aucune visite enregistrée pour le moment.
+          </div>
+        ` : state.interventions.map(int => `
+          <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-1.5 text-xs">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono font-bold text-slate-900">${escapeHtml(int.posteId)}</span>
+                <span class="text-[10px] text-slate-500 font-semibold">${escapeHtml(int.posteNom || '')}</span>
+              </div>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded ${
+                int.statut === 'RAS' ? 'bg-emerald-100 text-emerald-800' :
+                int.statut === 'Anomalie Mineure' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
+              }">
+                ${escapeHtml(int.statut)}
+              </span>
+            </div>
+            <div class="text-[11px] text-slate-600">${escapeHtml(int.type)}</div>
+            <div class="text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">${escapeHtml(int.note)}</div>
+            <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
+              <span>${escapeHtml(int.date)}</span>
+              <button onclick="window.app.deleteIntervention('${escapeJsString(int.id)}')" class="text-red-500 hover:text-red-700 font-semibold cursor-pointer">Supprimer</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// --- VUE 5 : PARAMÈTRES & DONNÉES DBASE (GESTION RÉFÉRENTIELS) ---
+function renderSettingsView() {
+  const { transfos, conducteurs, seuils } = state.settings;
+
+  return `
+    <div class="p-4 space-y-4 max-w-2xl mx-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-base font-bold text-slate-900">Paramètres &amp; Référentiel MT</h1>
+          <p class="text-xs text-slate-500">Calibres transformateurs, câbles, seuils &amp; tables DBase</p>
+        </div>
+        <button
+          onclick="window.app.resetDefaultSettings()"
+          class="px-2.5 py-1 text-xs font-semibold text-slate-600 bg-white border border-slate-300 rounded-lg shadow-2xs cursor-pointer"
+        >
+          Reset Normes
+        </button>
+      </div>
+
+      <!-- Segmented Control Sous-Onglets -->
+      <div class="flex items-center p-1 bg-slate-200/80 rounded-xl text-xs">
+        <button
+          onclick="window.app.setSettingsSubTab('transfos')"
+          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'transfos' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          Transfos
+        </button>
+        <button
+          onclick="window.app.setSettingsSubTab('conducteurs')"
+          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'conducteurs' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          Lignes
+        </button>
+        <button
+          onclick="window.app.setSettingsSubTab('seuils')"
+          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'seuils' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          Seuils MT
+        </button>
+        <button
+          onclick="window.app.setSettingsSubTab('tables')"
+          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'tables' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          Données 2025 / Tables
+        </button>
+      </div>
+
+      <!-- 1. Sous-Onglet Transformateurs -->
+      ${state.settingsSubTab === 'transfos' ? `
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-xs font-bold text-slate-700">Calibres Normalisés Sonelgaz (${transfos.length})</span>
+            <button onclick="window.app.toggleNewTransfoModal(true)" class="text-xs text-blue-600 font-bold cursor-pointer">+ Ajouter</button>
+          </div>
+
+          ${transfos.map((t, index) => `
+            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between text-xs">
+              <div>
+                <span class="font-mono font-bold text-amber-800 text-sm block">${t.kva} kVA</span>
+                <span class="text-slate-500 text-[11px]">Ucc: ${t.ucc}% &middot; In: ${t.in30}A &middot; P0: ${t.p0}W &middot; Pk: ${t.pk}W</span>
+                <span class="text-[10px] text-slate-400 block">${escapeHtml(t.desc || '')}</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700">${escapeHtml(t.type)}</span>
+                <button onclick="window.app.deleteTransfo(${index})" class="text-slate-400 hover:text-red-500 text-sm px-1 font-bold cursor-pointer">&times;</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      <!-- 2. Sous-Onglet Conducteurs -->
+      ${state.settingsSubTab === 'conducteurs' ? `
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-xs font-bold text-slate-700">Sections de Lignes &amp; Câbles (${conducteurs.length})</span>
+            <button onclick="window.app.toggleNewConducteurModal(true)" class="text-xs text-blue-600 font-bold cursor-pointer">+ Ajouter</button>
+          </div>
+
+          ${conducteurs.map((c, index) => `
+            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between text-xs">
+              <div>
+                <span class="font-mono font-bold text-slate-900 text-sm block">${escapeHtml(c.nom)}</span>
+                <span class="text-slate-500 text-[11px]">R': ${c.r}&Omega;/km &middot; X': ${c.x}&Omega;/km &middot; Imax: ${c.iMax}A</span>
+                <span class="text-[10px] text-slate-400 block">Pose: ${escapeHtml(c.pose)}</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-blue-50 text-blue-800 font-semibold">${c.section} mm²</span>
+                <button onclick="window.app.deleteConducteur(${index})" class="text-slate-400 hover:text-red-500 text-sm px-1 font-bold cursor-pointer">&times;</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      <!-- 3. Sous-Onglet Seuils MT -->
+      ${state.settingsSubTab === 'seuils' ? `
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3 text-xs">
+          <h2 class="font-bold text-slate-800 text-xs uppercase tracking-wide">Seuils Électriques HTA (30 kV)</h2>
+          <form onsubmit="window.app.saveSeuils(event)" class="space-y-3">
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Tension Nominale MT (kV)</label>
+              <input id="inputTensionNominale" type="number" step="0.5" value="${seuils.tensionNominale}" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Chute de Tension Max Urbaine (%)</label>
+              <input id="inputChuteTensionMax" type="number" step="0.1" value="${seuils.chuteTensionMax}" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Facteur de Puissance (cos &phi;)</label>
+              <input id="inputCosPhi" type="number" step="0.01" value="${seuils.cosPhi}" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+            </div>
+
+            <button type="submit" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer">
+              Enregistrer les Seuils
+            </button>
+          </form>
+        </div>
+      ` : ''}
+
+      <!-- 4. Sous-Onglet Tables DBase Historiques -->
+      ${state.settingsSubTab === 'tables' ? renderTablesView() : ''}
+    </div>
+  `;
+}
+
+// --- VUE TABLES DBASE (12 TABLES EXTRAITES D'ORIGINE) ---
+function renderTablesView() {
+  if (!Object.keys(fullTablesData).length) {
+    return '<div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-center text-xs font-semibold text-blue-800">' + escapeHtml(state.dataLoadError || 'Chargement des tables réseau…') + '</div>';
+  }
+  const currentTable = fullTablesData[state.tableSelected] || fullTablesData['Poste_htabt_lig'];
+  const rawRows = currentTable.rows || [];
+
+  const filteredRows = state.tableSearch.trim()
+    ? rawRows.filter(r => Object.values(r).some(val => String(val ?? '').toLowerCase().includes(state.tableSearch.toLowerCase())))
+    : rawRows;
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / state.tablePageSize));
+  const start = (state.tablePage - 1) * state.tablePageSize;
+  const paginatedRows = filteredRows.slice(start, start + state.tablePageSize);
+  const columns = rawRows.length > 0 ? Object.keys(rawRows[0]) : [];
+
+  return `
+    <div class="space-y-3 pt-1">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <span class="text-xs font-bold text-slate-700">12 Fichiers Extraits DBase</span>
+        <div class="flex items-center gap-1.5">
+          <button onclick="window.app.exportCurrentCsv()" class="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg shadow-2xs cursor-pointer">
+            Export CSV
+          </button>
+          <button onclick="window.app.exportCurrentJson()" class="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg shadow-2xs cursor-pointer">
+            Export JSON
+          </button>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <select
+          onchange="window.app.selectTable(this.value)"
+          class="flex-1 bg-white text-slate-900 text-xs font-mono font-bold rounded-xl p-2 border border-slate-300"
+        >
+          ${Object.keys(fullTablesData).map(tName => `
+            <option value="${tName}" ${tName === state.tableSelected ? 'selected' : ''}>
+              ${fullTablesData[tName].fileName} (${fullTablesData[tName].totalRows} lig.)
+            </option>
+          `).join('')}
+        </select>
+
+        <input
+          type="text"
+          id="tableSearchInput"
+          placeholder="Filtrer..."
+          value="${escapeHtml(state.tableSearch)}"
+          oninput="window.app.setTableSearch(this.value)"
+          class="w-32 bg-white text-slate-900 text-xs rounded-xl px-2 py-1.5 border border-slate-300"
+        />
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden flex flex-col">
+        <div class="overflow-x-auto min-h-[280px]">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-700 border-b border-slate-200">
+              <tr>
+                <th class="py-2 px-2.5 font-semibold w-8 text-center">#</th>
+                ${columns.slice(0, 6).map(c => `<th class="py-2 px-2.5 font-semibold font-mono whitespace-nowrap">${c}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              ${paginatedRows.map((row, idx) => `
+                <tr class="hover:bg-slate-50/80">
+                  <td class="py-2 px-2.5 text-center text-[10px] text-slate-400 font-mono">${start + idx + 1}</td>
+                  ${columns.slice(0, 6).map(c => `
+                    <td class="py-2 px-2.5 font-mono text-[11px] whitespace-nowrap text-slate-800">
+                      ${escapeHtml(row[c] ?? '-')}
+                    </td>
+                  `).join('')}
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="p-2.5 border-t border-slate-200 flex items-center justify-between text-xs bg-slate-50">
+          <span class="text-[11px] text-slate-500 font-mono">Page ${state.tablePage} / ${totalPages} (${filteredRows.length} lignes)</span>
+          <div class="flex gap-1">
+            <button
+              onclick="window.app.setTablePage(${state.tablePage - 1})"
+              ${state.tablePage <= 1 ? 'disabled' : ''}
+              class="px-2 py-1 rounded bg-white border border-slate-300 text-xs font-semibold disabled:opacity-40 cursor-pointer"
+            >&larr;</button>
+            <button
+              onclick="window.app.setTablePage(${state.tablePage + 1})"
+              ${state.tablePage >= totalPages ? 'disabled' : ''}
+              class="px-2 py-1 rounded bg-white border border-slate-300 text-xs font-semibold disabled:opacity-40 cursor-pointer"
+            >&rarr;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// --- MODAL RECHERCHE RAPIDE GLOBALE ---
+function renderQuickSearchModal() {
+  if (!state.showQuickSearchModal) return '';
+
+  const q = state.quickSearchQuery.trim().toLowerCase();
+  let results = [];
+
+  if (q.length >= 2) {
+    // 1. Recherche dans les départs
+    for (const dep of departsSummary) {
+      if (dep.id.toLowerCase().includes(q)) {
+        results.push({ type: 'DEPART', id: dep.id, label: `Départ MT ${dep.id} (${dep.posteCount}P, ${dep.totalLengthKm} km)` });
+      }
+    }
+    // 2. Recherche dans les 2 660 Postes du catalogue 2025
+    const allPostes = fullTablesData['POSTE_2025']?.rows || [];
+    for (const p of allPostes) {
+      const pId = p.id || p.code || '';
+      const pNom = p.nom || '';
+      const pLoc = p.localite || '';
+      if (pId.toLowerCase().includes(q) || pNom.toLowerCase().includes(q) || pLoc.toLowerCase().includes(q)) {
+        results.push({
+          type: 'POSTE',
+          id: pId,
+          depId: p.depart || state.selectedDepartId,
+          label: `${pNom || pId} &middot; ${p.pi || 0} kVA &middot; ${pLoc || p.district}`
+        });
+      }
+      if (results.length >= 25) break;
+    }
+    // 3. Recherche dans les 1 638 Appareils IACM
+    if (results.length < 25) {
+      const allIacms = fullTablesData['IACM_2025']?.rows || [];
+      for (const iacm of allIacms) {
+        const iCode = iacm.code || `J${iacm.num}`;
+        if (iCode.toLowerCase().includes(q) || (iacm.depart && iacm.depart.toLowerCase().includes(q))) {
+          results.push({
+            type: 'IACM',
+            id: iCode,
+            depId: iacm.depart || state.selectedDepartId,
+            label: `${iCode} &middot; ${iacm.positionLabel || (iacm.isOpen ? 'OUVERT' : 'FERMÉ')}`
+          });
+        }
+        if (results.length >= 30) break;
+      }
+    }
+  }
+
+  return `
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-start justify-center p-4 pt-16">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-md overflow-hidden flex flex-col space-y-2 p-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <span class="text-xs font-bold text-slate-800">🔍 Recherche Rapide d'Ouvrage MT</span>
+          <button onclick="window.app.closeQuickSearch()" class="text-slate-400 hover:text-slate-800 font-bold text-base px-1 cursor-pointer">&times;</button>
+        </div>
+
+        <input
+          id="quickSearchInput"
+          type="text"
+          autofocus
+          placeholder="Ex : 121P8002, Bentabouche, 127H1C3..."
+          value="${escapeHtml(state.quickSearchQuery)}"
+          oninput="window.app.handleQuickSearch(this.value)"
+          class="w-full bg-slate-50 text-slate-900 text-xs rounded-xl px-3 py-2 border border-slate-300 focus:bg-white focus:outline-blue-500"
+        />
+
+        <div class="max-h-[300px] overflow-y-auto space-y-1 pt-1">
+          ${!Object.keys(networkData.departs).length ? `
+            <div class="p-4 text-center text-xs text-blue-700">${escapeHtml(state.networkDataError || 'Chargement du réseau MT…')}</div>
+          ` : q.length < 2 ? `
+            <div class="p-4 text-center text-xs text-slate-400">Tapez au moins 2 caractères...</div>
+          ` : results.length === 0 ? `
+            <div class="p-4 text-center text-xs text-slate-400">Aucun résultat trouvé pour "${escapeHtml(q)}"</div>
+          ` : results.map(r => `
+            <div
+              onclick="window.app.selectSearchResult('${escapeJsString(r.type)}', '${escapeJsString(r.id)}', '${escapeJsString(r.depId || r.id)}')"
+              class="p-2 rounded-xl hover:bg-blue-50 transition-colors flex items-center justify-between cursor-pointer text-xs"
+            >
+              <div>
+                <span class="font-mono font-bold text-slate-900">${r.id}</span>
+                <span class="text-slate-600 block text-[11px]">${r.label}</span>
+              </div>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${r.type === 'DEPART' ? 'bg-purple-100 text-purple-800' : 'bg-amber-100 text-amber-800'}">
+                ${r.type}
+              </span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// --- MODAL AJOUT TRANSFORMATEUR ---
+function renderNewTransfoModal() {
+  if (!state.showNewTransfoModal) return '';
+
+  return `
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-sm p-4 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <strong class="text-xs font-bold text-slate-900">Ajouter un Calibre Transfo MT</strong>
+          <button onclick="window.app.toggleNewTransfoModal(false)" class="text-slate-400 hover:text-slate-800 font-bold">&times;</button>
+        </div>
+
+        <form onsubmit="window.app.addNewTransfo(event)" class="space-y-2 text-xs">
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Puissance (kVA)</label>
+            <input id="newTransfoKva" type="number" required placeholder="Ex : 800" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Pertes à vide P0 (W)</label>
+              <input id="newTransfoP0" type="number" placeholder="1300" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Pertes en charge Pk (W)</label>
+              <input id="newTransfoPk" type="number" placeholder="8500" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Type de structure</label>
+            <select id="newTransfoType" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300">
+              <option value="MS">Cabine Maçonnée (MS)</option>
+              <option value="AC">Haut de Poteau (AC)</option>
+              <option value="MA">Poste Urbain Mobile (MA)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Description / Usage</label>
+            <input id="newTransfoDesc" type="text" placeholder="Ex : Zone industrielle" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300" />
+          </div>
+
+          <div class="pt-2 flex gap-2">
+            <button type="button" onclick="window.app.toggleNewTransfoModal(false)" class="flex-1 py-2 bg-slate-100 font-semibold text-slate-700 rounded-xl">Annuler</button>
+            <button type="submit" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-xs">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+}
+
+// --- MODAL AJOUT CONDUCTEUR ---
+function renderNewConducteurModal() {
+  if (!state.showNewConducteurModal) return '';
+
+  return `
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-sm p-4 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <strong class="text-xs font-bold text-slate-900">Ajouter une Section de Ligne</strong>
+          <button onclick="window.app.toggleNewConducteurModal(false)" class="text-slate-400 hover:text-slate-800 font-bold">&times;</button>
+        </div>
+
+        <form onsubmit="window.app.addNewConducteur(event)" class="space-y-2 text-xs">
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Nom usuel</label>
+            <input id="newCondNom" type="text" required placeholder="Ex : Almélec 93 mm²" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Section (mm²)</label>
+              <input id="newCondSection" type="number" required placeholder="93" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Nature</label>
+              <select id="newCondNat" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono">
+                <option value="AM">AM (Almélec)</option>
+                <option value="AL">AL (Aluminium)</option>
+                <option value="CU">CU (Cuivre)</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-1.5">
+            <div>
+              <label class="block text-slate-600 font-semibold text-[10px] mb-1">R' (&Omega;/km)</label>
+              <input id="newCondR" type="number" step="0.01" placeholder="0.35" class="w-full bg-slate-50 rounded-lg p-1.5 border border-slate-300 font-mono text-[11px]" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[10px] mb-1">X' (&Omega;/km)</label>
+              <input id="newCondX" type="number" step="0.01" placeholder="0.36" class="w-full bg-slate-50 rounded-lg p-1.5 border border-slate-300 font-mono text-[11px]" />
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[10px] mb-1">Imax (A)</label>
+              <input id="newCondImax" type="number" placeholder="280" class="w-full bg-slate-50 rounded-lg p-1.5 border border-slate-300 font-mono text-[11px]" />
+            </div>
+          </div>
+
+          <div class="pt-2 flex gap-2">
+            <button type="button" onclick="window.app.toggleNewConducteurModal(false)" class="flex-1 py-2 bg-slate-100 font-semibold text-slate-700 rounded-xl">Annuler</button>
+            <button type="submit" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-xs">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+}
+
+// --- MISE À JOUR TRANSFORMATION DU SCHÉMA SVG (PAN & ZOOM) ---
+function updateSvgTransform() {
+  const g = document.getElementById('networkViewport');
+  if (g) {
+    g.setAttribute('transform', `translate(${state.pan.x}, ${state.pan.y}) scale(${state.zoom})`);
+    g.style.transform = '';
+    g.style.transformOrigin = '';
+  }
+}
+
+// --- ATTACHEMENT DES ÉVÉNEMENTS TACTILES NON-PASSIFS SUR LE SCHÉMA ---
+function attachSchemaCanvasListeners() {
+  const container = document.getElementById('svgContainer');
+  if (!container) return;
+
+  // Enlever d'anciens listeners si existants pour éviter les doublons
+  container.removeEventListener('touchstart', window.app.handleTouchStart);
+  container.removeEventListener('touchmove', window.app.handleTouchMove);
+  container.removeEventListener('touchend', window.app.handleTouchEnd);
+  container.removeEventListener('touchcancel', window.app.handleTouchEnd);
+  container.removeEventListener('wheel', window.app.handleWheel);
+
+  // Attacher avec { passive: false } pour autoriser e.preventDefault() sur mobile
+  container.addEventListener('touchstart', window.app.handleTouchStart, { passive: false });
+  container.addEventListener('touchmove', window.app.handleTouchMove, { passive: false });
+  container.addEventListener('touchend', window.app.handleTouchEnd, { passive: false });
+  container.addEventListener('touchcancel', window.app.handleTouchEnd, { passive: false });
+  container.addEventListener('wheel', window.app.handleWheel, { passive: false });
+}
+
+// --- RENDU GLOBAL SPA ---
+export function renderApp() {
+  const root = document.getElementById('root');
+  if (!root) return;
+
+  let viewHtml = '';
+  if (state.activeTab === 'home') viewHtml = renderHomeView();
+  else if (state.activeTab === 'unifilaire') viewHtml = renderUnifilaireView();
+  else if (state.activeTab === 'ouvrages') viewHtml = renderOvragesViewSafe();
+  else if (state.activeTab === 'terrain') viewHtml = renderTerrainView();
+  else if (state.activeTab === 'settings') viewHtml = renderSettingsView();
+
+  root.innerHTML = `
+    <div class="min-h-screen bg-slate-50 text-slate-900 pb-20 flex flex-col antialiased">
+      ${renderMobileTopBar()}
+      ${state.storageWarning ? '<div role="alert" class="mx-3 mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">' + escapeHtml(state.storageWarning) + '</div>' : ''}
+      <main class="flex-1">
+        ${viewHtml}
+      </main>
+      ${renderMobileBottomBar()}
+
+      <!-- Modals Flottantes -->
+      ${renderQuickSearchModal()}
+      ${renderNewTransfoModal()}
+      ${renderNewConducteurModal()}
+    </div>
+  `;
+
+  // Initialisation des écouteurs tactiles du schéma interactif
+  if (state.activeTab === 'unifilaire') {
+    attachSchemaCanvasListeners();
+  }
+}
+
+function renderOvragesViewSafe() {
+  return renderOuvragesView();
+}
+
+// --- MÉTHODES GLOBALES ACCESSIBLES ---
+window.app = {
+  setTab: (tabId) => {
+    state.activeTab = tabId;
+    renderApp();
+    if (['unifilaire', 'ouvrages', 'terrain'].includes(tabId)) {
+      void ensureNetworkData().then(() => {
+        if (tabId === 'unifilaire') setTimeout(() => window.app.fitView(), 60);
+      });
+    }
+  },
+  setAgency: (agency) => {
+    state.selectedAgency = agency;
+    if (agency !== 'ALL') {
+      const currentSummary = departsSummary.find(d => d.id === state.selectedDepartId);
+      const currentAgency = currentSummary ? String(currentSummary.agency || currentSummary.id.slice(0, 3)) : '';
+      if (currentAgency !== agency) {
+        const firstDepart = departsSummary.find(d => String(d.agency || d.id.slice(0, 3)) === agency);
+        if (firstDepart) {
+          state.selectedDepartId = firstDepart.id;
+          state.selectedNode = null;
+          state.selectedEdge = null;
+          state.showBottomSheet = false;
+        }
+      }
+    }
+    renderApp();
+    if (state.activeTab === 'unifilaire') {
+      void ensureNetworkData().then(() => setTimeout(() => window.app.fitView(), 60));
+    }
+  },
+  openDepart: (depId) => {
+    state.selectedDepartId = depId;
+    state.activeTab = 'unifilaire';
+    state.selectedNode = null;
+    state.selectedEdge = null;
+    state.showBottomSheet = false;
+    renderApp();
+    void ensureNetworkData().then(() => {
+      if (state.activeTab === 'unifilaire') setTimeout(() => window.app.fitView(), 60);
+    });
+  },
+  selectDepart: (depId) => {
+    state.selectedDepartId = depId;
+    state.selectedNode = null;
+    state.selectedEdge = null;
+    state.showBottomSheet = false;
+    renderApp();
+    void ensureNetworkData().then(() => {
+      if (state.activeTab === 'unifilaire') setTimeout(() => window.app.fitView(), 60);
+    });
+  },
+  toggleJunctions: () => {
+    state.showJunctions = !state.showJunctions;
+    renderApp();
+  },
+  zoomCanvas: (delta) => {
+    state.zoom = Math.min(Math.max(0.15, state.zoom + delta), 4.0);
+    updateSvgTransform();
+  },
+  fitView: () => {
+    const container = document.getElementById('svgContainer');
+    const width = container ? container.clientWidth : (window.innerWidth || 390);
+    const height = container ? container.clientHeight : 500;
+
+    if (window._currentCalculatedBounds && isFinite(window._currentCalculatedBounds.minX)) {
+      const b = window._currentCalculatedBounds;
+      const graphW = Math.max(b.maxX - b.minX + 160, 200);
+      const graphH = Math.max(b.maxY - b.minY + 160, 200);
+
+      // Pour mobile (ou desktop) : cadrage initial parfait
+      const scaleX = (width - 40) / graphW;
+      const scaleY = (height - 40) / graphH;
+      // On conserve un zoom lisible :
+      const autoZoom = Math.min(Math.max(Math.min(scaleX, scaleY), 0.15), 1.0);
+
+      state.zoom = autoZoom;
+      state.pan = {
+        x: 30,
+        y: Math.max(20, (height - (b.maxY - b.minY) * autoZoom) / 2 - b.minY * autoZoom)
+      };
+    } else {
+      state.zoom = 0.8;
+      state.pan = { x: 30, y: 70 };
+    }
+    updateSvgTransform();
+  },
+  selectNode: (nodeId) => {
+    if (state.dragMoved) return;
+    const dep = networkData.departs[state.selectedDepartId];
+    const n = dep?.nodes.find(item => item.id === nodeId);
+    if (n) {
+      state.selectedNode = n;
+      state.selectedEdge = null;
+      state.showBottomSheet = true;
+      renderApp();
+    }
+  },
+  selectEdge: (edgeId) => {
+    if (state.dragMoved) return;
+    const dep = networkData.departs[state.selectedDepartId];
+    const e = dep?.edges.find(item => item.id === edgeId);
+    if (e) {
+      state.selectedEdge = e;
+      state.selectedNode = null;
+      state.showBottomSheet = true;
+      renderApp();
+    }
+  },
+  closeBottomSheet: () => {
+    state.showBottomSheet = false;
+    renderApp();
+  },
+  setPoseFilter: (filter) => {
+    state.poseFilter = filter;
+    renderApp();
+  },
+  togglePoseLegend: () => {
+    state.showPoseLegend = !state.showPoseLegend;
+    renderApp();
+  },
+
+  // --- GESTION TACTILE MOBILE (PAN ET PINCH-TO-ZOOM À 2 DOIGTS) ---
+  handleTouchStart: (e) => {
+    if (!e.touches || e.touches.length === 0) return;
+    state.dragMoved = false;
+
+    if (e.touches.length === 1) {
+      // 1 doigt : déplacement (pan)
+      const touch = e.touches[0];
+      state.isDragging = true;
+      state.dragStart = {
+        x: touch.clientX - state.pan.x,
+        y: touch.clientY - state.pan.y,
+        startX: touch.clientX,
+        startY: touch.clientY
+      };
+    } else if (e.touches.length >= 2) {
+      // 2 doigts : zoom par pincement (pinch-to-zoom)
+      state.isDragging = false;
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const dist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      state.touchInitialDist = dist > 0 ? dist : 1;
+      state.touchInitialZoom = state.zoom;
+      state.touchInitialPan = { x: state.pan.x, y: state.pan.y };
+      state.touchCenter = {
+        x: (t1.clientX + t2.clientX) / 2,
+        y: (t1.clientY + t2.clientY) / 2
+      };
+    }
+  },
+
+  handleTouchMove: (e) => {
+    if (!e.touches || e.touches.length === 0) return;
+    if (e.cancelable) {
+      e.preventDefault(); // Empêche le scroll de page ou le rafraîchissement natif
+    }
+
+    if (e.touches.length === 1 && state.isDragging) {
+      const touch = e.touches[0];
+      const dx = touch.clientX - state.dragStart.startX;
+      const dy = touch.clientY - state.dragStart.startY;
+      if (Math.hypot(dx, dy) > 4) {
+        state.dragMoved = true;
+      }
+      state.pan.x = touch.clientX - state.dragStart.x;
+      state.pan.y = touch.clientY - state.dragStart.y;
+      updateSvgTransform();
+    } else if (e.touches.length >= 2) {
+      state.dragMoved = true;
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const currentDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      const factor = currentDist / (state.touchInitialDist || 1);
+      const targetZoom = Math.min(Math.max(0.2, state.touchInitialZoom * factor), 3.5);
+
+      const currentCenter = {
+        x: (t1.clientX + t2.clientX) / 2,
+        y: (t1.clientY + t2.clientY) / 2
+      };
+
+      const zoomRatio = targetZoom / state.touchInitialZoom;
+      state.pan.x = currentCenter.x - (state.touchCenter.x - state.touchInitialPan.x) * zoomRatio;
+      state.pan.y = currentCenter.y - (state.touchCenter.y - state.touchInitialPan.y) * zoomRatio;
+      state.zoom = targetZoom;
+      updateSvgTransform();
+    }
+  },
+
+  handleTouchEnd: (e) => {
+    if (e.touches && e.touches.length === 1) {
+      // Reprise fluide du pan à 1 doigt
+      const touch = e.touches[0];
+      state.isDragging = true;
+      state.dragStart = {
+        x: touch.clientX - state.pan.x,
+        y: touch.clientY - state.pan.y,
+        startX: touch.clientX,
+        startY: touch.clientY
+      };
+    } else if (!e.touches || e.touches.length === 0) {
+      state.isDragging = false;
+      setTimeout(() => {
+        state.dragMoved = false;
+      }, 80);
+    }
+  },
+
+  // --- GESTION SOURIS DESKTOP ---
+  handleMouseDown: (e) => {
+    if (e.button !== 0) return;
+    state.isDragging = true;
+    state.dragMoved = false;
+    state.dragStart = {
+      x: e.clientX - state.pan.x,
+      y: e.clientY - state.pan.y,
+      startX: e.clientX,
+      startY: e.clientY
+    };
+  },
+  handleMouseMove: (e) => {
+    if (!state.isDragging) return;
+    const dx = e.clientX - state.dragStart.startX;
+    const dy = e.clientY - state.dragStart.startY;
+    if (Math.hypot(dx, dy) > 4) {
+      state.dragMoved = true;
+    }
+    state.pan.x = e.clientX - state.dragStart.x;
+    state.pan.y = e.clientY - state.dragStart.y;
+    updateSvgTransform();
+  },
+  handleMouseUp: () => {
+    state.isDragging = false;
+    setTimeout(() => {
+      state.dragMoved = false;
+    }, 80);
+  },
+  handleWheel: (e) => {
+    if (e.cancelable) e.preventDefault();
+    const zoomFactor = e.deltaY < 0 ? 1.15 : 0.87;
+    const targetZoom = Math.min(Math.max(0.2, state.zoom * zoomFactor), 3.5);
+
+    const rect = document.getElementById('svgContainer')?.getBoundingClientRect();
+    if (rect) {
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      state.pan.x = mouseX - (mouseX - state.pan.x) * (targetZoom / state.zoom);
+      state.pan.y = mouseY - (mouseY - state.pan.y) * (targetZoom / state.zoom);
+    }
+    state.zoom = targetZoom;
+    updateSvgTransform();
+  },
+
+  // Ouvrages
+  setOuvragesFilter: (type) => {
+    state.ouvragesFilterType = type;
+    renderApp();
+    if (type === 'T' || type === 'L' || state.ouvragesScope === 'ALL') void ensureFullTablesData();
+  },
+  setOuvragesScope: (scope) => {
+    state.ouvragesScope = scope;
+    renderApp();
+    if (scope === 'ALL') void ensureFullTablesData();
+  },
+  setOuvragesSearch: (q) => {
+    const active = document.activeElement;
+    const hadFocus = active?.id === 'ouvragesSearchInput';
+    const selectionStart = hadFocus ? active.selectionStart : null;
+    const selectionEnd = hadFocus ? active.selectionEnd : null;
+    state.ouvragesSearch = q;
+    renderApp();
+    if (hadFocus) {
+      const input = document.getElementById('ouvragesSearchInput');
+      input?.focus();
+      if (input && Number.isInteger(selectionStart) && Number.isInteger(selectionEnd)) {
+        input.setSelectionRange(selectionStart, selectionEnd);
+      }
+    }
+  },
+  showOuvrageOnMap: (nodeId, depId) => {
+    if (depId && networkData.departs[depId] && state.selectedDepartId !== depId) {
+      state.selectedDepartId = depId;
+    } else if (!depId || !networkData.departs[state.selectedDepartId]?.nodes.some(n => n.id === nodeId)) {
+      // Rechercher dans quel départ se trouve ce nœud
+      for (const dId of Object.keys(networkData.departs)) {
+        if (networkData.departs[dId].nodes.some(n => n.id === nodeId)) {
+          state.selectedDepartId = dId;
+          break;
+        }
+      }
+    }
+    state.activeTab = 'unifilaire';
+    state.selectedNode = null;
+    const dep = networkData.departs[state.selectedDepartId];
+    const n = dep?.nodes.find(item => item.id === nodeId);
+    if (n) {
+      state.selectedNode = n;
+      state.showBottomSheet = true;
+    }
+    renderApp();
+    setTimeout(() => {
+      const nodePos = window._currentNodePosMap?.get(nodeId);
+      if (nodePos) {
+        const container = document.getElementById('svgContainer');
+        const w = container ? container.clientWidth : (window.innerWidth || 390);
+        const h = container ? container.clientHeight : 500;
+        state.zoom = 1.0;
+        state.pan.x = w / 2 - nodePos.x * state.zoom;
+        state.pan.y = h / 2 - nodePos.y * state.zoom;
+        updateSvgTransform();
+      }
+    }, 70);
+  },
+
+  // Terrain & Visites (GPARC-Mobile)
+  createInterventionForPoste: (nodeId, nodeNom) => {
+    state.newVisitPosteId = nodeId;
+    state.activeTab = 'terrain';
+    state.showBottomSheet = false;
+    renderApp();
+  },
+  saveIntervention: (e) => {
+    e.preventDefault();
+    const posteId = document.getElementById('fieldVisitPoste')?.value || state.newVisitPosteId;
+    const type = document.getElementById('fieldVisitType')?.value || 'Inspection Visuelle';
+    const statut = document.getElementById('fieldVisitStatut')?.value || 'RAS';
+    const note = document.getElementById('fieldVisitNotes')?.value || 'Contrôle effectué sans anomalie.';
+
+    const newInt = {
+      id: `INT-${Date.now().toString().slice(-4)}`,
+      posteId,
+      posteNom: posteId,
+      date: new Date().toLocaleDateString('fr-FR') + ' ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+      type,
+      statut,
+      note
+    };
+
+    state.interventions.unshift(newInt);
+    const saved = persistLocalStorage('gdo_mt_interventions', state.interventions);
+
+    state.visitSuccessNotice = saved;
+    renderApp();
+    setTimeout(() => {
+      state.visitSuccessNotice = false;
+      renderApp();
+    }, 3000);
+  },
+  deleteIntervention: (id) => {
+    state.interventions = state.interventions.filter(item => item.id !== id);
+    const saved = persistLocalStorage('gdo_mt_interventions', state.interventions);
+    renderApp();
+  },
+  exportInterventions: () => {
+    const blob = new Blob([JSON.stringify(state.interventions, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Visites_GPARC_Mobile_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
+
+  // Paramètres
+  setSettingsSubTab: (subTab) => {
+    state.settingsSubTab = subTab;
+    renderApp();
+    if (subTab === 'tables') void ensureFullTablesData();
+  },
+  resetDefaultSettings: () => {
+    state.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+    removeStoredValue('gdo_mt_settings');
+    renderApp();
+  },
+  toggleNewTransfoModal: (show) => {
+    state.showNewTransfoModal = show;
+    renderApp();
+  },
+  addNewTransfo: (e) => {
+    e.preventDefault();
+    const kva = Number(document.getElementById('newTransfoKva').value);
+    const p0 = Number(document.getElementById('newTransfoP0').value) || 1000;
+    const pk = Number(document.getElementById('newTransfoPk').value) || 6000;
+    const type = document.getElementById('newTransfoType').value;
+    const desc = document.getElementById('newTransfoDesc').value || 'Calibre normalisé';
+    const in30 = Number((kva / (30 * Math.sqrt(3))).toFixed(2));
+
+    state.settings.transfos.push({ kva, ucc: 4.0, p0, pk, in30, type, desc });
+    state.settings.transfos.sort((a, b) => a.kva - b.kva);
+    state.showNewTransfoModal = false;
+    persistLocalStorage('gdo_mt_settings', state.settings);
+    renderApp();
+  },
+  deleteTransfo: (index) => {
+    state.settings.transfos.splice(index, 1);
+    persistLocalStorage('gdo_mt_settings', state.settings);
+    renderApp();
+  },
+  toggleNewConducteurModal: (show) => {
+    state.showNewConducteurModal = show;
+    renderApp();
+  },
+  addNewConducteur: (e) => {
+    e.preventDefault();
+    const nom = document.getElementById('newCondNom').value;
+    const section = Number(document.getElementById('newCondSection').value);
+    const nat = document.getElementById('newCondNat').value;
+    const r = Number(document.getElementById('newCondR').value) || 0.35;
+    const x = Number(document.getElementById('newCondX').value) || 0.36;
+    const iMax = Number(document.getElementById('newCondImax').value) || 280;
+    const code = `${nat}_${section}`;
+    const pose = nat === 'AL' && section >= 150 ? 'SOUTERRAIN' : 'AÉRIEN NU';
+
+    state.settings.conducteurs.push({ code, nom, section, nat, r, x, iMax, pose });
+    state.settings.conducteurs.sort((a, b) => a.section - b.section);
+    state.showNewConducteurModal = false;
+    persistLocalStorage('gdo_mt_settings', state.settings);
+    renderApp();
+  },
+  deleteConducteur: (index) => {
+    state.settings.conducteurs.splice(index, 1);
+    persistLocalStorage('gdo_mt_settings', state.settings);
+    renderApp();
+  },
+  saveSeuils: (e) => {
+    e.preventDefault();
+    state.settings.seuils.tensionNominale = Number(document.getElementById('inputTensionNominale').value) || 30.0;
+    state.settings.seuils.chuteTensionMax = Number(document.getElementById('inputChuteTensionMax').value) || 5.0;
+    state.settings.seuils.cosPhi = Number(document.getElementById('inputCosPhi').value) || 0.90;
+    persistLocalStorage('gdo_mt_settings', state.settings);
+    renderApp();
+  },
+
+  // Tables DBase
+  selectTable: (tName) => {
+    state.tableSelected = tName;
+    state.tablePage = 1;
+    state.tableSearch = '';
+    renderApp();
+  },
+  setTableSearch: (q) => {
+    const active = document.activeElement;
+    const hadFocus = active?.id === 'tableSearchInput';
+    const selectionStart = hadFocus ? active.selectionStart : null;
+    const selectionEnd = hadFocus ? active.selectionEnd : null;
+    state.tableSearch = q;
+    state.tablePage = 1;
+    renderApp();
+    if (hadFocus) {
+      const input = document.getElementById('tableSearchInput');
+      input?.focus();
+      if (input && Number.isInteger(selectionStart) && Number.isInteger(selectionEnd)) {
+        input.setSelectionRange(selectionStart, selectionEnd);
+      }
+    }
+  },
+  setTablePage: (p) => {
+    state.tablePage = Math.max(1, p);
+    renderApp();
+  },
+  exportCurrentCsv: () => {
+    const currentTable = fullTablesData[state.tableSelected];
+    const rows = currentTable.rows;
+    if (!rows || rows.length === 0) return;
+    const cols = Object.keys(rows[0]);
+    const csvCell = (value) => {
+      let text = String(value ?? '');
+      if (/^\s*[=+@-]/.test(text)) text = "'" + text;
+      return `"${text.replace(/"/g, '""')}"`;
+    };
+    const csv = [cols.map(csvCell).join(','), ...rows.map(r => cols.map(c => csvCell(r[c])).join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${state.tableSelected}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
+  exportCurrentJson: () => {
+    const currentTable = fullTablesData[state.tableSelected];
+    const rows = currentTable.rows;
+    const blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${state.tableSelected}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
+
+  // Recherche rapide globale
+  openQuickSearch: () => {
+    state.showQuickSearchModal = true;
+    state.quickSearchQuery = '';
+    renderApp();
+    void ensureNetworkData();
+    setTimeout(() => {
+      document.getElementById('quickSearchInput')?.focus();
+    }, 100);
+  },
+  closeQuickSearch: () => {
+    state.showQuickSearchModal = false;
+    renderApp();
+  },
+  handleQuickSearch: (q) => {
+    state.quickSearchQuery = q;
+    renderApp();
+    const input = document.getElementById('quickSearchInput');
+    if (input) {
+      input.focus();
+      input.setSelectionRange(q.length, q.length);
+    }
+  },
+  selectSearchResult: (type, id, depId) => {
+    state.showQuickSearchModal = false;
+    if (type === 'DEPART') {
+      window.app.openDepart(id);
+    } else {
+      window.app.showOuvrageOnMap(id, depId);
+    }
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderApp();
+});
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  renderApp();
+}
