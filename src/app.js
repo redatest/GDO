@@ -1300,7 +1300,27 @@ function renderOuvragesView() {
 
   if (fType === 'P') {
     if (isGlobalScope) {
-      rawList = fullTablesData['POSTE_2025']?.rows || [];
+      // Le catalogue 2025 embarqué peut être partiel : compléter sans écraser ses fiches
+      // avec les postes présents dans le référentiel topologique complet.
+      const postesById = new Map();
+      for (const item of (fullTablesData['POSTE_2025']?.rows || [])) {
+        const id = String(item.id || item.code || '');
+        if (id) postesById.set(id, { ...item, id });
+      }
+      for (const [depId, depart] of Object.entries(networkData.departs || {})) {
+        for (const node of depart.nodes || []) {
+          if (node.type !== 'POSTE_HTA_BT' || postesById.has(node.id)) continue;
+          postesById.set(node.id, {
+            id: node.id,
+            nom: node.meta?.nom || node.id,
+            localite: node.meta?.localite || '',
+            pi: node.meta?.p_instal || 0,
+            typePosteLabel: node.meta?.typePosteLabel || 'Poste HTA/BT',
+            depart: depId
+          });
+        }
+      }
+      rawList = [...postesById.values()];
     } else {
       rawList = (currentDepart.nodes || []).filter(n => n.type === 'POSTE_HTA_BT').map(n => ({
         id: n.id,
