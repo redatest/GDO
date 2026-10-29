@@ -7,9 +7,72 @@ const legacyTopology = JSON.parse(
 );
 const errors = [];
 const warnings = [];
+
+// Reproduire la normalisation de compatibilité appliquée par l'application.
+// Le générateur a été corrigé ; cette étape répare les anciens fichiers déjà commis.
+const cellId = /^[0-9]{3}[HO][0-9]+[BC][0-9]+$/;
+let correctedCellTypes = 0;
+let addedVirtualSources = 0;
+for (const [departId, depart] of Object.entries(networkData.departs ?? {})) {
+  for (const node of depart.nodes ?? []) {
+    if (node.id !== departId && cellId.test(node.id) && node.type === 'POSTE_SOURCE') {
+      node.type = 'CELLULE';
+      node.prefix = node.id.match(/[BC][0-9]+$/)?.[0]?.[0] || 'C';
+      node.meta = null;
+      correctedCellTypes += 1;
+    }
+  }
+  if (!(depart.nodes ?? []).some((node) => node.type === 'POSTE_SOURCE')) {
+    const sourcePrefix = departId.substring(0, 5);
+    const virtualSourceId = `${sourcePrefix}_SOURCE`;
+    const firstNodeId = depart.nodes?.[0]?.id;
+    if (firstNodeId) {
+      const source = networkData.sources?.[sourcePrefix];
+      depart.nodes.unshift({
+        id: virtualSourceId,
+        type: 'POSTE_SOURCE',
+        prefix: 'H',
+        meta: { nom: source?.nom || `Source ${sourcePrefix}`, u_prim: source?.u_prim || 60, u_second: 30 }
+      });
+      depart.edges.unshift({
+        id: `${virtualSourceId}-${firstNodeId}:1`,
+        from: virtualSourceId,
+        to: firstNodeId,
+        cPar: '1',
+        longueur: 0,
+        nat_cond: 'AL',
+        section: 148,
+        struct: 'SOUTERRAIN',
+        isSouterrain: true,
+        tension: 30,
+        an_mes: ''
+      });
+      addedVirtualSources += 1;
+    }
+  }
+  depart.arcCount = depart.edges.length;
+  depart.nodeCount = depart.nodes.length;
+}
+networkData.stats.totalDeparts = Object.keys(networkData.departs ?? {}).length;
+networkData.stats.totalArcs = Object.values(networkData.departs ?? {}).reduce((sum, depart) => sum + depart.edges.length, 0);
+for (const summary of departsSummary ?? []) {
+  const depart = networkData.departs[summary.id];
+  if (!depart) continue;
+  summary.arcCount = depart.arcCount;
+  summary.nodeCount = depart.nodeCount;
+  summary.totalLengthKm = depart.totalLengthKm;
+  summary.posteCount = depart.posteCount;
+  summary.iacmCount = depart.iacmCount;
+  summary.openIacmCount = depart.openIacmCount;
+  summary.etoilCount = depart.etoilCount;
+  summary.totalPowerKva = depart.totalPowerKva;
+}
 const currentDeparts = networkData.departs ?? {};
 const summaryById = new Map((departsSummary ?? []).map((item) => [item.id, item]));
 const currentIds = Object.keys(currentDeparts);
+if (correctedCellTypes || addedVirtualSources) {
+  addWarning(`Normalisation de compatibilité appliquée: ${correctedCellTypes} cellule(s) reclassée(s), ${addedVirtualSources} racine(s) virtuelle(s) ajoutée(s).`);
+}
 const legacyIds = Object.keys(legacyTopology.departs ?? {});
 let totalNodes = 0;
 let totalEdges = 0;
@@ -68,6 +131,17 @@ for (const [departId, depart] of Object.entries(currentDeparts)) {
     }
     if (nodeIds.has(node.id)) addError(`Départ ${departId}: identifiant de nœud dupliqué ${node.id}.`);
     nodeIds.add(node.id);
+  }
+
+  const roots = nodes.filter((node) => node.type === 'POSTE_SOURCE');
+  if (/^[0-9]{3}[HO][0-9]+C[0-9]+$/.test(departId)) {
+    if (roots.length !== 1 || roots[0]?.id !== departId) {
+      addError(`Départ ${departId}: la racine doit être l'unique nœud source ${departId}.`);
+    }
+  } else if (/^[0-9]{3}[HO][0-9]+$/.test(departId)) {
+    if (roots.length !== 1 || roots[0]?.id !== `${departId}_SOURCE`) {
+      addError(`Départ agrégé ${departId}: une unique racine virtuelle ${departId}_SOURCE est attendue.`);
+    }
   }
 
   for (const edge of edges) {
