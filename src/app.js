@@ -335,15 +335,15 @@ function escapeJsString(value) {
 function renderMobileTopBar() {
   return `
     <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 py-2 shadow-xs">
-      <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
-        <!-- Logo & Identité GPARC Mobile -->
+      <div class="max-w-screen-2xl mx-auto flex items-center justify-between gap-3 md:gap-6">
+        <!-- Logo & Identité GDO-MT -->
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-black text-xs shadow-xs tracking-wider">
             GP
           </div>
           <div>
             <div class="flex items-center gap-1.5">
-              <span class="text-xs font-black tracking-tight text-slate-900 leading-none">GPARC-Mobile</span>
+              <span class="text-sm md:text-base font-black tracking-tight text-slate-900 leading-none">GDO-MT</span>
               <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">MT 30kV</span>
             </div>
             <span class="text-[10px] text-slate-500 font-medium">SDO &middot; Wilaya de Guelma (24)</span>
@@ -388,20 +388,20 @@ function renderMobileBottomBar() {
 
   return `
     <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 shadow-lg">
-      <div class="max-w-md mx-auto grid grid-cols-5 gap-1">
+      <div class="max-w-3xl mx-auto grid grid-cols-5 gap-2 md:gap-4">
         ${navItems.map(item => {
           const isActive = state.activeTab === item.id;
           return `
             <button
               onclick="window.app.setTab('${escapeJsString(item.id)}')"
-              class="flex flex-col items-center justify-center py-1 rounded-xl transition-all cursor-pointer select-none ${
+              class="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-2 py-1.5 md:py-2.5 px-1 md:px-4 rounded-xl transition-all cursor-pointer select-none ${
                 isActive
                   ? 'text-blue-600 font-bold bg-blue-50/80 shadow-2xs'
                   : 'text-slate-500 hover:text-slate-900'
               }"
             >
-              <span class="text-base leading-none mb-0.5">${item.icon}</span>
-              <span class="text-[10px] leading-tight truncate tracking-tight">${item.label}</span>
+              <span class="text-base md:text-lg leading-none mb-0.5 md:mb-0">${item.icon}</span>
+              <span class="text-[10px] md:text-sm leading-tight truncate tracking-tight">${item.label}</span>
             </button>
           `;
         }).join('')}
@@ -426,7 +426,7 @@ function renderHomeView() {
     : departsSummary.filter(d => d.id.startsWith(state.selectedAgency));
 
   return `
-    <div class="p-4 space-y-4 max-w-2xl mx-auto">
+    <div class="p-4 md:p-6 xl:p-8 space-y-4 md:space-y-6 max-w-screen-2xl mx-auto">
       <!-- Bannière Principale GPARC-Mobile -->
       <div class="p-4 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 text-white shadow-sm space-y-3">
         <div class="flex items-center justify-between">
@@ -1352,7 +1352,7 @@ function renderOuvragesView() {
   const isLoadingGlobalData = (isGlobalScope || fType === 'T' || fType === 'L') && Object.keys(fullTablesData).length === 0;
 
   return `
-    <div class="p-4 space-y-3.5 max-w-2xl mx-auto">
+    <div class="p-4 md:p-6 xl:p-8 space-y-3.5 md:space-y-5 max-w-screen-2xl mx-auto">
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-base font-bold text-slate-900">Catalogue des Ouvrages MT</h1>
