@@ -1,36 +1,50 @@
-name: Deploy to GitHub Pages
+name: Build and deploy GDO-MT
 
 on:
   push:
     branches: [ main, master ]
+    paths-ignore:
+      - 'docs/**'
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: gdo-mt-deploy
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: 22
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
-      - name: Build Static App
-        run: npm run build
+      - name: Install dependencies from bun.lock
+        run: bun install --frozen-lockfile
+
+      - name: Check JavaScript syntax
+        run: bun run lint
+
+      - name: Audit network topology
+        run: bun run audit:topology
+
+      - name: Build static application
+        run: bun run build
 
       - name: Add .nojekyll
         run: touch dist/.nojekyll
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy build to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
