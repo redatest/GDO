@@ -5,7 +5,7 @@
  * Interface 100% GPARC-Mobile :
  * - Navigation mobile dock (Accueil, Schéma MT, Parc Ouvrages, Carnet Terrain, Paramètres & Tables)
  * - Thème Clair haute visibilité pour agents de terrain
- * - Pure HTML5 & JavaScript Vanilla (Zéro TypeScript, Zéro Node.js serveur, compatible GitHub Pages)
+ * - HTML5 et JavaScript natifs, exécutés directement dans le navigateur (compatible GitHub Pages)
  */
 
 let networkData = { sources: {}, departs: {}, stats: { totalDeparts: 49, totalPostes: 2660, totalTransformers: 2800, totalIacms: 1638, openIacms: 39, totalArcs: 7501, totalTroncons: 1372, lastUpdate: '31/12/2025' } };
