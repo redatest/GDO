@@ -2535,7 +2535,7 @@ window.app = {
     const cols = Object.keys(rows[0]);
     const csvCell = (value) => {
       let text = String(value ?? '');
-      if (/^[\\s]*[=+\\-@]/.test(text)) text = "'" + text;
+      if (/^\s*[=+@-]/.test(text)) text = "'" + text;
       return `"${text.replace(/"/g, '""')}"`;
     };
     const csv = [cols.map(csvCell).join(','), ...rows.map(r => cols.map(c => csvCell(r[c])).join(','))].join('\n');
