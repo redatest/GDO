@@ -550,12 +550,36 @@ function renderUnifilaireView() {
     }
   }
 
-  let unvisitedDepth = 1;
-  for (const n of nodes) {
-    if (!visited.has(n.id)) {
-      depthMap[n.id] = unvisitedDepth;
-      unvisitedDepth++;
+  const unreachableNodeCount = nodes.filter(n => !visited.has(n.id)).length;
+  const isolatedSeen = new Set();
+  let disconnectedComponentCount = 0;
+  let nextDisconnectedDepth = Math.max(0, ...Object.values(depthMap)) + 2;
+
+  // Placer chaque composante déconnectée comme un petit graphe cohérent,
+  // plutôt que d'attribuer une profondeur différente à chaque nœud isolé.
+  for (const node of nodes) {
+    if (visited.has(node.id) || isolatedSeen.has(node.id)) continue;
+    disconnectedComponentCount += 1;
+    const componentQueue = [{ id: node.id, depth: 0 }];
+    const componentNodes = [];
+    isolatedSeen.add(node.id);
+    let componentMaxDepth = 0;
+
+    while (componentQueue.length) {
+      const current = componentQueue.shift();
+      componentNodes.push(current);
+      componentMaxDepth = Math.max(componentMaxDepth, current.depth);
+      for (const neighbor of adj[current.id] || []) {
+        if (visited.has(neighbor) || isolatedSeen.has(neighbor)) continue;
+        isolatedSeen.add(neighbor);
+        componentQueue.push({ id: neighbor, depth: current.depth + 1 });
+      }
     }
+
+    for (const item of componentNodes) {
+      depthMap[item.id] = nextDisconnectedDepth + item.depth;
+    }
+    nextDisconnectedDepth += componentMaxDepth + 2;
   }
 
   const inPathSet = new Set();
@@ -720,6 +744,11 @@ function renderUnifilaireView() {
         </div>
       </div>
 
+      ${disconnectedComponentCount > 0 ? `
+        <div role="alert" class="shrink-0 border-b border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
+          Avertissement topologique : ${disconnectedComponentCount} composante(s) séparée(s), ${unreachableNodeCount} nœud(s) non raccordé(s) à la racine de ce départ. Le traçage amont peut être incomplet ; vérifiez les données de référence.
+        </div>
+      ` : ''}
       <!-- Canvas SVG Interactif -->
       <div
         id="svgContainer"
@@ -2070,7 +2099,7 @@ window.app = {
       const scaleX = (width - 40) / graphW;
       const scaleY = (height - 40) / graphH;
       // On conserve un zoom lisible :
-      const autoZoom = Math.min(Math.max(scaleY, 0.45), 1.0);
+      const autoZoom = Math.min(Math.max(Math.min(scaleX, scaleY), 0.15), 1.0);
 
       state.zoom = autoZoom;
       state.pan = {
