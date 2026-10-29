@@ -105,7 +105,8 @@ const state = {
   showBottomSheet: false,
 
   // Ouvrages (Parc MT)
-  ouvragesFilterType: 'P', // 'P' (Postes HTA/BT) | 'E' (Étoilements) | 'H_O' (Postes Sources & Coupures)
+  ouvragesFilterType: 'P', // 'P' (Postes HTA/BT) | 'J' (IACM) | 'T' (Transfos) | 'L' (Tronçons) | 'E' (Étoilements)
+  ouvragesScope: 'DEPART', // 'DEPART' | 'ALL'
   ouvragesSearch: '',
 
   // Terrain & Visites (GPARC-Mobile)
@@ -123,8 +124,8 @@ const state = {
   showNewTransfoModal: false,
   showNewConducteurModal: false,
 
-  // Tables DBase
-  tableSelected: 'Poste_htabt_lig',
+  // Tables Réseau & DBase
+  tableSelected: 'POSTE_2025',
   tablePage: 1,
   tablePageSize: 15,
   tableSearch: ''
@@ -226,9 +227,13 @@ function renderMobileBottomBar() {
 // --- VUE 1 : ACCUEIL MOBILE GPARC ---
 function renderHomeView() {
   const totalKm = departsSummary.reduce((acc, d) => acc + d.totalLengthKm, 0).toFixed(1);
-  const totalPostes = departsSummary.reduce((acc, d) => acc + d.posteCount, 0);
+  const totalPostes = networkData.stats?.totalPostes || 2660;
   const totalPower = departsSummary.reduce((acc, d) => acc + d.totalPowerKva, 0);
-  const totalArcs = departsSummary.reduce((acc, d) => acc + d.arcCount, 0);
+  const totalArcs = networkData.stats?.totalArcs || departsSummary.reduce((acc, d) => acc + d.arcCount, 0);
+  const totalIacms = networkData.stats?.totalIacms || 1638;
+  const openIacms = networkData.stats?.openIacms || 39;
+  const totalTransfos = networkData.stats?.totalTransformers || 2800;
+  const totalTroncons = networkData.stats?.totalTroncons || 1372;
 
   const filteredDeparts = state.selectedAgency === 'ALL'
     ? departsSummary
@@ -242,7 +247,7 @@ function renderHomeView() {
           <div class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span class="text-[10px] font-bold uppercase tracking-wider text-blue-100">
-              GPARC-Terrain Connecté &middot; Cache Local
+              GPARC-Terrain Connecté &middot; Inventaire 2025
             </span>
           </div>
           <span class="text-[10px] font-mono bg-white/20 px-2 py-0.5 rounded-full font-bold">
@@ -251,9 +256,9 @@ function renderHomeView() {
         </div>
 
         <div>
-          <h1 class="text-lg font-black tracking-tight">Réseau Moyenne Tension (HTA)</h1>
+          <h1 class="text-lg font-black tracking-tight">Réseau Moyenne Tension HTA (30 kV)</h1>
           <p class="text-xs text-blue-100 leading-relaxed mt-0.5">
-            Cartographie topologique, caractéristiques physiques des ouvrages et carnet de visite technique.
+            Cartographie unifilaire, caractéristiques physiques du parc 2025 (2 660 postes, 1 638 IACM) et fiches d'inspection terrain.
           </p>
         </div>
 
@@ -271,7 +276,7 @@ function renderHomeView() {
             class="py-2 px-2 bg-blue-800/80 hover:bg-blue-800 text-white font-semibold rounded-xl text-center cursor-pointer flex flex-col items-center justify-center border border-white/10"
           >
             <span class="text-sm mb-0.5">🏢</span>
-            <span>Ouvrages</span>
+            <span>Ouvrages (${formatNumber(totalPostes)})</span>
           </button>
           <button
             onclick="window.app.setTab('terrain')"
@@ -283,30 +288,42 @@ function renderHomeView() {
         </div>
       </div>
 
-      <!-- 4 Compteurs Statistiques Tactiles -->
-      <div class="grid grid-cols-2 gap-3">
-        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs">
+      <!-- 6 Compteurs Statistiques 2025 -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
           <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Linéaire Total</span>
-          <div class="text-lg font-mono font-bold text-slate-900">${totalKm} <span class="text-xs font-normal text-slate-500">km</span></div>
-          <span class="text-[10px] text-slate-500">${formatNumber(totalArcs)} tronçons de lignes</span>
+          <div class="text-base font-mono font-bold text-slate-900">${totalKm} <span class="text-xs font-normal text-slate-500">km</span></div>
+          <span class="text-[10px] text-slate-500">${formatNumber(totalArcs)} arcs de ligne</span>
         </div>
 
-        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs">
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
           <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Postes HTA/BT</span>
-          <div class="text-lg font-mono font-bold text-amber-700">${totalPostes}</div>
-          <span class="text-[10px] text-slate-500">Postes transformateurs</span>
+          <div class="text-base font-mono font-bold text-amber-700">${formatNumber(totalPostes)}</div>
+          <span class="text-[10px] text-slate-500">Postes recensés 2025</span>
         </div>
 
-        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs">
-          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Puissance Réseau</span>
-          <div class="text-lg font-mono font-bold text-purple-700">${formatNumber(totalPower)} <span class="text-xs font-normal text-slate-500">kVA</span></div>
-          <span class="text-[10px] text-slate-500">Tension : 30 kV / 400 V</span>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Transformateurs</span>
+          <div class="text-base font-mono font-bold text-purple-700">${formatNumber(totalTransfos)}</div>
+          <span class="text-[10px] text-slate-500">${formatNumber(totalPower)} kVA installés</span>
         </div>
 
-        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs">
-          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Étoilements</span>
-          <div class="text-lg font-mono font-bold text-teal-700">378</div>
-          <span class="text-[10px] text-slate-500">Piquages de dérivation</span>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Appareils IACM</span>
+          <div class="text-base font-mono font-bold text-emerald-700">${formatNumber(totalIacms)}</div>
+          <span class="text-[10px] text-rose-600 font-semibold">${openIacms} points de coupure (O)</span>
+        </div>
+
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Tronçons Réseau</span>
+          <div class="text-base font-mono font-bold text-blue-700">${formatNumber(totalTroncons)}</div>
+          <span class="text-[10px] text-slate-500">Aérien &amp; Souterrain</span>
+        </div>
+
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Départs MT 30kV</span>
+          <div class="text-base font-mono font-bold text-indigo-700">${departsSummary.length}</div>
+          <span class="text-[10px] text-slate-500">Wilaya de Guelma (24)</span>
         </div>
       </div>
 
@@ -314,7 +331,7 @@ function renderHomeView() {
       <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700">Départs MT &middot; Agence ${state.selectedAgency} (${filteredDeparts.length})</h2>
-          <span class="text-[10px] text-slate-400">Touchez pour ouvrir</span>
+          <span class="text-[10px] text-slate-400">Touchez pour ouvrir le schéma</span>
         </div>
 
         <div class="space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
@@ -327,6 +344,11 @@ function renderHomeView() {
                 <div class="flex items-center gap-1.5">
                   <span class="font-mono font-bold text-xs text-slate-900">${d.id}</span>
                   <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700">${d.posteCount} Postes</span>
+                  ${d.openIacmCount > 0 ? `
+                    <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-rose-50 text-rose-700 border border-rose-200">
+                      ${d.openIacmCount} IACM-O
+                    </span>
+                  ` : ''}
                 </div>
                 <span class="text-[11px] text-slate-500 block">${d.totalLengthKm} km &middot; ${d.arcCount} Arcs &middot; ${formatNumber(d.totalPowerKva)} kVA</span>
               </div>
@@ -336,17 +358,59 @@ function renderHomeView() {
         </div>
       </div>
 
-      <!-- Postes Sources HTB / HTA -->
+      <!-- Postes Sources HTB / HTA (6 Postes Sources SDO) -->
       <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-2">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700">Postes Sources HTB / HTA</h2>
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700">Postes Sources HTB / HTA (SDO Guelma)</h2>
+          <span class="text-[10px] text-slate-400">6 Postes Sources</span>
+        </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-          <div class="p-3 rounded-xl bg-purple-50/70 border border-purple-200">
-            <span class="font-mono font-bold text-purple-900 block text-xs">125H3 &middot; NADOR</span>
-            <span class="text-[11px] text-slate-600">60 / 30 kV &middot; 2 &times; 40 MVA &middot; 12 Départs</span>
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">125H3 &middot; NADOR</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">60/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 40 MVA &middot; 17 Départs rattachés</span>
           </div>
-          <div class="p-3 rounded-xl bg-purple-50/70 border border-purple-200">
-            <span class="font-mono font-bold text-purple-900 block text-xs">125H2 &middot; MEDJEZ SFA</span>
-            <span class="text-[11px] text-slate-600">90 / 30 kV &middot; 2 &times; 10 MVA &middot; 8 Départs</span>
+
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">121H5 &middot; GUELMA VILLE</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">60/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 40 MVA &middot; 17 Départs rattachés</span>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">123H2 &middot; OUED ZENATI</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">60/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 20 MVA &middot; 8 Départs rattachés</span>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">127H1 &middot; BELKHEIR</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">60/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 40 MVA &middot; 5 Départs rattachés</span>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">125H2 &middot; MEDJEZ SFA</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">90/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 10 MVA &middot; 4 Départs rattachés</span>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-purple-900 text-xs">121H6 &middot; GUELMA NOUVEAU</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 text-purple-900">60/30 kV</span>
+            </div>
+            <span class="text-[11px] text-slate-600 block mt-0.5">2 &times; 40 MVA &middot; 2 Nouveaux Départs</span>
           </div>
         </div>
       </div>
@@ -522,14 +586,13 @@ function renderUnifilaireView() {
       >
         <svg
           id="networkSvg"
-          class="w-full h-full select-none"
+          class="w-full h-full select-none block"
           style="width: 100%; height: 100%; touch-action: none; overflow: visible !important;"
         >
-          <!-- Conteneur Pan & Zoom Infini (sans clipping) -->
+          <!-- Conteneur Pan & Zoom Infini (sans clipping Android) -->
           <g
             id="networkViewport"
             transform="translate(${state.pan.x}, ${state.pan.y}) scale(${state.zoom})"
-            style="transform: translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom}); transform-origin: 0 0;"
           >
             <!-- Arcs MT -->
             <g class="edges">
@@ -553,7 +616,7 @@ function renderUnifilaireView() {
                     stroke-dasharray="${edge.struct === 'SOUTERRAIN' ? '4 3' : 'none'}"
                     opacity="${isInPath || isEdgeSelected ? '1' : '0.85'}"
                   />
-                  ${state.zoom >= 0.8 && edge.longueur > 0 ? `
+                  ${state.zoom >= 0.75 && edge.longueur > 0 ? `
                     <text x="${(u.x + v.x) / 2}" y="${(u.y + v.y) / 2 - 4}" fill="#64748b" font-size="9" font-family="monospace" text-anchor="middle">
                       ${edge.longueur}m
                     </text>
@@ -568,7 +631,7 @@ function renderUnifilaireView() {
             ${calculatedNodes.map(node => {
               const isSelected = state.selectedNode?.id === node.id;
               const isRoot = node.id === rootId;
-              let r = node.type === 'POSTE_SOURCE' ? 15 : (node.type === 'POSTE_HTA_BT' ? 12 : (node.type === 'ETOILEMENT' ? 9 : 5));
+              let r = node.type === 'POSTE_SOURCE' ? 15 : (node.type === 'POSTE_HTA_BT' ? 12 : (node.type === 'ETOILEMENT' ? 9 : (node.type === 'INTERRUPTEUR_AERIEN' ? 9 : 5)));
 
               let fillColor = '#64748b';
               let strokeColor = '#334155';
@@ -576,14 +639,14 @@ function renderUnifilaireView() {
                 fillColor = '#7c3aed';
                 strokeColor = '#5b21b6';
               } else if (node.type === 'POSTE_HTA_BT') {
-                fillColor = '#ea580c';
-                strokeColor = '#9a3412';
+                fillColor = node.meta?.typePoste === 'MS' ? '#d97706' : '#ea580c';
+                strokeColor = '#78350f';
               } else if (node.type === 'ETOILEMENT') {
                 fillColor = '#0d9488';
                 strokeColor = '#115e59';
-              } else if (node.type === 'POSTE_COUPURE') {
-                fillColor = '#059669';
-                strokeColor = '#065f46';
+              } else if (node.type === 'INTERRUPTEUR_AERIEN') {
+                fillColor = node.meta?.isOpen ? '#fef2f2' : '#059669';
+                strokeColor = node.meta?.isOpen ? '#dc2626' : '#047857';
               }
 
               if (node.inPath) {
@@ -606,16 +669,26 @@ function renderUnifilaireView() {
                     <circle r="${r - 5}" fill="none" stroke="#ffffff" stroke-width="1.5"/>
                     <text y="3" fill="#ffffff" font-size="9" font-weight="bold" text-anchor="middle">HT</text>
                   ` : node.type === 'POSTE_HTA_BT' ? `
-                    <rect x="${-r}" y="${-r}" width="${r * 2}" height="${r * 2}" rx="3" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2"/>
+                    <rect x="${-r}" y="${-r}" width="${r * 2}" height="${r * 2}" rx="3.5" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2"/>
                     <text y="3.5" fill="#ffffff" font-size="9" font-weight="bold" font-family="monospace" text-anchor="middle">T</text>
                   ` : node.type === 'ETOILEMENT' ? `
                     <polygon points="0,${-r} ${r},${r} ${-r},${r}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="1.5"/>
+                  ` : node.type === 'INTERRUPTEUR_AERIEN' ? `
+                    ${node.meta?.isOpen ? `
+                      <circle r="${r}" fill="#fee2e2" stroke="#dc2626" stroke-width="2" stroke-dasharray="2 2"/>
+                      <line x1="-4" y1="-4" x2="4" y2="4" stroke="#dc2626" stroke-width="2"/>
+                      <line x1="-4" y1="4" x2="4" y2="-4" stroke="#dc2626" stroke-width="2"/>
+                      <text x="0" y="-12" fill="#dc2626" font-size="8" font-weight="bold" font-family="monospace" text-anchor="middle">OUVERT</text>
+                    ` : `
+                      <circle r="${r - 2}" fill="#059669" stroke="#047857" stroke-width="1.5"/>
+                      <text y="2.5" fill="#ffffff" font-size="7.5" font-weight="bold" text-anchor="middle">I</text>
+                    `}
                   ` : `
-                    <circle r="${r}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="1"/>
+                    <circle r="${state.showJunctions ? r : 2}" fill="${state.showJunctions ? fillColor : '#94a3b8'}" stroke="${strokeColor}" stroke-width="${state.showJunctions ? 1 : 0}"/>
                   `}
 
-                  ${(node.type !== 'JONCTION' || state.zoom > 1.2 || isSelected) ? `
-                    <text x="0" y="${r + 12}" fill="${isSelected ? '#1d4ed8' : '#0f172a'}" font-size="9.5" font-family="monospace" font-weight="${node.type === 'POSTE_HTA_BT' || isSelected ? 'bold' : 'normal'}" text-anchor="middle">
+                  ${(node.type !== 'JONCTION' || state.showJunctions || state.zoom > 1.2 || isSelected) ? `
+                    <text x="0" y="${r + 12}" fill="${isSelected ? '#1d4ed8' : (node.meta?.isOpen ? '#dc2626' : '#0f172a')}" font-size="9.5" font-family="monospace" font-weight="${node.type === 'POSTE_HTA_BT' || isSelected ? 'bold' : 'normal'}" text-anchor="middle">
                       ${escapeHtml(node.meta?.nom ? `${node.meta.nom} (${node.id})` : node.id)}
                     </text>
                   ` : ''}
@@ -641,12 +714,14 @@ function renderUnifilaireView() {
 
       <!-- Bottom Sheet Tactile GPARC-Mobile (Fiche Ouvrage & Action Visite) -->
       ${state.showBottomSheet && (state.selectedNode || state.selectedEdge) ? `
-        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl border-t border-slate-200 shadow-2xl p-4 z-30 max-h-[55vh] overflow-y-auto space-y-3">
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl border-t border-slate-200 shadow-2xl p-4 z-30 max-h-[60vh] overflow-y-auto space-y-3">
           <div class="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-1"></div>
 
           <div class="flex items-center justify-between pb-2 border-b border-slate-100">
             <div>
-              <span class="text-[10px] text-slate-400 font-mono uppercase block">Fiche Ouvrage GPARC</span>
+              <span class="text-[10px] text-slate-400 font-mono uppercase block">
+                ${state.selectedNode?.type === 'POSTE_HTA_BT' ? 'Poste HTA/BT' : (state.selectedNode?.type === 'INTERRUPTEUR_AERIEN' ? 'Appareil IACM' : 'Fiche Ouvrage')}
+              </span>
               <strong class="font-mono text-base text-slate-900">${state.selectedNode?.id || state.selectedEdge?.id}</strong>
               ${state.selectedNode?.meta?.nom ? `
                 <div class="text-xs font-bold text-amber-700">${escapeHtml(state.selectedNode.meta.nom)}</div>
@@ -656,29 +731,67 @@ function renderUnifilaireView() {
           </div>
 
           ${state.selectedNode ? `
-            <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-              <div><span class="text-slate-400 block text-[9px]">Tension Nominale</span><span class="text-slate-900 font-bold">30 kV / 400 V</span></div>
-              <div><span class="text-slate-400 block text-[9px]">Puissance Transfo</span><span class="text-amber-700 font-bold">${state.selectedNode.meta?.p_instal || 160} kVA</span></div>
-              <div><span class="text-slate-400 block text-[9px]">Structure</span><span class="text-slate-900">${state.selectedNode.meta?.t_poste === 'MS' ? 'Cabine Maçonnée (MS)' : 'Haut de Poteau (AC)'}</span></div>
-              <div><span class="text-slate-400 block text-[9px]">Commune</span><span class="text-slate-900 truncate block">${escapeHtml(state.selectedNode.meta?.localite || 'Wilaya de Guelma')}</span></div>
-            </div>
+            ${state.selectedNode.type === 'POSTE_HTA_BT' ? `
+              <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <div><span class="text-slate-400 block text-[9px]">Tension Service</span><span class="text-slate-900 font-bold">30 kV / 400 V</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Puissance Installée (PI)</span><span class="text-amber-700 font-bold">${state.selectedNode.meta?.p_instal || 0} kVA</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Type de Poste</span><span class="text-slate-900">${state.selectedNode.meta?.typePosteLabel || (state.selectedNode.meta?.typePoste === 'MS' ? 'Cabine Maçonnée (MS)' : 'Aérien sur Poteau (MA)')}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Fonction</span><span class="text-slate-900">${state.selectedNode.meta?.fonctionLabel || 'Abonné (AB)'}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Protection MT</span><span class="text-slate-900">${state.selectedNode.meta?.protection || 'Sectionneur Fusibles'}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Commune / Localité</span><span class="text-slate-900 truncate block">${escapeHtml(state.selectedNode.meta?.localite || 'Wilaya de Guelma')}</span></div>
+              </div>
 
-            <div class="pt-1 flex gap-2">
-              <button
-                onclick="window.app.createInterventionForPoste('${state.selectedNode.id}', '${escapeHtml(state.selectedNode.meta?.nom || state.selectedNode.id)}')"
-                class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-xs text-center cursor-pointer"
-              >
-                📝 Créer Fiche de Visite de Terrain
-              </button>
-            </div>
+              ${state.selectedNode.meta?.transformers && state.selectedNode.meta.transformers.length > 0 ? `
+                <div class="space-y-1.5 pt-1">
+                  <span class="text-[11px] font-bold text-slate-700 block">Transformateurs MT/BT (${state.selectedNode.meta.transformers.length}) :</span>
+                  <div class="space-y-1">
+                    ${state.selectedNode.meta.transformers.map((trf, tIdx) => `
+                      <div class="p-2 rounded-lg bg-purple-50/70 border border-purple-200 text-xs font-mono flex items-center justify-between">
+                        <div>
+                          <strong class="text-purple-950">${trf.puissanceKva || state.selectedNode.meta?.p_instal} kVA</strong>
+                          <span class="text-[11px] text-slate-600 block">${trf.marque || 'Constructeur agréé'} ${trf.numSerie ? '&middot; N° ' + trf.numSerie : ''}</span>
+                        </div>
+                        <div class="text-right text-[10px] text-slate-500">
+                          <span>${trf.anneeFab ? 'Année ' + trf.anneeFab : 'Service 30kV'}</span>
+                          ${trf.iNomMT ? `<span class="block text-purple-700 font-bold">${trf.iNomMT}A MT / ${trf.iNomBT}A BT</span>` : ''}
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              <div class="pt-1 flex gap-2">
+                <button
+                  onclick="window.app.createInterventionForPoste('${state.selectedNode.id}', '${escapeHtml(state.selectedNode.meta?.nom || state.selectedNode.id)}')"
+                  class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-xs text-center cursor-pointer"
+                >
+                  📝 Créer Fiche de Visite de Terrain
+                </button>
+              </div>
+            ` : state.selectedNode.type === 'INTERRUPTEUR_AERIEN' ? `
+              <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <div><span class="text-slate-400 block text-[9px]">Position Réseau</span><span class="${state.selectedNode.meta?.isOpen ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}">${state.selectedNode.meta?.positionLabel || (state.selectedNode.meta?.isOpen ? 'OUVERT (Coupure)' : 'FERMÉ (Passage)')}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Mode d'Actionnement</span><span class="text-slate-900 font-bold">${state.selectedNode.meta?.mode || 'Manuel (M)'}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Intensité Nominale</span><span class="text-slate-900">${state.selectedNode.meta?.intensiteNominale || 200} A</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Tension Isolement</span><span class="text-slate-900">36.0 kV (Service 30 kV)</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Asservissement</span><span class="text-slate-900">${state.selectedNode.meta?.asserv || 'Non asservi'}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Date de MES</span><span class="text-slate-900">${state.selectedNode.meta?.dateMES || '01-01-1988'}</span></div>
+              </div>
+            ` : `
+              <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs font-mono">
+                <span class="text-slate-500 block text-[10px]">Type d'élément</span>
+                <strong class="text-slate-800">${state.selectedNode.type} &middot; ${state.selectedNode.id}</strong>
+              </div>
+            `}
           ` : ''}
 
           ${state.selectedEdge ? `
             <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
               <div><span class="text-slate-400 block text-[9px]">Longueur</span><span class="text-emerald-700 font-bold">${state.selectedEdge.longueur} m</span></div>
               <div><span class="text-slate-400 block text-[9px]">Conducteur</span><span class="text-slate-900 font-bold">${state.selectedEdge.nat_cond} ${state.selectedEdge.section} mm²</span></div>
-              <div><span class="text-slate-400 block text-[9px]">Pose</span><span class="text-slate-900">${state.selectedEdge.struct}</span></div>
-              <div><span class="text-slate-400 block text-[9px]">Supports</span><span class="text-slate-900">Béton: ${state.selectedEdge.supports.beton} &middot; Métal: ${state.selectedEdge.supports.metal}</span></div>
+              <div><span class="text-slate-400 block text-[9px]">Type de Pose</span><span class="text-slate-900">${state.selectedEdge.struct}</span></div>
+              <div><span class="text-slate-400 block text-[9px]">Tension</span><span class="text-slate-900 font-bold">${state.selectedEdge.tension || 30} kV</span></div>
             </div>
           ` : ''}
         </div>
@@ -687,102 +800,268 @@ function renderUnifilaireView() {
   `;
 }
 
-// --- VUE 3 : OUVRAGES (CATALOGUE PARC GPARC) ---
+// --- VUE 3 : OUVRAGES (CATALOGUE PARC GPARC 2025) ---
 function renderOuvragesView() {
   const currentDepart = networkData.departs[state.selectedDepartId] || networkData.departs['127H1C3'] || networkData.departs['125H3C20'];
-  const allNodes = currentDepart.nodes;
+  const isGlobalScope = state.ouvragesScope === 'ALL';
 
-  let filtered = allNodes;
-  if (state.ouvragesFilterType === 'P') {
-    filtered = allNodes.filter(n => n.type === 'POSTE_HTA_BT');
-  } else if (state.ouvragesFilterType === 'E') {
-    filtered = allNodes.filter(n => n.type === 'ETOILEMENT');
-  } else if (state.ouvragesFilterType === 'H_O') {
-    filtered = allNodes.filter(n => n.type === 'POSTE_SOURCE' || n.type === 'POSTE_COUPURE');
+  let rawList = [];
+  const fType = state.ouvragesFilterType;
+
+  if (fType === 'P') {
+    if (isGlobalScope) {
+      rawList = fullTablesData['POSTE_2025']?.rows || [];
+    } else {
+      rawList = (currentDepart.nodes || []).filter(n => n.type === 'POSTE_HTA_BT').map(n => ({
+        id: n.id,
+        nom: n.meta?.nom || n.id,
+        localite: n.meta?.localite || '',
+        pi: n.meta?.p_instal || 0,
+        typePosteLabel: n.meta?.typePosteLabel || 'Poste HTA/BT',
+        depart: state.selectedDepartId
+      }));
+    }
+  } else if (fType === 'J') {
+    if (isGlobalScope) {
+      rawList = fullTablesData['IACM_2025']?.rows || [];
+    } else {
+      rawList = (currentDepart.nodes || []).filter(n => n.type === 'INTERRUPTEUR_AERIEN' || n.type === 'JONCTION').map(n => ({
+        code: n.id,
+        num: n.meta?.num || n.id,
+        district: currentDepart.agency,
+        positionLabel: n.meta?.positionLabel || (n.meta?.isOpen ? 'OUVERT (Coupure)' : 'FERMÉ (Passage)'),
+        isOpen: n.meta?.isOpen || false,
+        mode: n.meta?.mode || 'Manuel (M)',
+        intensiteNominale: n.meta?.intensiteNominale || 200,
+        depart: state.selectedDepartId
+      }));
+    }
+  } else if (fType === 'T') {
+    rawList = fullTablesData['TRANSFO_MTBT_2025']?.rows || [];
+  } else if (fType === 'L') {
+    rawList = fullTablesData['TRONCON_2025']?.rows || [];
+  } else if (fType === 'E') {
+    rawList = (currentDepart.nodes || []).filter(n => n.type === 'ETOILEMENT').map(n => ({
+      id: n.id,
+      nom: `Étoilement ${n.id}`,
+      localite: 'Piquage MT',
+      depart: state.selectedDepartId
+    }));
   }
 
+  // Filtrage par texte de recherche
+  let filtered = rawList;
   if (state.ouvragesSearch.trim()) {
     const q = state.ouvragesSearch.toLowerCase();
-    filtered = filtered.filter(n =>
-      n.id.toLowerCase().includes(q) ||
-      (n.meta?.nom && n.meta.nom.toLowerCase().includes(q)) ||
-      (n.meta?.localite && n.meta.localite.toLowerCase().includes(q))
-    );
+    filtered = rawList.filter(item => {
+      return Object.values(item).some(v => String(v ?? '').toLowerCase().includes(q));
+    });
   }
 
+  const displayList = filtered.slice(0, 60);
+
   return `
-    <div class="p-4 space-y-4 max-w-2xl mx-auto">
-      <div>
-        <h1 class="text-base font-bold text-slate-900">Catalogue des Ouvrages MT</h1>
-        <p class="text-xs text-slate-500">Parc des équipements du départ ${state.selectedDepartId}</p>
+    <div class="p-4 space-y-3.5 max-w-2xl mx-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-base font-bold text-slate-900">Catalogue des Ouvrages MT</h1>
+          <p class="text-xs text-slate-500">${isGlobalScope ? 'Ensemble du parc SDO Guelma (2025)' : `Départ ${state.selectedDepartId}`}</p>
+        </div>
+
+        <!-- Scope Switch (Départ vs Tout le parc) -->
+        <div class="flex items-center bg-slate-200 p-0.5 rounded-lg text-[11px] font-semibold">
+          <button
+            onclick="window.app.setOuvragesScope('DEPART')"
+            class="px-2 py-1 rounded-md transition-all cursor-pointer ${!isGlobalScope ? 'bg-white text-blue-700 shadow-2xs font-bold' : 'text-slate-600'}"
+          >
+            Départ
+          </button>
+          <button
+            onclick="window.app.setOuvragesScope('ALL')"
+            class="px-2 py-1 rounded-md transition-all cursor-pointer ${isGlobalScope ? 'bg-white text-blue-700 shadow-2xs font-bold' : 'text-slate-600'}"
+          >
+            Tout le Parc
+          </button>
+        </div>
       </div>
 
       <!-- Segmented Control Type d'Ouvrage -->
-      <div class="flex items-center p-1 bg-slate-200/80 rounded-xl text-xs">
+      <div class="flex items-center p-1 bg-slate-200/90 rounded-xl text-xs gap-1 overflow-x-auto">
         <button
           onclick="window.app.setOuvragesFilter('P')"
-          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.ouvragesFilterType === 'P' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+          class="flex-1 min-w-[70px] py-1.5 rounded-lg font-semibold transition-colors cursor-pointer text-center whitespace-nowrap ${fType === 'P' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
         >
-          Postes HTA/BT
+          Postes
+        </button>
+        <button
+          onclick="window.app.setOuvragesFilter('J')"
+          class="flex-1 min-w-[70px] py-1.5 rounded-lg font-semibold transition-colors cursor-pointer text-center whitespace-nowrap ${fType === 'J' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          IACM
+        </button>
+        <button
+          onclick="window.app.setOuvragesFilter('T')"
+          class="flex-1 min-w-[70px] py-1.5 rounded-lg font-semibold transition-colors cursor-pointer text-center whitespace-nowrap ${fType === 'T' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          Transfos
+        </button>
+        <button
+          onclick="window.app.setOuvragesFilter('L')"
+          class="flex-1 min-w-[70px] py-1.5 rounded-lg font-semibold transition-colors cursor-pointer text-center whitespace-nowrap ${fType === 'L' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+        >
+          Tronçons
         </button>
         <button
           onclick="window.app.setOuvragesFilter('E')"
-          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.ouvragesFilterType === 'E' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+          class="flex-1 min-w-[70px] py-1.5 rounded-lg font-semibold transition-colors cursor-pointer text-center whitespace-nowrap ${fType === 'E' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
         >
-          Piquages (Étoil.)
-        </button>
-        <button
-          onclick="window.app.setOuvragesFilter('H_O')"
-          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.ouvragesFilterType === 'H_O' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
-        >
-          Sources &amp; PC
+          Étoil.
         </button>
       </div>
 
       <!-- Barre de recherche -->
       <input
         type="text"
-        placeholder="Rechercher par code, nom, commune..."
+        placeholder="Filtrer (ex: BEA, 8002, ENEL, 400, Maouna)..."
         value="${escapeHtml(state.ouvragesSearch)}"
         oninput="window.app.setOuvragesSearch(this.value)"
-        class="w-full bg-white text-slate-900 text-xs rounded-xl px-3 py-2 border border-slate-300 shadow-2xs"
+        class="w-full bg-white text-slate-900 text-xs rounded-xl px-3 py-2 border border-slate-300 shadow-2xs focus:outline-blue-500"
       />
 
       <!-- Liste des Ouvrages Mobile -->
       <div class="space-y-2">
-        <span class="text-[11px] font-bold text-slate-500 block px-1">${filtered.length} équipements répertoriés :</span>
+        <div class="flex items-center justify-between px-1">
+          <span class="text-[11px] font-bold text-slate-500">
+            ${filtered.length} élément(s) ${filtered.length > 60 ? `(affichage des 60 premiers)` : ''} :
+          </span>
+          ${fType === 'J' ? `
+            <span class="text-[10px] text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
+              ${filtered.filter(x => x.position === 'O' || x.isOpen || (x.positionLabel && x.positionLabel.includes('OUVERT'))).length} IACM Ouverts
+            </span>
+          ` : ''}
+        </div>
 
-        ${filtered.map(n => `
-          <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
-            <div class="truncate pr-2">
-              <div class="flex items-center gap-1.5">
-                <span class="font-mono font-bold text-xs text-slate-900">${n.id}</span>
-                ${n.type === 'POSTE_HTA_BT' ? `
-                  <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900">
-                    ${n.meta?.p_instal || 160} kVA
-                  </span>
-                ` : ''}
+        ${displayList.map(item => {
+          if (fType === 'P') {
+            const id = item.id || item.code;
+            const nom = item.nom || id;
+            const pi = item.pi || item.p_instal || 0;
+            const dep = item.depart || state.selectedDepartId;
+            return `
+              <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
+                <div class="truncate pr-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono font-bold text-xs text-slate-900">${id}</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900">
+                      ${pi} kVA
+                    </span>
+                    ${item.depart ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">${item.depart}</span>` : ''}
+                  </div>
+                  <span class="text-xs font-semibold text-slate-800 block truncate">${escapeHtml(nom)}</span>
+                  <span class="text-[10px] text-slate-400 block">${escapeHtml(item.localite || item.district || 'SDO Guelma')} &middot; ${item.typePosteLabel || 'Poste HTA/BT'}</span>
+                </div>
+
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onclick="window.app.showOuvrageOnMap('${id}', '${dep}')"
+                    class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
+                  >
+                    ⚡ Schéma
+                  </button>
+                  <button
+                    onclick="window.app.createInterventionForPoste('${id}', '${escapeHtml(nom)}')"
+                    class="px-2 py-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg cursor-pointer"
+                  >
+                    📝 Visite
+                  </button>
+                </div>
               </div>
-              <span class="text-xs font-semibold text-slate-700 block truncate">${n.meta?.nom || n.type}</span>
-              <span class="text-[10px] text-slate-400 block">${n.meta?.localite || 'Wilaya de Guelma (24)'}</span>
-            </div>
+            `;
+          } else if (fType === 'J') {
+            const code = item.code || `J${item.num}`;
+            const isOpen = item.position === 'O' || item.isOpen || (item.positionLabel && item.positionLabel.includes('OUVERT'));
+            const dep = item.depart || state.selectedDepartId;
+            return `
+              <div class="p-3 bg-white rounded-xl border ${isOpen ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200'} shadow-2xs flex items-center justify-between">
+                <div class="truncate pr-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono font-bold text-xs text-slate-900">${code}</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${isOpen ? 'bg-rose-100 text-rose-800 border border-rose-200' : 'bg-emerald-100 text-emerald-800'}">
+                      ${isOpen ? 'OUVERT (Coupure)' : 'FERMÉ (Passage)'}
+                    </span>
+                    ${item.depart ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">${item.depart}</span>` : ''}
+                  </div>
+                  <span class="text-xs font-semibold text-slate-700 block">${item.mode || 'Manuel (M)'} &middot; Inom ${item.intensiteNominale || 200} A</span>
+                  <span class="text-[10px] text-slate-400 block">District ${item.district || item.agence || '121'} &middot; MES: ${item.dateMES || '31-12-2025'}</span>
+                </div>
 
-            <div class="flex items-center gap-1.5 shrink-0">
-              <button
-                onclick="window.app.showOuvrageOnMap('${n.id}')"
-                class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
-              >
-                ⚡ Schéma
-              </button>
-              <button
-                onclick="window.app.createInterventionForPoste('${n.id}', '${escapeHtml(n.meta?.nom || n.id)}')"
-                class="px-2 py-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg cursor-pointer"
-              >
-                📝 Visite
-              </button>
-            </div>
-          </div>
-        `).join('')}
+                <div class="shrink-0">
+                  <button
+                    onclick="window.app.showOuvrageOnMap('${code}', '${dep}')"
+                    class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
+                  >
+                    ⚡ Schéma
+                  </button>
+                </div>
+              </div>
+            `;
+          } else if (fType === 'T') {
+            const pCode = item.codePoste || item.code || '';
+            const pwr = item.puissanceKva || 0;
+            return `
+              <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
+                <div class="truncate pr-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono font-bold text-xs text-slate-900">${pCode} &middot; Trf ${item.numTransfo || 1}</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-purple-100 text-purple-900">
+                      ${pwr} kVA
+                    </span>
+                  </div>
+                  <span class="text-xs font-semibold text-slate-700 block">${item.marque ? item.marque : 'Fabricant normalisé'} ${item.numSerie ? '&middot; S/N: ' + item.numSerie : ''}</span>
+                  <span class="text-[10px] text-slate-400 block">${item.anneeFab ? 'Fab: ' + item.anneeFab + ' &middot; ' : ''}${item.iNomMT ? item.iNomMT + 'A MT' : '30 kV / 400 V'}</span>
+                </div>
+                <div class="shrink-0">
+                  <button
+                    onclick="window.app.showOuvrageOnMap('${pCode}', '')"
+                    class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
+                  >
+                    ⚡ Schéma
+                  </button>
+                </div>
+              </div>
+            `;
+          } else if (fType === 'L') {
+            return `
+              <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
+                <div class="truncate pr-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono font-bold text-xs text-slate-900">Tronçon ${item.troncon}</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-blue-100 text-blue-800">
+                      ${formatNumber(item.totalM)} m
+                    </span>
+                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">Agence ${item.agence}</span>
+                  </div>
+                  <span class="text-xs text-slate-600 block mt-0.5">Aérien: <strong>${formatNumber(item.aerienM)} m</strong> &middot; Souterrain: <strong>${formatNumber(item.souterrainM)} m</strong></span>
+                </div>
+              </div>
+            `;
+          } else {
+            return `
+              <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
+                <div>
+                  <span class="font-mono font-bold text-xs text-slate-900">${item.id}</span>
+                  <span class="text-xs text-slate-500 block">${item.nom}</span>
+                </div>
+                <button
+                  onclick="window.app.showOuvrageOnMap('${item.id}', '${item.depart}')"
+                  class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
+                >
+                  ⚡ Schéma
+                </button>
+              </div>
+            `;
+          }
+        }).join('')}
       </div>
     </div>
   `;
@@ -955,7 +1234,7 @@ function renderSettingsView() {
           onclick="window.app.setSettingsSubTab('tables')"
           class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'tables' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
         >
-          12 Tables
+          Données 2025 / Tables
         </button>
       </div>
 
@@ -1140,17 +1419,43 @@ function renderQuickSearchModal() {
   let results = [];
 
   if (q.length >= 2) {
-    // Recherche dans tous les départs
+    // 1. Recherche dans les départs
     for (const dep of departsSummary) {
       if (dep.id.toLowerCase().includes(q)) {
-        results.push({ type: 'DEPART', id: dep.id, label: `Départ ${dep.id} (${dep.posteCount}P)` });
+        results.push({ type: 'DEPART', id: dep.id, label: `Départ MT ${dep.id} (${dep.posteCount}P, ${dep.totalLengthKm} km)` });
       }
-      for (const p of dep.samplePostes) {
-        if (p.id.toLowerCase().includes(q) || (p.nom && p.nom.toLowerCase().includes(q))) {
-          results.push({ type: 'POSTE', id: p.id, depId: dep.id, label: `${p.id} &middot; ${p.nom || 'Poste'}`, extra: `${dep.id}` });
+    }
+    // 2. Recherche dans les 2 660 Postes du catalogue 2025
+    const allPostes = fullTablesData['POSTE_2025']?.rows || [];
+    for (const p of allPostes) {
+      const pId = p.id || p.code || '';
+      const pNom = p.nom || '';
+      const pLoc = p.localite || '';
+      if (pId.toLowerCase().includes(q) || pNom.toLowerCase().includes(q) || pLoc.toLowerCase().includes(q)) {
+        results.push({
+          type: 'POSTE',
+          id: pId,
+          depId: p.depart || state.selectedDepartId,
+          label: `${pNom || pId} &middot; ${p.pi || 0} kVA &middot; ${pLoc || p.district}`
+        });
+      }
+      if (results.length >= 25) break;
+    }
+    // 3. Recherche dans les 1 638 Appareils IACM
+    if (results.length < 25) {
+      const allIacms = fullTablesData['IACM_2025']?.rows || [];
+      for (const iacm of allIacms) {
+        const iCode = iacm.code || `J${iacm.num}`;
+        if (iCode.toLowerCase().includes(q) || (iacm.depart && iacm.depart.toLowerCase().includes(q))) {
+          results.push({
+            type: 'IACM',
+            id: iCode,
+            depId: iacm.depart || state.selectedDepartId,
+            label: `${iCode} &middot; ${iacm.positionLabel || (iacm.isOpen ? 'OUVERT' : 'FERMÉ')}`
+          });
         }
+        if (results.length >= 30) break;
       }
-      if (results.length > 20) break;
     }
   }
 
@@ -1308,8 +1613,8 @@ function updateSvgTransform() {
   const g = document.getElementById('networkViewport');
   if (g) {
     g.setAttribute('transform', `translate(${state.pan.x}, ${state.pan.y}) scale(${state.zoom})`);
-    g.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
-    g.style.transformOrigin = '0 0';
+    g.style.transform = '';
+    g.style.transformOrigin = '';
   }
 }
 
@@ -1600,11 +1905,26 @@ window.app = {
     state.ouvragesFilterType = type;
     renderApp();
   },
+  setOuvragesScope: (scope) => {
+    state.ouvragesScope = scope;
+    renderApp();
+  },
   setOuvragesSearch: (q) => {
     state.ouvragesSearch = q;
     renderApp();
   },
-  showOuvrageOnMap: (nodeId) => {
+  showOuvrageOnMap: (nodeId, depId) => {
+    if (depId && networkData.departs[depId] && state.selectedDepartId !== depId) {
+      state.selectedDepartId = depId;
+    } else if (!depId || !networkData.departs[state.selectedDepartId]?.nodes.some(n => n.id === nodeId)) {
+      // Rechercher dans quel départ se trouve ce nœud
+      for (const dId of Object.keys(networkData.departs)) {
+        if (networkData.departs[dId].nodes.some(n => n.id === nodeId)) {
+          state.selectedDepartId = dId;
+          break;
+        }
+      }
+    }
     state.activeTab = 'unifilaire';
     state.selectedNode = null;
     const dep = networkData.departs[state.selectedDepartId];
@@ -1625,7 +1945,7 @@ window.app = {
         state.pan.y = h / 2 - nodePos.y * state.zoom;
         updateSvgTransform();
       }
-    }, 60);
+    }, 70);
   },
 
   // Terrain & Visites (GPARC-Mobile)
@@ -1819,10 +2139,7 @@ window.app = {
     if (type === 'DEPART') {
       window.app.openDepart(id);
     } else {
-      state.selectedDepartId = depId;
-      state.activeTab = 'unifilaire';
-      renderApp();
-      window.app.selectNode(id);
+      window.app.showOuvrageOnMap(id, depId);
     }
   }
 };
