@@ -8,7 +8,7 @@
  * - Pure HTML5 & JavaScript Vanilla (Zéro TypeScript, Zéro Node.js serveur, compatible GitHub Pages)
  */
 
-let networkData = { sources: {}, departs: {}, stats: { totalDeparts: 49, totalPostes: 2660, totalTransformers: 2800, totalIacms: 1638, openIacms: 39, totalArcs: 7503, totalTroncons: 1372, lastUpdate: '31/12/2025' } };
+let networkData = { sources: {}, departs: {}, stats: { totalDeparts: 49, totalPostes: 2660, totalTransformers: 2800, totalIacms: 1638, openIacms: 39, totalArcs: 7501, totalTroncons: 1372, lastUpdate: '31/12/2025' } };
 let networkDataLoadPromise = null;
 import { departsSummary } from './data/departsSummary.js';
 import { tableSchemas } from './data/tableSchemas.js';
@@ -200,12 +200,12 @@ function normalizeNetworkData(data) {
       }
     }
 
-    depart.arcCount = depart.edges.length;
-    depart.nodeCount = depart.nodes.length;
+    depart.arcCount = depart.edges.filter(edge => !edge.isVirtual).length;
+    depart.nodeCount = depart.nodes.filter(node => !node.isVirtual).length;
   }
 
   data.stats.totalDeparts = Object.keys(data.departs || {}).length;
-  data.stats.totalArcs = Object.values(data.departs || {}).reduce((sum, depart) => sum + depart.edges.length, 0);
+  data.stats.totalArcs = Object.values(data.departs || {}).reduce((sum, depart) => sum + depart.edges.filter(edge => !edge.isVirtual).length, 0);
 
   const summaryById = new Map(departsSummary.map(item => [item.id, item]));
   for (const [departId, depart] of Object.entries(data.departs || {})) {
@@ -828,7 +828,7 @@ function renderUnifilaireView() {
                 : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
             }"
           >
-            Tous (${renderEdges.length})
+            Tous (${renderEdges.filter(e => !e.isVirtual).length})
           </button>
           <button
             onclick="window.app.setPoseFilter('SOUT_HIGHLIGHT')"
