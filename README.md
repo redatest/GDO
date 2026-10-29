@@ -59,7 +59,7 @@ Puis ouvrez `http://localhost:8000`. Cette commande est uniquement une solution 
 
 ## Déploiement
 
-Le workflow GitHub Actions situé dans `.github/workflows/deploy.yml` publie directement les fichiers statiques de la branche `main` vers `gh-pages`. Il n'installe aucun paquet et ne lance aucune compilation.
+Le workflow GitHub Actions situé dans `.github/workflows/deploy.yml` prépare un répertoire temporaire avec `index.html`, `assets/app.css`, `src/app.js` et les modules JavaScript de `src/data/`, puis publie uniquement ces fichiers vers `gh-pages`. Les feuilles Excel, les fichiers de travail et les référentiels JSON non nécessaires à l'exécution ne sont pas déployés. Le workflow n'installe aucun paquet et ne lance aucune compilation.
 
 Le site public est servi par GitHub Pages à l'adresse https://redatest.github.io/GDO/.
 
