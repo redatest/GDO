@@ -151,12 +151,88 @@ const state = {
   networkDataError: ''
 };
 
+function normalizeNetworkData(data) {
+  const cellId = /^[0-9]{3}[HO][0-9]+[BC][0-9]+$/;
+  let correctedCellTypes = 0;
+  let addedVirtualSources = 0;
+
+  for (const [departId, depart] of Object.entries(data.departs || {})) {
+    for (const node of depart.nodes || []) {
+      if (node.id !== departId && cellId.test(node.id) && node.type === 'POSTE_SOURCE') {
+        node.type = 'CELLULE';
+        node.prefix = node.id.match(/[BC][0-9]+$/)?.[0]?.[0] || 'C';
+        node.meta = null;
+        correctedCellTypes += 1;
+      }
+    }
+
+    if (!(depart.nodes || []).some(node => node.type === 'POSTE_SOURCE')) {
+      const sourcePrefix = departId.substring(0, 5);
+      const virtualSourceId = `${sourcePrefix}_SOURCE`;
+      const firstNodeId = depart.nodes?.[0]?.id;
+      if (firstNodeId) {
+        const source = data.sources?.[sourcePrefix];
+        depart.nodes.unshift({
+          id: virtualSourceId,
+          type: 'POSTE_SOURCE',
+          prefix: 'H',
+          meta: { nom: source?.nom || `Source ${sourcePrefix}`, u_prim: source?.u_prim || 60, u_second: 30 }
+        });
+        depart.edges.unshift({
+          id: `${virtualSourceId}-${firstNodeId}:1`,
+          from: virtualSourceId,
+          to: firstNodeId,
+          cPar: '1',
+          longueur: 0,
+          nat_cond: 'AL',
+          section: 148,
+          struct: 'SOUTERRAIN',
+          isSouterrain: true,
+          tension: 30,
+          an_mes: ''
+        });
+        addedVirtualSources += 1;
+      }
+    }
+
+    depart.arcCount = depart.edges.length;
+    depart.nodeCount = depart.nodes.length;
+  }
+
+  data.stats.totalDeparts = Object.keys(data.departs || {}).length;
+  data.stats.totalArcs = Object.values(data.departs || {}).reduce((sum, depart) => sum + depart.edges.length, 0);
+
+  const summaryById = new Map(departsSummary.map(item => [item.id, item]));
+  for (const [departId, depart] of Object.entries(data.departs || {})) {
+    const summary = summaryById.get(departId);
+    if (!summary) continue;
+    summary.arcCount = depart.arcCount;
+    summary.nodeCount = depart.nodeCount;
+    summary.totalLengthKm = depart.totalLengthKm;
+    summary.posteCount = depart.posteCount;
+    summary.iacmCount = depart.iacmCount;
+    summary.openIacmCount = depart.openIacmCount;
+    summary.etoilCount = depart.etoilCount;
+    summary.totalPowerKva = depart.totalPowerKva;
+  }
+  departsSummary.sort((a, b) => b.arcCount - a.arcCount);
+
+  if (correctedCellTypes || addedVirtualSources) {
+    console.info('Normalisation topologique de compatibilité:', {
+      correctedCellTypes,
+      addedVirtualSources,
+      totalArcs: data.stats.totalArcs
+    });
+  }
+  return data;
+}
+
 async function ensureNetworkData() {
   if (Object.keys(networkData.departs).length) return true;
   if (!networkDataLoadPromise) {
     networkDataLoadPromise = import('./data/networkData.js')
       .then((module) => {
-        networkData = module.networkData || { sources: {}, departs: {}, stats: {} };
+        networkData = normalizeNetworkData(module.networkData || { sources: {}, departs: {}, stats: {} });
         state.networkDataError = Object.keys(networkData.departs).length
           ? ''
           : 'Le référentiel topologique est vide.';
