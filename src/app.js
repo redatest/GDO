@@ -609,7 +609,17 @@ function renderUnifilaireView() {
   if (!Object.keys(networkData.departs).length) {
     return '<div class="p-8 text-center text-sm font-semibold text-blue-800">' + escapeHtml(state.networkDataError || 'Chargement du réseau moyenne tension…') + '</div>';
   }
-  const currentDepart = networkData.departs[state.selectedDepartId] || networkData.departs['127H1C3'] || networkData.departs['125H3C20'];
+
+  // Le sélecteur du schéma doit respecter l'agence choisie dans l'en-tête.
+  const availableDeparts = state.selectedAgency === 'ALL'
+    ? departsSummary
+    : departsSummary.filter(d => String(d.agency || d.id.slice(0, 3)) === state.selectedAgency);
+  const selectedDepartIsAvailable = availableDeparts.some(d => d.id === state.selectedDepartId);
+  if (!selectedDepartIsAvailable && availableDeparts.length) {
+    state.selectedDepartId = availableDeparts[0].id;
+  }
+
+  const currentDepart = networkData.departs[state.selectedDepartId] || networkData.departs[availableDeparts[0]?.id] || networkData.departs['127H1C3'] || networkData.departs['125H3C20'];
   if (!currentDepart) return '<div class="p-8 text-center text-slate-500">Départ MT introuvable</div>';
 
   const nodes = currentDepart.nodes;
@@ -779,7 +789,7 @@ function renderUnifilaireView() {
               onchange="window.app.selectDepart(this.value)"
               class="bg-slate-50 text-slate-900 text-xs font-mono font-bold rounded-lg px-2 py-1.5 border border-slate-300 max-w-[170px] truncate"
             >
-              ${departsSummary.map(d => `
+              ${availableDeparts.map(d => `
                 <option value="${d.id}" ${d.id === state.selectedDepartId ? 'selected' : ''}>
                   ${d.id} (${d.posteCount}P)
                 </option>
@@ -2192,7 +2202,23 @@ window.app = {
   },
   setAgency: (agency) => {
     state.selectedAgency = agency;
+    if (agency !== 'ALL') {
+      const currentSummary = departsSummary.find(d => d.id === state.selectedDepartId);
+      const currentAgency = currentSummary ? String(currentSummary.agency || currentSummary.id.slice(0, 3)) : '';
+      if (currentAgency !== agency) {
+        const firstDepart = departsSummary.find(d => String(d.agency || d.id.slice(0, 3)) === agency);
+        if (firstDepart) {
+          state.selectedDepartId = firstDepart.id;
+          state.selectedNode = null;
+          state.selectedEdge = null;
+          state.showBottomSheet = false;
+        }
+      }
+    }
     renderApp();
+    if (state.activeTab === 'unifilaire') {
+      void ensureNetworkData().then(() => setTimeout(() => window.app.fitView(), 60));
+    }
   },
   openDepart: (depId) => {
     state.selectedDepartId = depId;
