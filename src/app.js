@@ -1967,7 +1967,7 @@ function renderQuickSearchModal() {
           type: 'POSTE',
           id: pId,
           depId: p.depart || state.selectedDepartId,
-          label: `${pNom || pId} &middot; ${p.pi || 0} kVA &middot; ${pLoc || p.district || ''}`
+          label: `${pNom || pId} · ${p.pi || 0} kVA · ${pLoc || p.district || ''}`
         });
       }
       if (results.length >= 25) break;
@@ -1985,7 +1985,7 @@ function renderQuickSearchModal() {
               type: 'POSTE',
               id: String(node.id),
               depId,
-              label: `${pNom || node.id} &middot; ${node.meta?.p_instal || 0} kVA &middot; ${pLoc}`
+              label: `${pNom || node.id} · ${node.meta?.p_instal || 0} kVA · ${pLoc}`
             });
             seenPosteIds.add(node.id);
           }
@@ -2004,7 +2004,7 @@ function renderQuickSearchModal() {
             type: 'IACM',
             id: iCode,
             depId: iacm.depart || state.selectedDepartId,
-            label: `${iCode} &middot; ${iacm.positionLabel || (iacm.isOpen ? 'OUVERT' : 'FERMÉ')}`
+            label: `${iCode} · ${iacm.positionLabel || (iacm.isOpen ? 'OUVERT' : 'FERMÉ')}`
           });
         }
         if (results.length >= 30) break;
@@ -2043,8 +2043,8 @@ function renderQuickSearchModal() {
               class="p-2 rounded-xl hover:bg-blue-50 transition-colors flex items-center justify-between cursor-pointer text-xs"
             >
               <div>
-                <span class="font-mono font-bold text-slate-900">${r.id}</span>
-                <span class="text-slate-600 block text-[11px]">${r.label}</span>
+                <span class="font-mono font-bold text-slate-900">${escapeHtml(r.id)}</span>
+                <span class="text-slate-600 block text-[11px]">${escapeHtml(r.label)}</span>
               </div>
               <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${r.type === 'DEPART' ? 'bg-purple-100 text-purple-800' : 'bg-amber-100 text-amber-800'}">
                 ${r.type}
@@ -2570,11 +2570,17 @@ window.app = {
     const statut = document.getElementById('fieldVisitStatut')?.value || 'RAS';
     const note = document.getElementById('fieldVisitNotes')?.value || 'Contrôle effectué sans anomalie.';
 
+    const matchingNode = Object.values(networkData.departs || {})
+      .flatMap(depart => depart.nodes || [])
+      .find(node => String(node.id) === String(posteId));
+    const posteNom = matchingNode?.meta?.nom || posteId;
+    const now = new Date();
     const newInt = {
-      id: `INT-${Date.now().toString().slice(-4)}`,
+      // Timestamp complet : évite les collisions entre visites rapprochées.
+      id: `INT-${now.getTime()}`,
       posteId,
-      posteNom: posteId,
-      date: new Date().toLocaleDateString('fr-FR') + ' ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+      posteNom,
+      date: now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
       type,
       statut,
       note
