@@ -339,7 +339,7 @@ function renderMobileTopBar() {
         <!-- Logo & Identité GDO-MT -->
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-black text-xs shadow-xs tracking-wider">
-            GP
+            GDO
           </div>
           <div>
             <div class="flex items-center gap-1.5">
@@ -2159,7 +2159,7 @@ export function renderApp() {
   let viewHtml = '';
   if (state.activeTab === 'home') viewHtml = renderHomeView();
   else if (state.activeTab === 'unifilaire') viewHtml = renderUnifilaireView();
-  else if (state.activeTab === 'ouvrages') viewHtml = renderOvragesViewSafe();
+  else if (state.activeTab === 'ouvrages') viewHtml = renderOuvragesView();
   else if (state.activeTab === 'terrain') viewHtml = renderTerrainView();
   else if (state.activeTab === 'settings') viewHtml = renderSettingsView();
 
@@ -2185,9 +2185,6 @@ export function renderApp() {
   }
 }
 
-function renderOvragesViewSafe() {
-  return renderOuvragesView();
-}
 
 // --- MÉTHODES GLOBALES ACCESSIBLES ---
 window.app = {
