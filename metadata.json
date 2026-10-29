@@ -1,6 +1,0 @@
-{
-  "name": "GDO-MT Web — Analyse & Visualisation Réseau Moyenne Tension",
-  "description": "Modernisation d'application legacy DBase / Excel pour la gestion et la visualisation de l'architecture physique des réseaux électriques Moyenne Tension (HTA).",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
