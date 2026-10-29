@@ -1,11 +1,11 @@
 # GDO-MT
 
-**GDO-MT** est une application web de consultation, d'analyse et de modernisation du réseau électrique moyenne tension (MT/HTA) de la wilaya de Guelma, en Algérie.
+**GDO-MT** est une application web de consultation, d'analyse et de visualisation du réseau électrique moyenne tension (MT/HTA) de la wilaya de Guelma, en Algérie.
 
 - **Application en ligne :** https://redatest.github.io/GDO/
 - **Dépôt source :** https://github.com/redatest/GDO
-- **Technologies :** JavaScript, Vite, Tailwind CSS et Bun
-- **Hébergement :** GitHub Pages — application statique, sans serveur applicatif en production
+- **Technologies :** HTML, CSS et JavaScript natifs (modules ES)
+- **Hébergement :** GitHub Pages — site statique, sans serveur applicatif
 
 ## Fonctionnalités
 
@@ -14,7 +14,7 @@
 - **Catalogue des ouvrages :** consultation et recherche des postes, transformateurs, IACM, tronçons et autres éléments du réseau.
 - **Carnet de terrain :** création et gestion locale de fiches de visite, avec export JSON.
 - **Tables de référence :** consultation, recherche, filtrage, pagination et export des données disponibles.
-- **Audit topologique :** vérification des identifiants, des extrémités de tronçons, des longueurs et de la cohérence des compteurs du référentiel.
+- **Stockage local :** paramètres et fiches de terrain conservés dans le navigateur avec `localStorage`.
 
 ## Référentiel réseau
 
@@ -32,69 +32,44 @@ L'instantané applicatif actuellement documenté contient notamment :
 
 Ces valeurs décrivent les données intégrées à l'application. Elles ne constituent pas une certification de l'état réel ou de la configuration électrique du réseau.
 
-### Limites connues des données
+Le dépôt conserve également un instantané topologique historique. Il diffère du référentiel courant : il contient 51 départs et des totaux différents. Ces écarts doivent être vérifiés avec les données métier. L'application n'ajoute pas automatiquement de raccordements physiques supposés.
 
-Le dépôt conserve également un instantané topologique historique utilisé pour comparaison. Il diffère du référentiel courant : il contient 51 départs, et les totaux ainsi que la composition des départs ne sont pas identiques. L'audit peut aussi signaler des départs comportant plusieurs composantes topologiques disjointes.
+## Utilisation et développement
 
-Ces écarts doivent être vérifiés avec les données métier. L'application ne crée pas automatiquement de raccordements électriques manquants, afin de ne pas inventer une liaison physique qui ne serait pas confirmée par la source de référence.
+Aucun environnement Node.js, Bun, gestionnaire de paquets ou outil de compilation n'est nécessaire pour exécuter l'application publiée.
 
-## Installation et développement
+Le navigateur charge directement :
+- `index.html` : page d'entrée ;
+- `assets/app.css` : feuille de style statique ;
+- `src/app.js` : logique de l'application en JavaScript natif ;
+- `src/data/` : modules JavaScript et référentiels réseau.
 
-Prérequis : [Bun](https://bun.sh/). Le projet utilise Bun pour l’installation des dépendances, les contrôles, l’audit topologique et la compilation.
-
-```bash
-bun install --frozen-lockfile
-bun run dev
-```
-
-Vite démarre le serveur de développement sur le port **3000**. Pour générer et prévisualiser la version de production :
+Pour tester les fichiers localement, utilisez un serveur HTTP statique, par exemple l'extension **Live Server** de Visual Studio Code ou le serveur intégré de Python :
 
 ```bash
-bun run lint
-bun run audit:topology
-bun run build
-bun run preview
+python -m http.server 8000
 ```
 
-Le résultat de compilation est généré dans le dossier `dist/`. Ce dossier est un artefact de build : il peut être régénéré et n'a pas besoin d'être maintenu manuellement dans les sources.
-
-### Audit topologique
-
-Pour lancer uniquement l'audit des données réseau :
-
-```bash
-bun run audit:topology
-```
-
-L'audit contrôle notamment les identifiants dupliqués, les extrémités de tronçons absentes, les longueurs invalides et les écarts de compteurs entre le référentiel courant et le résumé des départs. Il signale les anomalies de données sans les corriger en ajoutant des raccordements physiques supposés.
+Puis ouvrez `http://localhost:8000`. Il n'est pas recommandé d'ouvrir directement `index.html` en `file://`, car les modules JavaScript du navigateur peuvent être bloqués par les règles de sécurité d'origine.
 
 ## Déploiement
 
-Le workflow GitHub Actions situé dans `.github/workflows/deploy.yml` :
-
-1. récupère le code de la branche `main` ;
-2. installe les dépendances à partir de `bun.lock` ;
-3. vérifie la syntaxe JavaScript et lance l'audit topologique avec Bun ;
-4. construit l'application dans `dist/` ;
-5. publie le résultat sur la branche `gh-pages`.
+Le workflow GitHub Actions situé dans `.github/workflows/deploy.yml` publie directement les fichiers statiques de la branche `main` vers `gh-pages`. Il n'installe aucune dépendance et ne lance aucune compilation.
 
 Le site public est servi par GitHub Pages à l'adresse https://redatest.github.io/GDO/.
 
 ## Données locales et confidentialité
 
-Les paramètres de l'application et les fiches du carnet de terrain sont enregistrés dans le stockage local du navigateur (`localStorage`). Ils restent donc propres au navigateur et à l'appareil utilisés : ils ne sont pas automatiquement synchronisés entre plusieurs appareils et peuvent être perdus si les données du navigateur sont effacées. Exportez régulièrement les fiches importantes.
+Les paramètres de l'application et les fiches du carnet de terrain sont enregistrés dans le stockage local du navigateur (`localStorage`). Ils restent propres au navigateur et à l'appareil utilisés : ils ne sont pas automatiquement synchronisés entre plusieurs appareils et peuvent être perdus si les données du navigateur sont effacées. Exportez régulièrement les fiches importantes.
 
 ## Structure principale du projet
 
-- `src/app.js` : interface et logique de l'application.
-- `src/index.css` : styles.
-- `src/data/` : référentiels et données réseau.
-- `scripts/auditTopology.js` : contrôle de cohérence topologique.
-- `index.html` : page d'entrée.
-- `vite.config.ts` : configuration Vite.
-- `package.json` et `bun.lock` : scripts et dépendances.
-- `.github/workflows/deploy.yml` : intégration et déploiement continus.
+- `index.html` : page d'entrée ;
+- `assets/app.css` : CSS statique prêt à être servi par le navigateur ;
+- `src/app.js` : interface et logique de l'application ;
+- `src/data/` : référentiels et données réseau ;
+- `.github/workflows/deploy.yml` : déploiement statique vers GitHub Pages.
 
 ## Licence et usage
 
-Ce dépôt est destiné à la modernisation et à la consultation des données patrimoniales du réseau de distribution. Les résultats affichés dépendent de la qualité et de la date des données sources ; toute décision d'exploitation doit s'appuyer sur les référentiels et procédures techniques officiels.
+Ce dépôt est destiné à la consultation et à la modernisation des données patrimoniales du réseau de distribution. Les résultats affichés dépendent de la qualité et de la date des données sources ; toute décision d'exploitation doit s'appuyer sur les référentiels et procédures techniques officiels.
