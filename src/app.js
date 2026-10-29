@@ -11,7 +11,6 @@
 let networkData = { sources: {}, departs: {}, stats: { totalDeparts: 49, totalPostes: 2660, totalTransformers: 2800, totalIacms: 1638, openIacms: 39, totalArcs: 7501, totalTroncons: 1372, lastUpdate: '31/12/2025' } };
 let networkDataLoadPromise = null;
 import { departsSummary } from './data/departsSummary.js';
-import { tableSchemas } from './data/tableSchemas.js';
 let fullTablesData = {};
 let fullTablesLoadPromise = null;
 let initialStorageWarning = '';
