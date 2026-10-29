@@ -1589,7 +1589,7 @@ function renderTerrainView() {
       ${state.visitSuccessNotice ? `
         <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between">
           <span>&check; Visite enregistrée avec succès dans le stockage local !</span>
-          <button onclick="state.visitSuccessNotice = false; renderApp();" class="text-emerald-900 font-bold">&times;</button>
+          <button onclick="window.app.closeVisitSuccessNotice()" class="text-emerald-900 font-bold" aria-label="Fermer le message de confirmation">&times;</button>
         </div>
       ` : ''}
 
@@ -2517,6 +2517,10 @@ window.app = {
     state.showBottomSheet = false;
     renderApp();
   },
+  closeVisitSuccessNotice: () => {
+    state.visitSuccessNotice = false;
+    renderApp();
+  },
   saveIntervention: (e) => {
     e.preventDefault();
     const posteId = document.getElementById('fieldVisitPoste')?.value || state.newVisitPosteId;
@@ -2556,7 +2560,7 @@ window.app = {
     a.href = url;
     a.download = `Visites_GDO_MT_${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   },
 
   // Paramètres
@@ -2693,6 +2697,7 @@ window.app = {
     state.quickSearchQuery = '';
     renderApp();
     void ensureNetworkData();
+    void ensureFullTablesData();
     setTimeout(() => {
       document.getElementById('quickSearchInput')?.focus();
     }, 100);
