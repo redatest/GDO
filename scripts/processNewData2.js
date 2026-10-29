@@ -486,6 +486,7 @@ for (const depId of Object.keys(rawDepartsMap)) {
       nodes.unshift({
         id: virtualSrcId,
         type: 'POSTE_SOURCE',
+        isVirtual: true,
         prefix: 'H',
         meta: { nom: sourcesConfig[srcPrefix]?.nom || `Source ${srcPrefix}`, u_prim: 60, u_second: 30 }
       });
@@ -495,10 +496,14 @@ for (const depId of Object.keys(rawDepartsMap)) {
         to: firstNode,
         cPar: '1',
         longueur: 0,
-        nat_cond: 'AL',
-        section: 148,
-        struct: 'SOUTERRAIN',
-        isSouterrain: true,
+        nat_cond: '-',
+        section: 0,
+        struct: 'VIRTUEL',
+        structRaw: 'VIRTUEL',
+        structLabel: 'Racine virtuelle — raccordement physique non renseigné',
+        poseLabel: 'Ancrage graphique',
+        isSouterrain: false,
+        isVirtual: true,
         tension: 30.0,
         an_mes: ''
       });
@@ -515,8 +520,8 @@ for (const depId of Object.keys(rawDepartsMap)) {
     code: depId,
     tension: 30,
     agency,
-    arcCount: edges.length,
-    nodeCount: nodes.length,
+    arcCount: edges.filter(e => !e.isVirtual).length,
+    nodeCount: nodes.filter(n => !n.isVirtual).length,
     posteCount,
     iacmCount,
     openIacmCount,
@@ -533,8 +538,8 @@ for (const depId of Object.keys(rawDepartsMap)) {
     id: depId,
     nom: `Départ MT ${depId}`,
     agency,
-    arcCount: edges.length,
-    nodeCount: nodes.length,
+    arcCount: edges.filter(e => !e.isVirtual).length,
+    nodeCount: nodes.filter(n => !n.isVirtual).length,
     posteCount,
     iacmCount,
     openIacmCount,
@@ -557,7 +562,7 @@ const networkDataFinal = {
     totalTransformers: allTransformersList.length,
     totalIacms: allIacmsList.length,
     openIacms: allIacmsList.filter(x => x.isOpen).length,
-    totalArcs: Object.values(finalDeparts).reduce((sum, depart) => sum + depart.edges.length, 0),
+    totalArcs: Object.values(finalDeparts).reduce((sum, depart) => sum + depart.edges.filter(edge => !edge.isVirtual).length, 0),
     totalTroncons: allTronconsList.length,
     lastUpdate: '31/12/2025'
   }
