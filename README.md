@@ -36,7 +36,7 @@ Le dépôt conserve également un instantané topologique historique. Il diffèr
 
 ## Utilisation et développement
 
-Aucun environnement Node.js, Bun, gestionnaire de paquets ou outil de compilation n'est nécessaire pour exécuter l'application publiée.
+L'application publiée s'exécute directement dans le navigateur et ne nécessite aucun outil d'installation ou de compilation.
 
 Le navigateur charge directement :
 - `index.html` : page d'entrée ;
