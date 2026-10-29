@@ -1844,7 +1844,7 @@ function renderTablesView() {
   return `
     <div class="space-y-3 pt-1">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <span class="text-xs font-bold text-slate-700">12 Fichiers Extraits DBase</span>
+        <span class="text-xs font-bold text-slate-700">Tables historiques &amp; référentiels 2025</span>
         <div class="flex items-center gap-1.5">
           <button onclick="window.app.exportCurrentCsv()" class="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg shadow-2xs cursor-pointer">
             Export CSV
@@ -1861,8 +1861,8 @@ function renderTablesView() {
           class="flex-1 bg-white text-slate-900 text-xs font-mono font-bold rounded-xl p-2 border border-slate-300"
         >
           ${Object.keys(fullTablesData).map(tName => `
-            <option value="${tName}" ${tName === state.tableSelected ? 'selected' : ''}>
-              ${fullTablesData[tName].fileName} (${fullTablesData[tName].totalRows} lig.)
+            <option value="${escapeHtml(tName)}" ${tName === state.tableSelected ? 'selected' : ''}>
+              ${escapeHtml(fullTablesData[tName].fileName || fullTablesData[tName].title || tName)} (${formatNumber(fullTablesData[tName].totalRows ?? fullTablesData[tName].rows?.length ?? 0)} lig.)
             </option>
           `).join('')}
         </select>
@@ -1939,18 +1939,40 @@ function renderQuickSearchModal() {
     // 2. Recherche dans les 2 660 Postes du catalogue 2025
     const allPostes = fullTablesData['POSTE_2025']?.rows || [];
     for (const p of allPostes) {
-      const pId = p.id || p.code || '';
-      const pNom = p.nom || '';
-      const pLoc = p.localite || '';
+      const pId = String(p.id || p.code || '');
+      const pNom = String(p.nom || '');
+      const pLoc = String(p.localite || '');
       if (pId.toLowerCase().includes(q) || pNom.toLowerCase().includes(q) || pLoc.toLowerCase().includes(q)) {
         results.push({
           type: 'POSTE',
           id: pId,
           depId: p.depart || state.selectedDepartId,
-          label: `${pNom || pId} &middot; ${p.pi || 0} kVA &middot; ${pLoc || p.district}`
+          label: `${pNom || pId} &middot; ${p.pi || 0} kVA &middot; ${pLoc || p.district || ''}`
         });
       }
       if (results.length >= 25) break;
+    }
+    // Compléter la recherche avec le réseau topologique si le catalogue 2025 est partiel.
+    if (results.length < 25) {
+      const seenPosteIds = new Set(results.filter(item => item.type === 'POSTE').map(item => item.id));
+      for (const [depId, depart] of Object.entries(networkData.departs || {})) {
+        for (const node of depart.nodes || []) {
+          if (node.type !== 'POSTE_HTA_BT' || seenPosteIds.has(node.id)) continue;
+          const pNom = String(node.meta?.nom || '');
+          const pLoc = String(node.meta?.localite || '');
+          if (String(node.id).toLowerCase().includes(q) || pNom.toLowerCase().includes(q) || pLoc.toLowerCase().includes(q)) {
+            results.push({
+              type: 'POSTE',
+              id: String(node.id),
+              depId,
+              label: `${pNom || node.id} &middot; ${node.meta?.p_instal || 0} kVA &middot; ${pLoc}`
+            });
+            seenPosteIds.add(node.id);
+          }
+          if (results.length >= 25) break;
+        }
+        if (results.length >= 25) break;
+      }
     }
     // 3. Recherche dans les 1 638 Appareils IACM
     if (results.length < 25) {
@@ -2662,8 +2684,8 @@ window.app = {
   },
   exportCurrentCsv: () => {
     const currentTable = fullTablesData[state.tableSelected];
-    const rows = currentTable.rows;
-    if (!rows || rows.length === 0) return;
+    const rows = currentTable?.rows;
+    if (!Array.isArray(rows) || rows.length === 0) return;
     const cols = Object.keys(rows[0]);
     const csvCell = (value) => {
       let text = String(value ?? '');
@@ -2681,7 +2703,8 @@ window.app = {
   },
   exportCurrentJson: () => {
     const currentTable = fullTablesData[state.tableSelected];
-    const rows = currentTable.rows;
+    const rows = currentTable?.rows;
+    if (!Array.isArray(rows)) return;
     const blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
