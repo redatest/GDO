@@ -1,8 +1,8 @@
 /**
- * GPARC-Mobile MT — Application Web Mobile de Gestion des Ouvrages Moyenne Tension
+ * GDO-MT — Application Web de Gestion des Ouvrages Moyenne Tension
  * Wilaya de Guelma (24) — Direction de Distribution de l'Électricité (SDO)
  *
- * Interface 100% GPARC-Mobile :
+ * Interface GDO-MT :
  * - Navigation mobile dock (Accueil, Schéma MT, Parc Ouvrages, Carnet Terrain, Paramètres & Tables)
  * - Thème Clair haute visibilité pour agents de terrain
  * - HTML5 et JavaScript natifs, exécutés directement dans le navigateur (compatible GitHub Pages)
@@ -126,7 +126,7 @@ const state = {
   ouvragesScope: 'DEPART', // 'DEPART' | 'ALL'
   ouvragesSearch: '',
 
-  // Terrain & Visites (GPARC-Mobile)
+  // Terrain & Visites (GDO-MT)
   interventions: loadStoredInterventions(),
   newVisitPosteId: '121P8036',
   newVisitType: 'Inspection Visuelle Générale',
@@ -331,7 +331,7 @@ function escapeJsString(value) {
     .replace(/>/g, '&gt;');
 }
 
-// --- EN-TÊTE GPARC-MOBILE (TOP BAR) ---
+// --- EN-TÊTE GDO-MT (TOP BAR) ---
 function renderMobileTopBar() {
   return `
     <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 py-2 shadow-xs">
@@ -376,7 +376,7 @@ function renderMobileTopBar() {
   `;
 }
 
-// --- DOCK DE NAVIGATION GPARC-MOBILE (BOTTOM BAR) ---
+// --- DOCK DE NAVIGATION GDO-MT (BOTTOM BAR) ---
 function renderMobileBottomBar() {
   const navItems = [
     { id: 'home', label: 'Accueil', icon: '🏠' },
@@ -410,7 +410,7 @@ function renderMobileBottomBar() {
   `;
 }
 
-// --- VUE 1 : ACCUEIL MOBILE GPARC ---
+// --- VUE 1 : ACCUEIL GDO-MT ---
 function renderHomeView() {
   const totalKm = departsSummary.reduce((acc, d) => acc + d.totalLengthKm, 0).toFixed(1);
   const totalPostes = networkData.stats?.totalPostes || 2660;
@@ -427,13 +427,13 @@ function renderHomeView() {
 
   return `
     <div class="p-4 md:p-6 xl:p-8 space-y-4 md:space-y-6 max-w-screen-2xl mx-auto">
-      <!-- Bannière Principale GPARC-Mobile -->
+      <!-- Bannière principale GDO-MT -->
       <div class="p-4 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 text-white shadow-sm space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span class="text-[10px] font-bold uppercase tracking-wider text-blue-100">
-              GPARC-Terrain Connecté &middot; Inventaire 2025
+              GDO-MT &middot; Terrain connecté
             </span>
           </div>
           <span class="text-[10px] font-mono bg-white/20 px-2 py-0.5 rounded-full font-bold">
@@ -781,7 +781,7 @@ function renderUnifilaireView() {
 
   return `
     <div class="flex flex-col h-[calc(100vh-105px)] bg-slate-50 text-slate-800 relative overflow-hidden">
-      <!-- Toolbar GPARC-Mobile pour Schéma MT -->
+      <!-- Toolbar GDO-MT pour Schéma MT -->
       <div class="bg-white border-b border-slate-200 px-3 py-2 shrink-0 z-20 shadow-xs space-y-1.5">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-1.5 min-w-0">
@@ -1142,7 +1142,7 @@ function renderUnifilaireView() {
         </div>
       </div>
 
-      <!-- Bottom Sheet Tactile GPARC-Mobile (Fiche Ouvrage & Action Visite) -->
+      <!-- Bottom Sheet tactile GDO-MT (Fiche Ouvrage & Action Visite) -->
       ${state.showBottomSheet && (state.selectedNode || state.selectedEdge) ? `
         <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl border-t border-slate-200 shadow-2xl p-4 z-30 max-h-[60vh] overflow-y-auto space-y-3">
           <div class="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-1"></div>
@@ -1287,7 +1287,7 @@ function renderUnifilaireView() {
   `;
 }
 
-// --- VUE 3 : OUVRAGES (CATALOGUE PARC GPARC 2025) ---
+// --- VUE 3 : OUVRAGES (CATALOGUE DES OUVRAGES GDO-MT) ---
 function renderOuvragesView() {
   if (!Object.keys(networkData.departs).length) {
     return '<div class="p-8 text-center text-sm font-semibold text-blue-800">' + escapeHtml(state.networkDataError || 'Chargement du référentiel des ouvrages…') + '</div>';
@@ -1571,7 +1571,7 @@ function renderOuvragesView() {
   `;
 }
 
-// --- VUE 4 : TERRAIN & VISITES (CARNET DE TERRAIN GPARC-MOBILE) ---
+// --- VUE 4 : TERRAIN & VISITES (CARNET DE TERRAIN GDO-MT) ---
 function renderTerrainView() {
   if (!Object.keys(networkData.departs).length) {
     return '<div class="p-8 text-center text-sm font-semibold text-blue-800">' + escapeHtml(state.networkDataError || 'Chargement du réseau moyenne tension…') + '</div>';
@@ -1650,7 +1650,7 @@ function renderTerrainView() {
             type="submit"
             class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer"
           >
-            &check; Enregistrer la Visite dans GPARC Mobile
+            &check; Enregistrer la visite dans GDO-MT
           </button>
         </form>
       </div>
@@ -2513,7 +2513,7 @@ window.app = {
     }, 70);
   },
 
-  // Terrain & Visites (GPARC-Mobile)
+  // Terrain & Visites (GDO-MT)
   createInterventionForPoste: (nodeId, nodeNom) => {
     state.newVisitPosteId = nodeId;
     state.activeTab = 'terrain';
@@ -2557,7 +2557,7 @@ window.app = {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Visites_GPARC_Mobile_${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `Visites_GDO_MT_${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   },
