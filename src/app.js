@@ -11,7 +11,9 @@
 import { networkData } from './data/networkData.js';
 import { departsSummary } from './data/departsSummary.js';
 import { tableSchemas } from './data/tableSchemas.js';
-import { fullTablesData } from './data/fullTablesData.js';
+let fullTablesData = {};
+let fullTablesLoadPromise = null;
+let initialStorageWarning = '';
 
 // --- RÉFÉRENTIEL DES PARAMÈTRES RÉSEAU MT ---
 const DEFAULT_SETTINGS = {
@@ -47,16 +49,28 @@ const DEFAULT_SETTINGS = {
 function loadStoredSettings() {
   try {
     const saved = localStorage.getItem('gdo_mt_settings');
-    if (saved) return JSON.parse(saved);
-  } catch (err) {}
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && Array.isArray(parsed.transfos) && Array.isArray(parsed.conducteurs) && parsed.seuils) return parsed;
+      initialStorageWarning = 'Les paramètres enregistrés sont invalides. Les valeurs par défaut sont utilisées.';
+    }
+  } catch (error) {
+    initialStorageWarning = 'Impossible de lire les paramètres locaux. Les valeurs par défaut sont utilisées.';
+  }
   return JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
 }
 
 function loadStoredInterventions() {
   try {
     const saved = localStorage.getItem('gdo_mt_interventions');
-    if (saved) return JSON.parse(saved);
-  } catch (err) {}
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return parsed;
+      initialStorageWarning = 'Le carnet de visites enregistré est invalide. Les données de démonstration sont utilisées.';
+    }
+  } catch (error) {
+    initialStorageWarning = 'Impossible de lire le carnet de visites local. Les données de démonstration sont utilisées.';
+  }
   return [
     {
       id: 'INT-2026-001',
@@ -130,8 +144,56 @@ const state = {
   tableSelected: 'POSTE_2025',
   tablePage: 1,
   tablePageSize: 15,
-  tableSearch: ''
+  tableSearch: '',
+  storageWarning: initialStorageWarning,
+  dataLoadError: ''
 };
+
+async function ensureFullTablesData() {
+  if (Object.keys(fullTablesData).length) return true;
+  if (!fullTablesLoadPromise) {
+    fullTablesLoadPromise = import('./data/fullTablesData.js')
+      .then((module) => {
+        fullTablesData = module.fullTablesData || {};
+        state.dataLoadError = Object.keys(fullTablesData).length ? '' : 'Le référentiel des tables est vide.';
+        return Object.keys(fullTablesData).length > 0;
+      })
+      .catch((error) => {
+        console.error('Échec du chargement des tables réseau:', error);
+        state.dataLoadError = 'Impossible de charger les tables réseau. Vérifiez la connexion puis réessayez.';
+        return false;
+      })
+      .finally(() => {
+        fullTablesLoadPromise = null;
+        renderApp();
+      });
+  }
+  return fullTablesLoadPromise;
+}
+
+function persistLocalStorage(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    state.storageWarning = '';
+    return true;
+  } catch (error) {
+    console.error('Échec de sauvegarde locale:', error);
+    state.storageWarning = 'Sauvegarde locale impossible : les changements ne survivront pas à la fermeture du navigateur. Exportez vos données et vérifiez l’espace de stockage.';
+    return false;
+  }
+}
+
+function removeStoredValue(key) {
+  try {
+    localStorage.removeItem(key);
+    state.storageWarning = '';
+    return true;
+  } catch (error) {
+    console.error('Échec de suppression locale:', error);
+    state.storageWarning = 'Impossible de modifier le stockage local du navigateur.';
+    return false;
+  }
+}
 
 function formatNumber(num) {
   if (num === undefined || num === null) return '0';
@@ -144,7 +206,22 @@ function escapeHtml(str) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeJsString(value) {
+  return String(value ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, '\\x27')
+    .replace(/\r/g, '\\r')
+    .replace(/\n/g, '\\n')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 // --- EN-TÊTE GPARC-MOBILE (TOP BAR) ---
@@ -209,7 +286,7 @@ function renderMobileBottomBar() {
           const isActive = state.activeTab === item.id;
           return `
             <button
-              onclick="window.app.setTab('${item.id}')"
+              onclick="window.app.setTab('${escapeJsString(item.id)}')"
               class="flex flex-col items-center justify-center py-1 rounded-xl transition-all cursor-pointer select-none ${
                 isActive
                   ? 'text-blue-600 font-bold bg-blue-50/80 shadow-2xs'
@@ -267,7 +344,7 @@ function renderHomeView() {
         <!-- 3 Boutons d'Action Rapide de Terrain -->
         <div class="pt-1 grid grid-cols-3 gap-2 text-xs">
           <button
-            onclick="window.app.openDepart('${filteredDeparts[0]?.id || '127H1C3'}')"
+            onclick="window.app.openDepart('${escapeJsString(filteredDeparts[0]?.id || '127H1C3')}')"
             class="py-2 px-2 bg-white text-blue-700 font-bold rounded-xl shadow-xs text-center cursor-pointer flex flex-col items-center justify-center hover:bg-blue-50"
           >
             <span class="text-sm mb-0.5">⚡</span>
@@ -339,7 +416,7 @@ function renderHomeView() {
         <div class="space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
           ${filteredDeparts.map(d => `
             <div
-              onclick="window.app.openDepart('${d.id}')"
+              onclick="window.app.openDepart('${escapeJsString(d.id)}')"
               class="p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/30 transition-all flex items-center justify-between cursor-pointer"
             >
               <div>
@@ -733,7 +810,7 @@ function renderUnifilaireView() {
               const strokeWidth = isInPath ? 3.5 : (isEdgeSelected ? 3.2 : (edge.section >= 117 ? 2.5 : 1.6));
 
               return `
-                <g class="cursor-pointer" onclick="window.app.selectEdge('${edge.id}')" opacity="${edgeOpacity}">
+                <g class="cursor-pointer" onclick="window.app.selectEdge('${escapeJsString(edge.id)}')" opacity="${edgeOpacity}">
                   ${isSout ? `
                     <!-- Fourreau / Tranchée souterraine (halo) -->
                     <line
@@ -842,7 +919,7 @@ function renderUnifilaireView() {
               }
 
               return `
-                <g transform="translate(${node.x}, ${node.y})" class="cursor-pointer" onclick="window.app.selectNode('${node.id}')">
+                <g transform="translate(${node.x}, ${node.y})" class="cursor-pointer" onclick="window.app.selectNode('${escapeJsString(node.id)}')">
                   ${(isSelected || isRoot) ? `
                     <circle r="${r + 5}" fill="none" stroke="${strokeColor}" stroke-width="1.5" stroke-dasharray="3 3"/>
                   ` : ''}
@@ -964,7 +1041,7 @@ function renderUnifilaireView() {
 
               <div class="pt-1 flex gap-2">
                 <button
-                  onclick="window.app.createInterventionForPoste('${state.selectedNode.id}', '${escapeHtml(state.selectedNode.meta?.nom || state.selectedNode.id)}')"
+                  onclick="window.app.createInterventionForPoste('${escapeJsString(state.selectedNode.id)}', '${escapeJsString(state.selectedNode.meta?.nom || state.selectedNode.id)}')"
                   class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-xs text-center cursor-pointer"
                 >
                   📝 Créer Fiche de Visite de Terrain
@@ -1105,6 +1182,7 @@ function renderOuvragesView() {
   }
 
   const displayList = filtered.slice(0, 60);
+  const isLoadingGlobalData = isGlobalScope && Object.keys(fullTablesData).length === 0;
 
   return `
     <div class="p-4 space-y-3.5 max-w-2xl mx-auto">
@@ -1168,6 +1246,7 @@ function renderOuvragesView() {
       <!-- Barre de recherche -->
       <input
         type="text"
+        id="ouvragesSearchInput"
         placeholder="Filtrer (ex: BEA, 8002, ENEL, 400, Maouna)..."
         value="${escapeHtml(state.ouvragesSearch)}"
         oninput="window.app.setOuvragesSearch(this.value)"
@@ -1187,7 +1266,7 @@ function renderOuvragesView() {
           ` : ''}
         </div>
 
-        ${displayList.map(item => {
+        ${isLoadingGlobalData ? '<div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-center text-xs font-semibold text-blue-800">' + escapeHtml(state.dataLoadError || 'Chargement du référentiel complet des ouvrages…') + '</div>' : displayList.map(item => {
           if (fType === 'P') {
             const id = item.id || item.code;
             const nom = item.nom || id;
@@ -1209,13 +1288,13 @@ function renderOuvragesView() {
 
                 <div class="flex items-center gap-1.5 shrink-0">
                   <button
-                    onclick="window.app.showOuvrageOnMap('${id}', '${dep}')"
+                    onclick="window.app.showOuvrageOnMap('${escapeJsString(id)}', '${escapeJsString(dep)}')"
                     class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
                   >
                     ⚡ Schéma
                   </button>
                   <button
-                    onclick="window.app.createInterventionForPoste('${id}', '${escapeHtml(nom)}')"
+                    onclick="window.app.createInterventionForPoste('${escapeJsString(id)}', '${escapeJsString(nom)}')"
                     class="px-2 py-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg cursor-pointer"
                   >
                     📝 Visite
@@ -1243,7 +1322,7 @@ function renderOuvragesView() {
 
                 <div class="shrink-0">
                   <button
-                    onclick="window.app.showOuvrageOnMap('${code}', '${dep}')"
+                    onclick="window.app.showOuvrageOnMap('${escapeJsString(code)}', '${escapeJsString(dep)}')"
                     class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
                   >
                     ⚡ Schéma
@@ -1268,7 +1347,7 @@ function renderOuvragesView() {
                 </div>
                 <div class="shrink-0">
                   <button
-                    onclick="window.app.showOuvrageOnMap('${pCode}', '')"
+                    onclick="window.app.showOuvrageOnMap('${escapeJsString(pCode)}', '')"
                     class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
                   >
                     ⚡ Schéma
@@ -1311,7 +1390,7 @@ function renderOuvragesView() {
                   <span class="text-xs text-slate-500 block">${item.nom}</span>
                 </div>
                 <button
-                  onclick="window.app.showOuvrageOnMap('${item.id}', '${item.depart}')"
+                  onclick="window.app.showOuvrageOnMap('${escapeJsString(item.id)}', '${escapeJsString(item.depart)}')"
                   class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
                 >
                   ⚡ Schéma
@@ -1440,7 +1519,7 @@ function renderTerrainView() {
             <div class="text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">${escapeHtml(int.note)}</div>
             <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
               <span>${int.date}</span>
-              <button onclick="window.app.deleteIntervention('${int.id}')" class="text-red-500 hover:text-red-700 font-semibold cursor-pointer">Supprimer</button>
+              <button onclick="window.app.deleteIntervention('${escapeJsString(int.id)}')" class="text-red-500 hover:text-red-700 font-semibold cursor-pointer">Supprimer</button>
             </div>
           </div>
         `).join('')}
@@ -1577,6 +1656,9 @@ function renderSettingsView() {
 
 // --- VUE TABLES DBASE (12 TABLES EXTRAITES D'ORIGINE) ---
 function renderTablesView() {
+  if (!Object.keys(fullTablesData).length) {
+    return '<div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-center text-xs font-semibold text-blue-800">' + escapeHtml(state.dataLoadError || 'Chargement des tables réseau…') + '</div>';
+  }
   const currentTable = fullTablesData[state.tableSelected] || fullTablesData['Poste_htabt_lig'];
   const rawRows = currentTable.rows || [];
 
@@ -1617,6 +1699,7 @@ function renderTablesView() {
 
         <input
           type="text"
+          id="tableSearchInput"
           placeholder="Filtrer..."
           value="${escapeHtml(state.tableSearch)}"
           oninput="window.app.setTableSearch(this.value)"
@@ -1742,7 +1825,7 @@ function renderQuickSearchModal() {
             <div class="p-4 text-center text-xs text-slate-400">Aucun résultat trouvé pour "${escapeHtml(q)}"</div>
           ` : results.map(r => `
             <div
-              onclick="window.app.selectSearchResult('${r.type}', '${r.id}', '${r.depId || r.id}')"
+              onclick="window.app.selectSearchResult('${escapeJsString(r.type)}', '${escapeJsString(r.id)}', '${escapeJsString(r.depId || r.id)}')"
               class="p-2 rounded-xl hover:bg-blue-50 transition-colors flex items-center justify-between cursor-pointer text-xs"
             >
               <div>
@@ -1911,6 +1994,7 @@ export function renderApp() {
   root.innerHTML = `
     <div class="min-h-screen bg-slate-50 text-slate-900 pb-20 flex flex-col antialiased">
       ${renderMobileTopBar()}
+      ${state.storageWarning ? '<div role="alert" class="mx-3 mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">' + escapeHtml(state.storageWarning) + '</div>' : ''}
       <main class="flex-1">
         ${viewHtml}
       </main>
@@ -2174,10 +2258,22 @@ window.app = {
   setOuvragesScope: (scope) => {
     state.ouvragesScope = scope;
     renderApp();
+    if (scope === 'ALL') void ensureFullTablesData();
   },
   setOuvragesSearch: (q) => {
+    const active = document.activeElement;
+    const hadFocus = active?.id === 'ouvragesSearchInput';
+    const selectionStart = hadFocus ? active.selectionStart : null;
+    const selectionEnd = hadFocus ? active.selectionEnd : null;
     state.ouvragesSearch = q;
     renderApp();
+    if (hadFocus) {
+      const input = document.getElementById('ouvragesSearchInput');
+      input?.focus();
+      if (input && Number.isInteger(selectionStart) && Number.isInteger(selectionEnd)) {
+        input.setSelectionRange(selectionStart, selectionEnd);
+      }
+    }
   },
   showOuvrageOnMap: (nodeId, depId) => {
     if (depId && networkData.departs[depId] && state.selectedDepartId !== depId) {
@@ -2239,11 +2335,9 @@ window.app = {
     };
 
     state.interventions.unshift(newInt);
-    try {
-      localStorage.setItem('gdo_mt_interventions', JSON.stringify(state.interventions));
-    } catch (err) {}
+    const saved = persistLocalStorage('gdo_mt_interventions', state.interventions);
 
-    state.visitSuccessNotice = true;
+    state.visitSuccessNotice = saved;
     renderApp();
     setTimeout(() => {
       state.visitSuccessNotice = false;
@@ -2252,9 +2346,7 @@ window.app = {
   },
   deleteIntervention: (id) => {
     state.interventions = state.interventions.filter(item => item.id !== id);
-    try {
-      localStorage.setItem('gdo_mt_interventions', JSON.stringify(state.interventions));
-    } catch (err) {}
+    const saved = persistLocalStorage('gdo_mt_interventions', state.interventions);
     renderApp();
   },
   exportInterventions: () => {
@@ -2271,10 +2363,11 @@ window.app = {
   setSettingsSubTab: (subTab) => {
     state.settingsSubTab = subTab;
     renderApp();
+    if (subTab === 'tables') void ensureFullTablesData();
   },
   resetDefaultSettings: () => {
     state.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-    try { localStorage.removeItem('gdo_mt_settings'); } catch (err) {}
+    removeStoredValue('gdo_mt_settings');
     renderApp();
   },
   toggleNewTransfoModal: (show) => {
@@ -2293,12 +2386,12 @@ window.app = {
     state.settings.transfos.push({ kva, ucc: 4.0, p0, pk, in30, type, desc });
     state.settings.transfos.sort((a, b) => a.kva - b.kva);
     state.showNewTransfoModal = false;
-    try { localStorage.setItem('gdo_mt_settings', JSON.stringify(state.settings)); } catch (err) {}
+    persistLocalStorage('gdo_mt_settings', state.settings);
     renderApp();
   },
   deleteTransfo: (index) => {
     state.settings.transfos.splice(index, 1);
-    try { localStorage.setItem('gdo_mt_settings', JSON.stringify(state.settings)); } catch (err) {}
+    persistLocalStorage('gdo_mt_settings', state.settings);
     renderApp();
   },
   toggleNewConducteurModal: (show) => {
@@ -2319,12 +2412,12 @@ window.app = {
     state.settings.conducteurs.push({ code, nom, section, nat, r, x, iMax, pose });
     state.settings.conducteurs.sort((a, b) => a.section - b.section);
     state.showNewConducteurModal = false;
-    try { localStorage.setItem('gdo_mt_settings', JSON.stringify(state.settings)); } catch (err) {}
+    persistLocalStorage('gdo_mt_settings', state.settings);
     renderApp();
   },
   deleteConducteur: (index) => {
     state.settings.conducteurs.splice(index, 1);
-    try { localStorage.setItem('gdo_mt_settings', JSON.stringify(state.settings)); } catch (err) {}
+    persistLocalStorage('gdo_mt_settings', state.settings);
     renderApp();
   },
   saveSeuils: (e) => {
@@ -2332,7 +2425,7 @@ window.app = {
     state.settings.seuils.tensionNominale = Number(document.getElementById('inputTensionNominale').value) || 30.0;
     state.settings.seuils.chuteTensionMax = Number(document.getElementById('inputChuteTensionMax').value) || 5.0;
     state.settings.seuils.cosPhi = Number(document.getElementById('inputCosPhi').value) || 0.90;
-    try { localStorage.setItem('gdo_mt_settings', JSON.stringify(state.settings)); } catch (err) {}
+    persistLocalStorage('gdo_mt_settings', state.settings);
     renderApp();
   },
 
@@ -2344,9 +2437,20 @@ window.app = {
     renderApp();
   },
   setTableSearch: (q) => {
+    const active = document.activeElement;
+    const hadFocus = active?.id === 'tableSearchInput';
+    const selectionStart = hadFocus ? active.selectionStart : null;
+    const selectionEnd = hadFocus ? active.selectionEnd : null;
     state.tableSearch = q;
     state.tablePage = 1;
     renderApp();
+    if (hadFocus) {
+      const input = document.getElementById('tableSearchInput');
+      input?.focus();
+      if (input && Number.isInteger(selectionStart) && Number.isInteger(selectionEnd)) {
+        input.setSelectionRange(selectionStart, selectionEnd);
+      }
+    }
   },
   setTablePage: (p) => {
     state.tablePage = Math.max(1, p);
