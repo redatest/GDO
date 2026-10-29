@@ -6,6 +6,7 @@
 - **Dépôt source :** https://github.com/redatest/GDO
 - **Technologies :** HTML, CSS et JavaScript natifs (modules ES)
 - **Hébergement :** GitHub Pages — site statique, sans serveur applicatif
+- **Outils de développement requis :** aucun gestionnaire de paquets, runtime JavaScript ou outil de compilation
 
 ## Fonctionnalités
 
@@ -34,27 +35,31 @@ Ces valeurs décrivent les données intégrées à l'application. Elles ne const
 
 Le dépôt conserve également un instantané topologique historique. Il diffère du référentiel courant : il contient 51 départs et des totaux différents. Ces écarts doivent être vérifiés avec les données métier. L'application n'ajoute pas automatiquement de raccordements physiques supposés.
 
-## Utilisation et développement
+## Architecture sans npm ni Bun
 
-L'application publiée s'exécute directement dans le navigateur et ne nécessite aucun outil d'installation ou de compilation.
+L'application est une application statique côté navigateur. Son exécution ne nécessite ni Node.js, ni npm, ni Bun, ni framework JavaScript, ni compilation.
 
 Le navigateur charge directement :
 - `index.html` : page d'entrée ;
-- `assets/app.css` : feuille de style statique ;
-- `src/app.js` : logique de l'application en JavaScript natif ;
+- `assets/app.css` : feuille de style CSS statique ;
+- `src/app.js` : logique applicative en JavaScript natif ;
 - `src/data/` : modules JavaScript et référentiels réseau.
 
-Pour tester les fichiers localement, utilisez un serveur HTTP statique, par exemple l'extension **Live Server** de Visual Studio Code ou le serveur intégré de Python :
+Les modules JavaScript ES sont chargés directement par le navigateur. Le fichier `tsconfig.json`, qui faisait référence à des types Vite et à une résolution de modules destinée à un environnement de bundling, a été supprimé car il n'est pas utilisé à l'exécution.
+
+## Exécution locale
+
+Pour tester localement, servez le dossier avec n'importe quel serveur HTTP statique. Par exemple, si Python est déjà installé :
 
 ```bash
 python -m http.server 8000
 ```
 
-Puis ouvrez `http://localhost:8000`. Il n'est pas recommandé d'ouvrir directement `index.html` en `file://`, car les modules JavaScript du navigateur peuvent être bloqués par les règles de sécurité d'origine.
+Puis ouvrez `http://localhost:8000`. Cette commande est uniquement une solution de test facultative ; Python n'est pas une dépendance de l'application publiée. L'ouverture directe en `file://` n'est pas recommandée, car les règles de sécurité du navigateur peuvent bloquer les modules JavaScript ES.
 
 ## Déploiement
 
-Le workflow GitHub Actions situé dans `.github/workflows/deploy.yml` publie directement les fichiers statiques de la branche `main` vers `gh-pages`. Il n'installe aucune dépendance et ne lance aucune compilation.
+Le workflow GitHub Actions situé dans `.github/workflows/deploy.yml` publie directement les fichiers statiques de la branche `main` vers `gh-pages`. Il n'installe aucun paquet et ne lance aucune compilation.
 
 Le site public est servi par GitHub Pages à l'adresse https://redatest.github.io/GDO/.
 
@@ -65,9 +70,9 @@ Les paramètres de l'application et les fiches du carnet de terrain sont enregis
 ## Structure principale du projet
 
 - `index.html` : page d'entrée ;
-- `assets/app.css` : CSS statique prêt à être servi par le navigateur ;
+- `assets/app.css` : CSS statique ;
 - `src/app.js` : interface et logique de l'application ;
-- `src/data/` : référentiels et données réseau ;
+- `src/data/` : modules JavaScript et données réseau ;
 - `.github/workflows/deploy.yml` : déploiement statique vers GitHub Pages.
 
 ## Licence et usage
