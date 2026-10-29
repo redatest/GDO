@@ -31,6 +31,7 @@ for (const [departId, depart] of Object.entries(networkData.departs ?? {})) {
       depart.nodes.unshift({
         id: virtualSourceId,
         type: 'POSTE_SOURCE',
+        isVirtual: true,
         prefix: 'H',
         meta: { nom: source?.nom || `Source ${sourcePrefix}`, u_prim: source?.u_prim || 60, u_second: 30 }
       });
@@ -40,21 +41,27 @@ for (const [departId, depart] of Object.entries(networkData.departs ?? {})) {
         to: firstNodeId,
         cPar: '1',
         longueur: 0,
-        nat_cond: 'AL',
-        section: 148,
-        struct: 'SOUTERRAIN',
-        isSouterrain: true,
+        nat_cond: '-',
+        section: 0,
+        struct: 'VIRTUEL',
+        structRaw: 'VIRTUEL',
+        structLabel: 'Racine virtuelle — raccordement physique non renseigné',
+        poseLabel: 'Ancrage graphique',
+        isSouterrain: false,
+        isVirtual: true,
         tension: 30,
         an_mes: ''
       });
       addedVirtualSources += 1;
     }
   }
-  depart.arcCount = depart.edges.length;
-  depart.nodeCount = depart.nodes.length;
+  depart.arcCount = depart.edges.filter((edge) => !edge.isVirtual).length;
+  depart.nodeCount = depart.nodes.filter((node) => !node.isVirtual).length;
 }
 networkData.stats.totalDeparts = Object.keys(networkData.departs ?? {}).length;
-networkData.stats.totalArcs = Object.values(networkData.departs ?? {}).reduce((sum, depart) => sum + depart.edges.length, 0);
+networkData.stats.totalArcs = Object.values(networkData.departs ?? {}).reduce(
+  (sum, depart) => sum + depart.edges.filter((edge) => !edge.isVirtual).length, 0
+);
 for (const summary of departsSummary ?? []) {
   const depart = networkData.departs[summary.id];
   if (!depart) continue;
@@ -88,9 +95,10 @@ function addWarning(message) {
 }
 
 function countComponents(nodes, edges) {
-  const adjacency = new Map(nodes.map((node) => [node.id, []]));
+  const physicalNodes = nodes.filter((node) => !node.isVirtual);
+  const adjacency = new Map(physicalNodes.map((node) => [node.id, []]));
   for (const edge of edges) {
-    if (!adjacency.has(edge.from) || !adjacency.has(edge.to)) continue;
+    if (edge.isVirtual || !adjacency.has(edge.from) || !adjacency.has(edge.to)) continue;
     adjacency.get(edge.from).push(edge.to);
     adjacency.get(edge.to).push(edge.from);
   }
@@ -117,11 +125,13 @@ function countComponents(nodes, edges) {
 for (const [departId, depart] of Object.entries(currentDeparts)) {
   const nodes = Array.isArray(depart.nodes) ? depart.nodes : [];
   const edges = Array.isArray(depart.edges) ? depart.edges : [];
+  const physicalNodes = nodes.filter((node) => !node.isVirtual);
+  const physicalEdges = edges.filter((edge) => !edge.isVirtual);
   const nodeIds = new Set();
   const edgeIds = new Set();
 
-  totalNodes += nodes.length;
-  totalEdges += edges.length;
+  totalNodes += physicalNodes.length;
+  totalEdges += physicalEdges.length;
   totalLengthKm += Number(depart.totalLengthKm) || 0;
 
   for (const node of nodes) {
@@ -162,17 +172,17 @@ for (const [departId, depart] of Object.entries(currentDeparts)) {
     }
   }
 
-  if (depart.arcCount !== edges.length) {
-    addError(`Départ ${departId}: arcCount=${depart.arcCount}, mais ${edges.length} tronçons présents.`);
+  if (depart.arcCount !== physicalEdges.length) {
+    addError(`Départ ${departId}: arcCount=${depart.arcCount}, mais ${physicalEdges.length} tronçons physiques présents.`);
   }
-  if (depart.nodeCount !== nodes.length) {
-    addError(`Départ ${departId}: nodeCount=${depart.nodeCount}, mais ${nodes.length} nœuds présents.`);
+  if (depart.nodeCount !== physicalNodes.length) {
+    addError(`Départ ${departId}: nodeCount=${depart.nodeCount}, mais ${physicalNodes.length} nœuds physiques présents.`);
   }
 
   const summary = summaryById.get(departId);
   if (!summary) {
     addError(`Départ ${departId}: absent de departsSummary.`);
-  } else if (summary.arcCount !== edges.length || summary.nodeCount !== nodes.length) {
+  } else if (summary.arcCount !== physicalEdges.length || summary.nodeCount !== physicalNodes.length) {
     addError(`Départ ${departId}: incohérence entre networkData et departsSummary.`);
   }
 
@@ -223,7 +233,7 @@ if (legacyEdgeCount !== totalEdges || Math.abs(legacyLengthKm - totalLengthKm) >
 }
 
 console.log('=== Audit topologique GDO-MT ===');
-console.log(`Données actuelles: ${currentIds.length} départs, ${totalNodes} nœuds, ${totalEdges} tronçons, ${totalLengthKm.toFixed(2)} km.`);
+console.log(`Données actuelles: ${currentIds.length} départs, ${totalNodes} nœuds physiques, ${totalEdges} tronçons physiques, ${totalLengthKm.toFixed(2)} km.`);
 console.log(`Référence historique: ${legacyIds.length} départs, ${legacyEdgeCount} tronçons, ${legacyLengthKm.toFixed(2)} km.`);
 console.log(`Départs avec plusieurs composantes: ${disconnectedDepartCount}.`);
 for (const warning of warnings) console.warn(`AVERTISSEMENT: ${warning}`);
