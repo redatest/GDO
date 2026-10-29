@@ -1,69 +1,68 @@
-# GDO-MT — Visualisation & Modernisation Réseau Moyenne Tension (HTA)
+# GDO-MT — Visualisation & modernisation du réseau moyenne tension (HTA)
 
-Application web moderne en **Pur JavaScript (Client-Side, 0% Node.js sur le serveur)** pour la visualisation de l'architecture physique, l'analyse topologique et la gestion des **Ouvrages Moyenne Tension (HTA 30 kV)**, issue de la rétro-ingénierie d'une application historique dBase III / FoxPro (Wilaya de Guelma, Algérie).
+Application web statique en JavaScript pour consulter le réseau MT 30 kV, explorer les ouvrages, afficher les schémas unifilaires et enregistrer des relevés terrain. Le référentiel historique provient de données dBase/FoxPro et de classeurs Excel de la wilaya de Guelma, Algérie.
 
-Ce projet est hébergeable directement sur **GitHub Pages** (ou tout serveur web statique Nginx, Apache, CDN).
+L'application ne nécessite pas de serveur applicatif en production. Les paramètres et les fiches de visite sont conservés dans le stockage local du navigateur (`localStorage`) et les visites peuvent être exportées en JSON. Ce stockage local ne synchronise pas les données entre plusieurs appareils.
 
----
+## Fonctionnalités
 
-## 🌟 Fonctionnalités Clés
+- **Schéma unifilaire MT** : sélection d'un départ, zoom, panoramique, inspection des nœuds et tronçons, affichage des caractéristiques des ouvrages.
+- **Catalogue des ouvrages** : postes HTA/BT, IACM, transformateurs, tronçons et étoilements, avec recherche par texte.
+- **Carnet de terrain** : fiches de visite locales, suppression et export JSON.
+- **Référentiels et tables historiques** : consultation, filtrage, pagination et export CSV/JSON. Les tables volumineuses sont chargées à la demande.
+- **Audit des données réseau** : contrôle des identifiants, des extrémités des tronçons, des compteurs et des écarts entre instantanés.
 
-- **Architecture Physique & Schéma Unifilaire Interactif (SLD)** :
-  - Visualisation des **51 Départs MT** (ex: `125H3C20` avec 118 postes, `125H2C3` avec 95 postes, `127H1C4`, etc.).
-  - 3 modes de rendu : **Hiérarchique (Unifilaire)**, **Radial Spatiale**, et **Simplifié (Postes & Piquages seuls)**.
-  - **Traçage amont vers le poste source (*Path Tracing*)** : Cliquez sur un poste ou un piquage pour illuminer en or le chemin électrique remontant jusqu'au disjoncteur du poste source.
-  - Zoom, Panoramique, centrage automatique et recherche instantanée par matricule ou localité.
-  - Inspecteur technique latéral : Fiche détaillée (puissance installée kVA, type cabine maçonnée `MS` ou poteau `AC`, tension 30 kV, armements béton/bois/métal).
+## Chiffres du référentiel actuel
 
-- **Simulateur Terrain GPARC-Mobile (Offline-First)** :
-  - Simulation d'un terminal mobile / tablette durcie de terrain.
-  - Modèle embarqué **SQLite (1,8 Mo)** sans aucune connexion Internet requise.
-  - Formulaire de relevé d'intervention et signalement d'anomalies en local.
+Le référentiel applicatif actuel indique :
 
-- **Explorateur des 12 Tables Excel dBase d'Origine** :
-  - Consultation, filtrage, pagination et comparaison `anomalie` vs `corrigé`.
-  - Export immédiat en **CSV** ou **JSON**.
+- 49 départs et 7 501 tronçons/arcs ;
+- 6 596 occurrences de nœuds dans les départs ;
+- 2 632,07 km de linéaire cumulé ;
+- 2 660 postes, 2 800 transformateurs et 1 638 IACM recensés ;
+- 39 IACM ouverts dans les statistiques du référentiel.
 
-- **Synthèse Réseau & Audit de Qualité** :
-  - 51 Départs MT &middot; 7 678 Arcs (1 240+ km) &middot; 504 Postes HTA/BT &middot; ~38 450 kVA &middot; 378 Étoilements &middot; 2 Postes Sources.
-  - Diagnostic des anomalies historiques dBase (tensions nulles à 0.0V, départs non renseignés).
+Ces chiffres décrivent l'instantané applicatif actuel ; ils ne constituent pas une validation de l'état électrique réel du réseau.
 
----
+## Contrôle topologique
 
-## 🚀 Déploiement sur GitHub Pages (100% Pur JavaScript)
-
-Cette application est entièrement statique. Elle ne requiert aucun serveur Node.js ni backend en production.
-
-### Activation sur votre dépôt GitHub :
-1. Rendez-vous sur votre dépôt : `https://github.com/redatest/GDO`
-2. Cliquez sur **Settings** &rarr; **Pages** (dans le menu de gauche).
-3. Dans **Build and deployment** &rarr; **Source** :
-   - Sélectionnez **Deploy from a branch**.
-   - Choisissez la branche **`gh-pages`** (ou **`main`** dossier `/docs`).
-4. Cliquez sur **Save**.
-5. Votre application sera disponible à l'adresse :
-   **`https://redatest.github.io/GDO/`**
-
----
-
-## 🛠️ Développement Local (Optionnel)
-
-Pour tester ou modifier le code source en local :
+Lancer l'audit avec :
 
 ```bash
-# Installation des dépendances
-npm install
-
-# Lancement du serveur de test local
-npm run dev
-
-# Compilation de la version statique de production
-npm run build
+bun run audit:topology
 ```
 
-Le dossier `dist/` (ou `docs/`) contient les fichiers compilés prêts à être hébergés n'importe où.
+Le contrôle vérifie les identifiants dupliqués, les extrémités de tronçons absentes, les longueurs invalides et la cohérence entre les compteurs de `networkData` et `departsSummary`.
 
----
+**Écarts de données connus à résoudre avec la source métier :**
 
-## 📄 Licence
+- `networkTopology.json` contient 51 départs historiques, contre 49 dans le référentiel actuel ;
+- les deux instantanés ne portent pas sur les mêmes départs et leurs totaux de tronçons/linéaire diffèrent ;
+- plusieurs départs comportent des composantes topologiques disjointes.
+
+L'audit signale ces cas mais ne crée pas automatiquement de tronçons de raccordement : ajouter une liaison électrique sans preuve dans les données de référence pourrait fausser le schéma et les analyses de chemin amont.
+
+## Développement et validation
+
+Le dépôt utilise Bun et le fichier de verrouillage `bun.lock`.
+
+```bash
+bun install --frozen-lockfile
+bun run dev
+bun run lint
+bun run audit:topology
+bun run build
+```
+
+Le workflow GitHub Actions exécute les contrôles, construit l'application et publie le contenu de `dist/` sur la branche `gh-pages`.
+
+## GitHub Pages
+
+Dépôt : https://github.com/redatest/GDO  
+Application : https://redatest.github.io/GDO/
+
+Dans **Settings → Pages**, la source de publication doit être la branche `gh-pages` si ce n'est pas déjà le cas.
+
+## Licence
+
 Projet réalisé pour la modernisation des applications patrimoniales de gestion des réseaux électriques de distribution.
