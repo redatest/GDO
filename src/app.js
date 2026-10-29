@@ -91,6 +91,8 @@ const state = {
 
   // Schéma Unifilaire
   showJunctions: false,
+  poseFilter: 'ALL', // 'ALL' | 'SOUT_HIGHLIGHT' | 'AER_ONLY'
+  showPoseLegend: false,
   zoom: 1,
   pan: { x: 30, y: 70 },
   isDragging: false,
@@ -532,40 +534,111 @@ function renderUnifilaireView() {
   for (const n of calculatedNodes) nodePosMap.set(n.id, n);
   window._currentNodePosMap = nodePosMap;
 
+  // Statistiques Souterrain / Aérien du départ MT sélectionné
+  const soutArcs = renderEdges.filter(e => e.isSouterrain);
+  const aerArcs = renderEdges.filter(e => !e.isSouterrain);
+  const soutKm = (soutArcs.reduce((acc, e) => acc + (e.longueur || 0), 0) / 1000).toFixed(1);
+  const aerKm = (aerArcs.reduce((acc, e) => acc + (e.longueur || 0), 0) / 1000).toFixed(1);
+
+  // Détection des Remontées Aéro-Souterraines (RAS) : Nœuds reliant du souterrain et de l'aérien
+  const nodeHasSout = new Set();
+  const nodeHasAer = new Set();
+  for (const e of renderEdges) {
+    if (e.isSouterrain) {
+      nodeHasSout.add(e.from);
+      nodeHasSout.add(e.to);
+    } else {
+      nodeHasAer.add(e.from);
+      nodeHasAer.add(e.to);
+    }
+  }
+  const rasNodeSet = new Set();
+  for (const nid of nodeHasSout) {
+    if (nodeHasAer.has(nid)) rasNodeSet.add(nid);
+  }
+
   return `
     <div class="flex flex-col h-[calc(100vh-105px)] bg-slate-50 text-slate-800 relative overflow-hidden">
-      <!-- Toolbar GPARC-Mobile pour Schéma -->
-      <div class="bg-white border-b border-slate-200 px-3 py-2 flex items-center justify-between gap-2 shrink-0 z-20 shadow-xs">
-        <div class="flex items-center gap-1.5 min-w-0">
-          <select
-            onchange="window.app.selectDepart(this.value)"
-            class="bg-slate-50 text-slate-900 text-xs font-mono font-bold rounded-lg px-2 py-1.5 border border-slate-300 max-w-[180px] truncate"
-          >
-            ${departsSummary.map(d => `
-              <option value="${d.id}" ${d.id === state.selectedDepartId ? 'selected' : ''}>
-                ${d.id} (${d.posteCount}P)
-              </option>
-            `).join('')}
-          </select>
-          <span class="text-[10px] text-slate-500 font-medium hidden sm:inline">
-            ${currentDepart.totalLengthKm} km
-          </span>
+      <!-- Toolbar GPARC-Mobile pour Schéma MT -->
+      <div class="bg-white border-b border-slate-200 px-3 py-2 shrink-0 z-20 shadow-xs space-y-1.5">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <select
+              onchange="window.app.selectDepart(this.value)"
+              class="bg-slate-50 text-slate-900 text-xs font-mono font-bold rounded-lg px-2 py-1.5 border border-slate-300 max-w-[170px] truncate"
+            >
+              ${departsSummary.map(d => `
+                <option value="${d.id}" ${d.id === state.selectedDepartId ? 'selected' : ''}>
+                  ${d.id} (${d.posteCount}P)
+                </option>
+              `).join('')}
+            </select>
+            <span class="text-[10px] text-slate-500 font-medium hidden sm:inline">
+              ${currentDepart.totalLengthKm} km
+            </span>
+          </div>
+
+          <div class="flex items-center gap-1">
+            <button
+              onclick="window.app.togglePoseLegend()"
+              class="px-2 py-1 text-[11px] font-semibold rounded-lg border transition-all ${
+                state.showPoseLegend ? 'bg-indigo-50 border-indigo-300 text-indigo-700' : 'bg-slate-50 border-slate-300 text-slate-600'
+              }"
+              title="Légende Souterrain / Aérien"
+            >
+              📖 Légende
+            </button>
+            <button
+              onclick="window.app.toggleJunctions()"
+              class="px-2 py-1 text-[11px] font-semibold rounded-lg border ${
+                state.showJunctions ? 'bg-blue-50 border-blue-300 text-blue-800' : 'bg-slate-50 border-slate-300 text-slate-600'
+              }"
+            >
+              Jonct. ${state.showJunctions ? 'ON' : 'OFF'}
+            </button>
+            <button
+              onclick="window.app.fitView()"
+              class="px-2 py-1 text-[11px] font-semibold rounded-lg bg-slate-50 border border-slate-300 text-slate-700"
+            >
+              Centrer
+            </button>
+          </div>
         </div>
 
-        <div class="flex items-center gap-1">
+        <!-- Filtre rapide Tronçons MT : Tous / Souterrain / Aérien -->
+        <div class="flex items-center gap-1.5 overflow-x-auto text-[11px] font-medium no-scrollbar pt-0.5">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-0.5">Tronçons :</span>
           <button
-            onclick="window.app.toggleJunctions()"
-            class="px-2 py-1 text-[11px] font-semibold rounded-lg border ${
-              state.showJunctions ? 'bg-blue-50 border-blue-300 text-blue-800' : 'bg-slate-50 border-slate-300 text-slate-600'
+            onclick="window.app.setPoseFilter('ALL')"
+            class="px-2.5 py-1 rounded-full border text-xs shrink-0 font-semibold transition-all ${
+              state.poseFilter === 'ALL'
+                ? 'bg-slate-800 text-white border-slate-800 shadow-xs'
+                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
             }"
           >
-            Jonct. ${state.showJunctions ? 'ON' : 'OFF'}
+            Tous (${renderEdges.length})
           </button>
           <button
-            onclick="window.app.fitView()"
-            class="px-2 py-1 text-[11px] font-semibold rounded-lg bg-slate-50 border border-slate-300 text-slate-700"
+            onclick="window.app.setPoseFilter('SOUT_HIGHLIGHT')"
+            class="px-2.5 py-1 rounded-full border text-xs shrink-0 font-semibold flex items-center gap-1 transition-all ${
+              state.poseFilter === 'SOUT_HIGHLIGHT'
+                ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs ring-2 ring-indigo-200'
+                : 'bg-indigo-50/80 text-indigo-800 border-indigo-200 hover:bg-indigo-100'
+            }"
           >
-            Centrer
+            <span>🚇 Souterrain</span>
+            <span class="font-mono text-[10px] font-bold ${state.poseFilter === 'SOUT_HIGHLIGHT' ? 'text-indigo-100' : 'text-indigo-600'}">(${soutKm} km)</span>
+          </button>
+          <button
+            onclick="window.app.setPoseFilter('AER_ONLY')"
+            class="px-2.5 py-1 rounded-full border text-xs shrink-0 font-semibold flex items-center gap-1 transition-all ${
+              state.poseFilter === 'AER_ONLY'
+                ? 'bg-amber-600 text-white border-amber-600 shadow-xs ring-2 ring-amber-200'
+                : 'bg-amber-50/80 text-amber-800 border-amber-200 hover:bg-amber-100'
+            }"
+          >
+            <span>⚡ Aérien</span>
+            <span class="font-mono text-[10px] font-bold ${state.poseFilter === 'AER_ONLY' ? 'text-amber-100' : 'text-amber-600'}">(${aerKm} km)</span>
           </button>
         </div>
       </div>
@@ -584,6 +657,45 @@ function renderUnifilaireView() {
         ontouchend="window.app.handleTouchEnd(event)"
         ontouchcancel="window.app.handleTouchEnd(event)"
       >
+        <!-- Légende Flottante Interactive Souterrain / Aérien -->
+        ${state.showPoseLegend ? `
+          <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-xs border border-slate-200 rounded-xl p-3 shadow-xl z-20 max-w-[270px] text-xs space-y-2 pointer-events-auto">
+            <div class="flex items-center justify-between font-bold text-slate-800 text-[11px] pb-1 border-b border-slate-100">
+              <span class="flex items-center gap-1">🏷️ Conventions Tronçons MT</span>
+              <button onclick="window.app.togglePoseLegend()" class="text-slate-400 hover:text-slate-600 font-bold px-1 cursor-pointer">&times;</button>
+            </div>
+            <div class="space-y-1.5 text-[10px]">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-1.5 bg-slate-700 rounded-full shrink-0"></div>
+                <div class="text-slate-700">
+                  <strong>⚡ Ligne Aérienne</strong> (Trait plein continu &middot; NU/AL)
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-2.5 border-b-2 border-dashed border-indigo-700 bg-indigo-100 rounded-xs shrink-0"></div>
+                <div class="text-indigo-900">
+                  <strong>🚇 Câble Souterrain</strong> (Fourreau + tirets indigo &middot; URSS/TNSS)
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full border border-purple-500 bg-purple-100 flex items-center justify-center text-[7px] font-bold text-purple-700 shrink-0">RAS</div>
+                <div class="text-purple-900">
+                  <strong>Remontée Aéro-Souterraine</strong> (Transition support / sol)
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="px-1.5 py-0.5 rounded bg-indigo-50 border border-indigo-200 text-indigo-700 font-mono text-[9px] font-bold shrink-0">SOUT T.128</span>
+                <div class="text-slate-600">
+                  Numéro de Tronçon & longueur en mètres
+                </div>
+              </div>
+            </div>
+            <div class="pt-1 border-t border-slate-100 text-[9px] text-slate-400">
+              💡 Touchez n'importe quel segment sur le schéma pour consulter sa fiche détaillée.
+            </div>
+          </div>
+        ` : ''}
+
         <svg
           id="networkSvg"
           class="w-full h-full select-none block"
@@ -594,7 +706,7 @@ function renderUnifilaireView() {
             id="networkViewport"
             transform="translate(${state.pan.x}, ${state.pan.y}) scale(${state.zoom})"
           >
-            <!-- Arcs MT -->
+            <!-- Arcs MT (Tronçons Souterrains & Aériens) -->
             <g class="edges">
             ${renderEdges.map(edge => {
               const u = nodePosMap.get(edge.from);
@@ -603,23 +715,94 @@ function renderUnifilaireView() {
 
               const isEdgeSelected = state.selectedEdge?.id === edge.id;
               const isInPath = u.inPath && v.inPath;
+              const isSout = !!edge.isSouterrain;
+
+              let isDimmed = false;
+              if (state.poseFilter === 'SOUT_HIGHLIGHT' && !isSout) {
+                isDimmed = true;
+              } else if (state.poseFilter === 'AER_ONLY' && isSout) {
+                isDimmed = true;
+              }
+
+              const edgeOpacity = isDimmed ? '0.12' : (isEdgeSelected || isInPath ? '1' : '0.9');
+              const cx = (u.x + v.x) / 2;
+              const cy = (u.y + v.y) / 2;
+
               let strokeColor = isInPath ? '#d97706' : (edge.nat_cond === 'CU' ? '#c2410c' : '#334155');
               if (isEdgeSelected) strokeColor = '#2563eb';
-              const strokeWidth = isInPath ? 3.5 : (isEdgeSelected ? 3 : (edge.section >= 117 ? 2.5 : 1.5));
+              const strokeWidth = isInPath ? 3.5 : (isEdgeSelected ? 3.2 : (edge.section >= 117 ? 2.5 : 1.6));
 
               return `
-                <g class="cursor-pointer" onclick="window.app.selectEdge('${edge.id}')">
-                  <line
-                    x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}"
-                    stroke="${strokeColor}"
-                    stroke-width="${strokeWidth}"
-                    stroke-dasharray="${edge.struct === 'SOUTERRAIN' ? '4 3' : 'none'}"
-                    opacity="${isInPath || isEdgeSelected ? '1' : '0.85'}"
-                  />
-                  ${state.zoom >= 0.75 && edge.longueur > 0 ? `
-                    <text x="${(u.x + v.x) / 2}" y="${(u.y + v.y) / 2 - 4}" fill="#64748b" font-size="9" font-family="monospace" text-anchor="middle">
-                      ${edge.longueur}m
-                    </text>
+                <g class="cursor-pointer" onclick="window.app.selectEdge('${edge.id}')" opacity="${edgeOpacity}">
+                  ${isSout ? `
+                    <!-- Fourreau / Tranchée souterraine (halo) -->
+                    <line
+                      x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}"
+                      stroke="${isEdgeSelected ? '#3b82f6' : (state.poseFilter === 'SOUT_HIGHLIGHT' ? '#6366f1' : '#818cf8')}"
+                      stroke-width="${isEdgeSelected ? '7' : '5'}"
+                      stroke-linecap="round"
+                      opacity="${isEdgeSelected ? '0.8' : '0.45'}"
+                    />
+                    <!-- Câble HTA souterrain (tirets d'ingénierie Sonelgaz) -->
+                    <line
+                      x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}"
+                      stroke="${isEdgeSelected ? '#1d4ed8' : (isInPath ? '#d97706' : '#4338ca')}"
+                      stroke-width="${isEdgeSelected ? '3' : '2.2'}"
+                      stroke-dasharray="6 3.5"
+                      stroke-linecap="butt"
+                    />
+                  ` : `
+                    <!-- Ligne aérienne MT (trait continu) -->
+                    <line
+                      x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}"
+                      stroke="${strokeColor}"
+                      stroke-width="${strokeWidth}"
+                      stroke-linecap="round"
+                    />
+                  `}
+
+                  <!-- Badge & Libellé Tronçon / Longueur -->
+                  ${state.zoom >= 0.65 ? `
+                    <g transform="translate(${cx}, ${cy})">
+                      ${isSout ? `
+                        <rect
+                          x="-35" y="-12" width="70" height="15" rx="3.5"
+                          fill="${isEdgeSelected ? '#1e3a8a' : '#e0e7ff'}"
+                          stroke="${isEdgeSelected ? '#60a5fa' : '#818cf8'}"
+                          stroke-width="0.8"
+                        />
+                        <text
+                          x="0" y="-1.5"
+                          fill="${isEdgeSelected ? '#ffffff' : '#3730a3'}"
+                          font-size="7.5"
+                          font-family="monospace"
+                          font-weight="bold"
+                          text-anchor="middle"
+                        >
+                          SOUT ${edge.troncon ? 'T.' + edge.troncon : ''} ${edge.longueur > 0 ? '· ' + edge.longueur + 'm' : ''}
+                        </text>
+                      ` : `
+                        ${(edge.troncon || state.zoom >= 0.8) && edge.longueur > 0 ? `
+                          <rect
+                            x="-28" y="-11" width="56" height="14" rx="3"
+                            fill="${isEdgeSelected ? '#1e293b' : '#f8fafc'}"
+                            stroke="${isEdgeSelected ? '#94a3b8' : '#cbd5e1'}"
+                            stroke-width="0.7"
+                            opacity="0.9"
+                          />
+                          <text
+                            x="0" y="-1"
+                            fill="${isEdgeSelected ? '#f8fafc' : '#475569'}"
+                            font-size="7.5"
+                            font-family="monospace"
+                            font-weight="bold"
+                            text-anchor="middle"
+                          >
+                            ${edge.troncon ? 'T.' + edge.troncon + ' ' : ''}${edge.longueur}m
+                          </text>
+                        ` : ''}
+                      `}
+                    </g>
                   ` : ''}
                 </g>
               `;
@@ -687,6 +870,14 @@ function renderUnifilaireView() {
                     <circle r="${state.showJunctions ? r : 2}" fill="${state.showJunctions ? fillColor : '#94a3b8'}" stroke="${strokeColor}" stroke-width="${state.showJunctions ? 1 : 0}"/>
                   `}
 
+                  <!-- Indicateur Remontée Aéro-Souterraine (RAS) -->
+                  ${rasNodeSet.has(node.id) ? `
+                    <g transform="translate(${r + 6}, ${-r})">
+                      <rect x="-9" y="-7" width="18" height="11" rx="2.5" fill="#f3e8ff" stroke="#a855f7" stroke-width="0.8"/>
+                      <text x="0" y="1" fill="#7e22ce" font-size="6.5" font-weight="bold" font-family="monospace" text-anchor="middle">RAS</text>
+                    </g>
+                  ` : ''}
+
                   ${(node.type !== 'JONCTION' || state.showJunctions || state.zoom > 1.2 || isSelected) ? `
                     <text x="0" y="${r + 12}" fill="${isSelected ? '#1d4ed8' : (node.meta?.isOpen ? '#dc2626' : '#0f172a')}" font-size="9.5" font-family="monospace" font-weight="${node.type === 'POSTE_HTA_BT' || isSelected ? 'bold' : 'normal'}" text-anchor="middle">
                       ${escapeHtml(node.meta?.nom ? `${node.meta.nom} (${node.id})` : node.id)}
@@ -720,9 +911,9 @@ function renderUnifilaireView() {
           <div class="flex items-center justify-between pb-2 border-b border-slate-100">
             <div>
               <span class="text-[10px] text-slate-400 font-mono uppercase block">
-                ${state.selectedNode?.type === 'POSTE_HTA_BT' ? 'Poste HTA/BT' : (state.selectedNode?.type === 'INTERRUPTEUR_AERIEN' ? 'Appareil IACM' : 'Fiche Ouvrage')}
+                ${state.selectedEdge ? (state.selectedEdge.isSouterrain ? '🚇 Tronçon MT Souterrain' : '⚡ Tronçon MT Aérien') : (state.selectedNode?.type === 'POSTE_HTA_BT' ? 'Poste HTA/BT' : (state.selectedNode?.type === 'INTERRUPTEUR_AERIEN' ? 'Appareil IACM' : 'Fiche Ouvrage'))}
               </span>
-              <strong class="font-mono text-base text-slate-900">${state.selectedNode?.id || state.selectedEdge?.id}</strong>
+              <strong class="font-mono text-base text-slate-900">${state.selectedEdge ? (state.selectedEdge.troncon ? `Tronçon N° ${state.selectedEdge.troncon}` : state.selectedEdge.id) : (state.selectedNode?.id)}</strong>
               ${state.selectedNode?.meta?.nom ? `
                 <div class="text-xs font-bold text-amber-700">${escapeHtml(state.selectedNode.meta.nom)}</div>
               ` : ''}
@@ -731,6 +922,16 @@ function renderUnifilaireView() {
           </div>
 
           ${state.selectedNode ? `
+            ${rasNodeSet.has(state.selectedNode.id) ? `
+              <div class="p-2.5 rounded-xl bg-purple-50 border border-purple-200 text-xs font-mono text-purple-900 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-[9px] shrink-0">RAS</span>
+                <div>
+                  <strong class="block">Remontée Aéro-Souterraine (RAS)</strong>
+                  <span class="text-[10px] text-purple-700">Point de transition technique entre tronçons souterrains et aériens.</span>
+                </div>
+              </div>
+            ` : ''}
+
             ${state.selectedNode.type === 'POSTE_HTA_BT' ? `
               <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                 <div><span class="text-slate-400 block text-[9px]">Tension Service</span><span class="text-slate-900 font-bold">30 kV / 400 V</span></div>
@@ -772,7 +973,7 @@ function renderUnifilaireView() {
             ` : state.selectedNode.type === 'INTERRUPTEUR_AERIEN' ? `
               <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                 <div><span class="text-slate-400 block text-[9px]">Position Réseau</span><span class="${state.selectedNode.meta?.isOpen ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}">${state.selectedNode.meta?.positionLabel || (state.selectedNode.meta?.isOpen ? 'OUVERT (Coupure)' : 'FERMÉ (Passage)')}</span></div>
-                <div><span class="text-slate-400 block text-[9px]">Mode d'Actionnement</span><span class="text-slate-900 font-bold">${state.selectedNode.meta?.mode || 'Manuel (M)'}</span></div>
+                <div><span class="text-slate-400 block text-[9px]">Mode d'Actionnement</span><span class="text-slate-900 font-bold">${state.selectedNode.meta?.mode || 'Manuel (IACM-M)'}</span></div>
                 <div><span class="text-slate-400 block text-[9px]">Intensité Nominale</span><span class="text-slate-900">${state.selectedNode.meta?.intensiteNominale || 200} A</span></div>
                 <div><span class="text-slate-400 block text-[9px]">Tension Isolement</span><span class="text-slate-900">36.0 kV (Service 30 kV)</span></div>
                 <div><span class="text-slate-400 block text-[9px]">Asservissement</span><span class="text-slate-900">${state.selectedNode.meta?.asserv || 'Non asservi'}</span></div>
@@ -787,11 +988,56 @@ function renderUnifilaireView() {
           ` : ''}
 
           ${state.selectedEdge ? `
-            <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-              <div><span class="text-slate-400 block text-[9px]">Longueur</span><span class="text-emerald-700 font-bold">${state.selectedEdge.longueur} m</span></div>
-              <div><span class="text-slate-400 block text-[9px]">Conducteur</span><span class="text-slate-900 font-bold">${state.selectedEdge.nat_cond} ${state.selectedEdge.section} mm²</span></div>
-              <div><span class="text-slate-400 block text-[9px]">Type de Pose</span><span class="text-slate-900">${state.selectedEdge.struct}</span></div>
-              <div><span class="text-slate-400 block text-[9px]">Tension</span><span class="text-slate-900 font-bold">${state.selectedEdge.tension || 30} kV</span></div>
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold ${
+                  state.selectedEdge.isSouterrain
+                    ? 'bg-indigo-100 text-indigo-800 border border-indigo-200'
+                    : 'bg-amber-100 text-amber-800 border border-amber-200'
+                }">
+                  ${state.selectedEdge.isSouterrain ? '🚇 CÂBLE SOUTERRAIN (HTA 30kV)' : '⚡ LIGNE AÉRIENNE (HTA 30kV)'}
+                </span>
+                <span class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  ${state.selectedEdge.longueur} mètres
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Numéro de Tronçon</span>
+                  <span class="text-slate-900 font-bold">${state.selectedEdge.troncon ? 'Tronçon ' + escapeHtml(state.selectedEdge.troncon) : 'Non numéroté'}</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Structure Technique</span>
+                  <span class="text-slate-900 font-bold">${escapeHtml(state.selectedEdge.structLabel || state.selectedEdge.structRaw || state.selectedEdge.struct)}</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Conducteur & Métal</span>
+                  <span class="text-slate-900 font-bold">${state.selectedEdge.nat_cond} ${state.selectedEdge.section} mm²</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Tension Nominale</span>
+                  <span class="text-slate-900 font-bold">${state.selectedEdge.tension || 30} kV</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Nœud Amont (De)</span>
+                  <span class="text-slate-900 font-bold truncate block">${state.selectedEdge.from}</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Nœud Aval (Vers)</span>
+                  <span class="text-slate-900 font-bold truncate block">${state.selectedEdge.to}</span>
+                </div>
+                ${state.selectedEdge.an_mes ? `
+                  <div>
+                    <span class="text-slate-400 block text-[9px]">Date de MES</span>
+                    <span class="text-slate-900 font-bold">${state.selectedEdge.an_mes}</span>
+                  </div>
+                ` : ''}
+                <div>
+                  <span class="text-slate-400 block text-[9px]">Circuit Parallèle</span>
+                  <span class="text-slate-900 font-bold">C.Par ${state.selectedEdge.cPar || 1}</span>
+                </div>
+              </div>
             </div>
           ` : ''}
         </div>
@@ -1034,14 +1280,26 @@ function renderOuvragesView() {
             return `
               <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
                 <div class="truncate pr-2">
-                  <div class="flex items-center gap-1.5">
+                  <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="font-mono font-bold text-xs text-slate-900">Tronçon ${item.troncon}</span>
-                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-blue-100 text-blue-800">
-                      ${formatNumber(item.totalM)} m
+                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-800 border border-slate-200">
+                      Total: ${formatNumber(item.totalM)} m
                     </span>
-                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">Agence ${item.agence}</span>
+                    ${item.souterrainM > 0 ? `
+                      <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 border border-indigo-200">
+                        🚇 Sout: ${formatNumber(item.souterrainM)} m
+                      </span>
+                    ` : ''}
+                    ${item.aerienM > 0 ? `
+                      <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-200">
+                        ⚡ Aér: ${formatNumber(item.aerienM)} m
+                      </span>
+                    ` : ''}
+                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-50 text-slate-500">Agence ${item.agence}</span>
                   </div>
-                  <span class="text-xs text-slate-600 block mt-0.5">Aérien: <strong>${formatNumber(item.aerienM)} m</strong> &middot; Souterrain: <strong>${formatNumber(item.souterrainM)} m</strong></span>
+                  <span class="text-xs text-slate-600 block mt-1">
+                    Répartition : ${item.souterrainM > 0 && item.aerienM > 0 ? 'Mixte (Aérien + Câble Souterrain)' : (item.souterrainM > 0 ? 'Câble 100% Souterrain' : 'Ligne 100% Aérienne')}
+                  </span>
                 </div>
               </div>
             `;
@@ -1765,6 +2023,14 @@ window.app = {
   },
   closeBottomSheet: () => {
     state.showBottomSheet = false;
+    renderApp();
+  },
+  setPoseFilter: (filter) => {
+    state.poseFilter = filter;
+    renderApp();
+  },
+  togglePoseLegend: () => {
+    state.showPoseLegend = !state.showPoseLegend;
     renderApp();
   },
 

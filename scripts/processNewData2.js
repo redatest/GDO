@@ -241,6 +241,23 @@ for (let i = 7; i < trcRows.length; i++) {
 }
 console.log(`  -> ${allTronconsList.length} tronçons extraits de tronçons.xlsx.`);
 
+// Indexer les segments de SEGDD31-12-2025 pour numéroter les tronçons
+const segWb = XLSX.readFile('extracted_data2/SEGDD31-12-2025.xlsx');
+const segRows = XLSX.utils.sheet_to_json(segWb.Sheets['SEGDD31-12-2025'], { header: 1 });
+const tronconSegMap = new Map();
+for (let i = 9; i < segRows.length; i++) {
+  const r = segRows[i];
+  if (!r) continue;
+  const n1 = r[3] ? String(r[3]).trim() : null;
+  const n2 = r[5] ? String(r[5]).trim() : null;
+  const trc = r[2] ? String(r[2]).trim() : null;
+  if (n1 && n2 && trc) {
+    tronconSegMap.set(`${n1}-${n2}`, trc);
+    tronconSegMap.set(`${n2}-${n1}`, trc);
+  }
+}
+console.log(`  -> ${tronconSegMap.size / 2} segments topologiques indexés pour numérotation tronçons.`);
+
 // --- 5. TOPOLOGIE DU RÉSEAU (ARCDD31-12-2025.xlsx) ---
 console.log('5. Reconstruction de la topologie réseau MT (ARCDD31-12-2025.xlsx)...');
 const arcWb = XLSX.readFile('extracted_data2/ARCDD31-12-2025.xlsx');
@@ -287,10 +304,17 @@ for (let i = 7; i < arcRows.length; i++) {
   const section = parseFloat(r[10]) || 34.4;
   const structRaw = r[12] ? String(r[12]).trim() : 'NU';
   const arcType = r[8] ? String(r[8]).trim() : 'A';
-  const isSout = arcType === 'S' || structRaw.toLowerCase().includes('sout');
+  const isSout = arcType === 'S' || ['URSS', 'TNSS', 'TRSS', 'UESS'].includes(structRaw) || structRaw.toLowerCase().includes('sout');
   const struct = isSout ? 'SOUTERRAIN' : (structRaw === 'ISO' ? 'ISOLE' : 'AERIEN_NU');
+  const poseLabel = isSout ? 'Câble Souterrain' : 'Ligne Aérienne';
+  const structLabel = structRaw === 'URSS' ? 'Câble Unipolaire Réticulé (URSS)' :
+                      (structRaw === 'TNSS' ? 'Câble Tripolaire Neutre (TNSS)' :
+                      (structRaw === 'TRSS' ? 'Câble Tripolaire Réticulé (TRSS)' :
+                      (structRaw === 'NU' ? 'Conducteurs Nus Aériens (NU)' :
+                      (structRaw === 'ISO' ? 'Conducteurs Isolés (ISO)' : (isSout ? 'Câble Souterrain' : 'Ligne Aérienne')))));
   const tension = parseFloat(r[7]) || 30.0;
   const anMES = r[16] ? String(r[16]).trim() : '';
+  const troncon = tronconSegMap.get(`${lastN1}-${n2}`) || tronconSegMap.get(`${n2}-${lastN1}`) || '';
 
   const edgeId = `${lastN1}-${n2}:${cPar}`;
   rawDepartsMap[dep].edges.push({
@@ -298,10 +322,14 @@ for (let i = 7; i < arcRows.length; i++) {
     from: lastN1,
     to: n2,
     cPar,
+    troncon,
     longueur: len,
     nat_cond: natCond,
     section,
     struct,
+    structRaw,
+    structLabel,
+    poseLabel,
     isSouterrain: isSout,
     tension,
     an_mes: anMES
