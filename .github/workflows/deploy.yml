@@ -25,7 +25,9 @@ jobs:
           cp index.html _site/
           cp assets/app.css _site/assets/
           cp src/app.js _site/src/
-          cp src/data/*.js _site/src/data/
+          cp src/data/departsSummary.js _site/src/data/
+          cp src/data/networkData.js _site/src/data/
+          cp src/data/fullTablesData.js _site/src/data/
 
       - name: Publish static files to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4
