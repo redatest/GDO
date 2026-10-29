@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "node --check src/app.js"
+    "lint": "node --check src/app.js",
+    "audit:topology": "node scripts/auditTopology.js",
+    "test": "npm run lint && npm run audit:topology"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
