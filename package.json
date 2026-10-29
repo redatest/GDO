@@ -7,10 +7,9 @@
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
-    "lint": "node --check src/app.js",
-    "audit:topology": "node scripts/auditTopology.js",
-    "test": "npm run lint && npm run audit:topology"
+    "lint": "bun --check src/app.js",
+    "audit:topology": "bun scripts/auditTopology.js",
+    "test": "bun run lint && bun run audit:topology"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
