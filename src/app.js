@@ -175,6 +175,7 @@ function normalizeNetworkData(data) {
         depart.nodes.unshift({
           id: virtualSourceId,
           type: 'POSTE_SOURCE',
+          isVirtual: true,
           prefix: 'H',
           meta: { nom: source?.nom || `Source ${sourcePrefix}`, u_prim: source?.u_prim || 60, u_second: 30 }
         });
@@ -184,10 +185,14 @@ function normalizeNetworkData(data) {
           to: firstNodeId,
           cPar: '1',
           longueur: 0,
-          nat_cond: 'AL',
-          section: 148,
-          struct: 'SOUTERRAIN',
-          isSouterrain: true,
+          nat_cond: '-',
+          section: 0,
+          struct: 'VIRTUEL',
+          structRaw: 'VIRTUEL',
+          structLabel: 'Racine virtuelle — raccordement physique non renseigné',
+          poseLabel: 'Ancrage graphique',
+          isSouterrain: false,
+          isVirtual: true,
           tension: 30,
           an_mes: ''
         });
@@ -741,8 +746,8 @@ function renderUnifilaireView() {
   window._currentNodePosMap = nodePosMap;
 
   // Statistiques Souterrain / Aérien du départ MT sélectionné
-  const soutArcs = renderEdges.filter(e => e.isSouterrain);
-  const aerArcs = renderEdges.filter(e => !e.isSouterrain);
+  const soutArcs = renderEdges.filter(e => e.isSouterrain && !e.isVirtual);
+  const aerArcs = renderEdges.filter(e => !e.isSouterrain && !e.isVirtual);
   const soutKm = (soutArcs.reduce((acc, e) => acc + (e.longueur || 0), 0) / 1000).toFixed(1);
   const aerKm = (aerArcs.reduce((acc, e) => acc + (e.longueur || 0), 0) / 1000).toFixed(1);
 
@@ -750,6 +755,7 @@ function renderUnifilaireView() {
   const nodeHasSout = new Set();
   const nodeHasAer = new Set();
   for (const e of renderEdges) {
+    if (e.isVirtual) continue;
     if (e.isSouterrain) {
       nodeHasSout.add(e.from);
       nodeHasSout.add(e.to);
@@ -926,26 +932,35 @@ function renderUnifilaireView() {
 
               const isEdgeSelected = state.selectedEdge?.id === edge.id;
               const isInPath = u.inPath && v.inPath;
-              const isSout = !!edge.isSouterrain;
+              const isVirtual = !!edge.isVirtual;
+              const isSout = !!edge.isSouterrain && !isVirtual;
 
               let isDimmed = false;
-              if (state.poseFilter === 'SOUT_HIGHLIGHT' && !isSout) {
+              if (!isVirtual && state.poseFilter === 'SOUT_HIGHLIGHT' && !isSout) {
                 isDimmed = true;
-              } else if (state.poseFilter === 'AER_ONLY' && isSout) {
+              } else if (!isVirtual && state.poseFilter === 'AER_ONLY' && isSout) {
                 isDimmed = true;
               }
 
-              const edgeOpacity = isDimmed ? '0.12' : (isEdgeSelected || isInPath ? '1' : '0.9');
+              const edgeOpacity = isVirtual ? '0.75' : (isDimmed ? '0.12' : (isEdgeSelected || isInPath ? '1' : '0.9'));
               const cx = (u.x + v.x) / 2;
               const cy = (u.y + v.y) / 2;
 
-              let strokeColor = isInPath ? '#d97706' : (edge.nat_cond === 'CU' ? '#c2410c' : '#334155');
+              let strokeColor = isVirtual ? '#94a3b8' : (isInPath ? '#d97706' : (edge.nat_cond === 'CU' ? '#c2410c' : '#334155'));
               if (isEdgeSelected) strokeColor = '#2563eb';
-              const strokeWidth = isInPath ? 3.5 : (isEdgeSelected ? 3.2 : (edge.section >= 117 ? 2.5 : 1.6));
+              const strokeWidth = isVirtual ? 1.5 : (isInPath ? 3.5 : (isEdgeSelected ? 3.2 : (edge.section >= 117 ? 2.5 : 1.6)));
 
               return `
                 <g class="cursor-pointer" onclick="window.app.selectEdge('${escapeJsString(edge.id)}')" opacity="${edgeOpacity}">
-                  ${isSout ? `
+                  ${isVirtual ? `
+                    <!-- Ancrage graphique virtuel : ce trait n'est pas une liaison électrique réelle. -->
+                    <line
+                      x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}"
+                      stroke="#94a3b8"
+                      stroke-width="1.5"
+                      stroke-dasharray="2 5"
+                    />
+                  ` : isSout ? `
                     <!-- Fourreau / Tranchée souterraine (halo) -->
                     <line
                       x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}"
@@ -975,7 +990,10 @@ function renderUnifilaireView() {
                   <!-- Badge & Libellé Tronçon / Longueur -->
                   ${state.zoom >= 0.65 ? `
                     <g transform="translate(${cx}, ${cy})">
-                      ${isSout ? `
+                      ${isVirtual ? `
+                        <rect x="-46" y="-12" width="92" height="15" rx="3.5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="0.8" />
+                        <text x="0" y="-1.5" fill="#475569" font-size="7" font-family="monospace" font-weight="bold" text-anchor="middle">ANCRAGE VIRTUEL</text>
+                      ` : isSout ? `
                         <rect
                           x="-35" y="-12" width="70" height="15" rx="3.5"
                           fill="${isEdgeSelected ? '#1e3a8a' : '#e0e7ff'}"
@@ -1030,8 +1048,8 @@ function renderUnifilaireView() {
               let fillColor = '#64748b';
               let strokeColor = '#334155';
               if (node.type === 'POSTE_SOURCE') {
-                fillColor = '#7c3aed';
-                strokeColor = '#5b21b6';
+                fillColor = node.isVirtual ? '#e2e8f0' : '#7c3aed';
+                strokeColor = node.isVirtual ? '#64748b' : '#5b21b6';
               } else if (node.type === 'POSTE_HTA_BT') {
                 fillColor = node.meta?.typePoste === 'MS' ? '#d97706' : '#ea580c';
                 strokeColor = '#78350f';
@@ -1061,7 +1079,7 @@ function renderUnifilaireView() {
                   ${node.type === 'POSTE_SOURCE' ? `
                     <circle r="${r}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2"/>
                     <circle r="${r - 5}" fill="none" stroke="#ffffff" stroke-width="1.5"/>
-                    <text y="3" fill="#ffffff" font-size="9" font-weight="bold" text-anchor="middle">HT</text>
+                    <text y="3" fill="${node.isVirtual ? '#475569' : '#ffffff'}" font-size="9" font-weight="bold" text-anchor="middle">${node.isVirtual ? 'V' : 'HT'}</text>
                   ` : node.type === 'POSTE_HTA_BT' ? `
                     <rect x="${-r}" y="${-r}" width="${r * 2}" height="${r * 2}" rx="3.5" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2"/>
                     <text y="3.5" fill="#ffffff" font-size="9" font-weight="bold" font-family="monospace" text-anchor="middle">T</text>
