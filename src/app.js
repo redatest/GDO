@@ -129,6 +129,7 @@ const state = {
   // Terrain & Visites (GDO-MT)
   interventions: loadStoredInterventions(),
   newVisitPosteId: '121P8036',
+  newVisitPosteNom: 'Pge Bentabouche',
   newVisitType: 'Inspection Visuelle Générale',
   newVisitStatut: 'RAS',
   newVisitNote: '',
@@ -1626,9 +1627,14 @@ function renderTerrainView() {
               id="fieldVisitPoste"
               class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono text-xs font-semibold"
             >
+              ${!posteOptions.some(p => String(p.id) === String(state.newVisitPosteId)) && state.newVisitPosteId ? `
+                <option value="${escapeHtml(state.newVisitPosteId)}" selected>
+                  ${escapeHtml(state.newVisitPosteId)} · ${escapeHtml(state.newVisitPosteNom || 'Poste sélectionné')}
+                </option>
+              ` : ''}
               ${posteOptions.map(p => `
-                <option value="${p.id}" ${p.id === state.newVisitPosteId ? 'selected' : ''}>
-                  ${p.id} &middot; ${p.meta?.nom || 'Poste'} (${p.meta?.p_instal || 160} kVA)
+                <option value="${escapeHtml(p.id)}" ${String(p.id) === String(state.newVisitPosteId) ? 'selected' : ''}>
+                  ${escapeHtml(p.id)} · ${escapeHtml(p.meta?.nom || 'Poste')} (${escapeHtml(p.meta?.p_instal || 160)} kVA)
                 </option>
               `).join('')}
             </select>
@@ -2555,6 +2561,7 @@ window.app = {
   // Terrain & Visites (GDO-MT)
   createInterventionForPoste: (nodeId, nodeNom) => {
     state.newVisitPosteId = String(nodeId || '');
+    state.newVisitPosteNom = String(nodeNom || '');
     // Depuis le catalogue global, aligner le départ sur celui du poste choisi.
     // Sinon le select du formulaire pourrait sélectionner le premier poste du départ courant.
     for (const [depId, depart] of Object.entries(networkData.departs || {})) {
@@ -2581,7 +2588,9 @@ window.app = {
     const matchingNode = Object.values(networkData.departs || {})
       .flatMap(depart => depart.nodes || [])
       .find(node => String(node.id) === String(posteId));
-    const posteNom = matchingNode?.meta?.nom || posteId;
+    const posteNom = matchingNode?.meta?.nom
+      || (String(posteId) === String(state.newVisitPosteId) ? state.newVisitPosteNom : '')
+      || posteId;
     const now = new Date();
     const newInt = {
       // Timestamp complet : évite les collisions entre visites rapprochées.
