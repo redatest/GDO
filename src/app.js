@@ -1512,13 +1512,13 @@ function renderTerrainView() {
                 int.statut === 'RAS' ? 'bg-emerald-100 text-emerald-800' :
                 int.statut === 'Anomalie Mineure' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
               }">
-                ${int.statut}
+                ${escapeHtml(int.statut)}
               </span>
             </div>
-            <div class="text-[11px] text-slate-600">${int.type}</div>
+            <div class="text-[11px] text-slate-600">${escapeHtml(int.type)}</div>
             <div class="text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">${escapeHtml(int.note)}</div>
             <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
-              <span>${int.date}</span>
+              <span>${escapeHtml(int.date)}</span>
               <button onclick="window.app.deleteIntervention('${escapeJsString(int.id)}')" class="text-red-500 hover:text-red-700 font-semibold cursor-pointer">Supprimer</button>
             </div>
           </div>
