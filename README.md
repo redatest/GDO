@@ -1,6 +1,6 @@
 # GDO-MT
 
-**GDO-MT** est une application web de consultation, d'analyse et de visualisation du réseau électrique moyenne tension (MT/HTA) de la wilaya de Guelma, en Algérie.
+**GDO-MT** est une application web de consultation, d'analyse et de visualisation du réseau électrique moyenne tension (MT/HTA).
 
 - **Application en ligne :** https://redatest.github.io/GDO/
 - **Dépôt source :** https://github.com/redatest/GDO
