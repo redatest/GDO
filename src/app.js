@@ -8,7 +8,8 @@
  * - Pure HTML5 & JavaScript Vanilla (Zéro TypeScript, Zéro Node.js serveur, compatible GitHub Pages)
  */
 
-import { networkData } from './data/networkData.js';
+let networkData = { sources: {}, departs: {}, stats: {} };
+let networkDataLoadPromise = null;
 import { departsSummary } from './data/departsSummary.js';
 import { tableSchemas } from './data/tableSchemas.js';
 let fullTablesData = {};
@@ -146,8 +147,33 @@ const state = {
   tablePageSize: 15,
   tableSearch: '',
   storageWarning: initialStorageWarning,
-  dataLoadError: ''
+  dataLoadError: '',
+  networkDataError: ''
 };
+
+async function ensureNetworkData() {
+  if (Object.keys(networkData.departs).length) return true;
+  if (!networkDataLoadPromise) {
+    networkDataLoadPromise = import('./data/networkData.js')
+      .then((module) => {
+        networkData = module.networkData || { sources: {}, departs: {}, stats: {} };
+        state.networkDataError = Object.keys(networkData.departs).length
+          ? ''
+          : 'Le référentiel topologique est vide.';
+        return Object.keys(networkData.departs).length > 0;
+      })
+      .catch((error) => {
+        console.error('Échec du chargement du réseau MT:', error);
+        state.networkDataError = 'Impossible de charger le réseau MT. Vérifiez la connexion puis réessayez.';
+        return false;
+      })
+      .finally(() => {
+        networkDataLoadPromise = null;
+        renderApp();
+      });
+  }
+  return networkDataLoadPromise;
+}
 
 async function ensureFullTablesData() {
   if (Object.keys(fullTablesData).length) return true;
@@ -499,6 +525,9 @@ function renderHomeView() {
 
 // --- VUE 2 : SCHÉMA UNIFILAIRE MT AVEC BOTTOM SHEET ---
 function renderUnifilaireView() {
+  if (!Object.keys(networkData.departs).length) {
+    return '<div class="p-8 text-center text-sm font-semibold text-blue-800">' + escapeHtml(state.networkDataError || 'Chargement du réseau moyenne tension…') + '</div>';
+  }
   const currentDepart = networkData.departs[state.selectedDepartId] || networkData.departs['127H1C3'] || networkData.departs['125H3C20'];
   if (!currentDepart) return '<div class="p-8 text-center text-slate-500">Départ MT introuvable</div>';
 
@@ -1154,6 +1183,9 @@ function renderUnifilaireView() {
 
 // --- VUE 3 : OUVRAGES (CATALOGUE PARC GPARC 2025) ---
 function renderOuvragesView() {
+  if (!Object.keys(networkData.departs).length) {
+    return '<div class="p-8 text-center text-sm font-semibold text-blue-800">' + escapeHtml(state.networkDataError || 'Chargement du référentiel des ouvrages…') + '</div>';
+  }
   const currentDepart = networkData.departs[state.selectedDepartId] || networkData.departs['127H1C3'] || networkData.departs['125H3C20'];
   const isGlobalScope = state.ouvragesScope === 'ALL';
 
@@ -1435,6 +1467,9 @@ function renderOuvragesView() {
 
 // --- VUE 4 : TERRAIN & VISITES (CARNET DE TERRAIN GPARC-MOBILE) ---
 function renderTerrainView() {
+  if (!Object.keys(networkData.departs).length) {
+    return '<div class="p-8 text-center text-sm font-semibold text-blue-800">' + escapeHtml(state.networkDataError || 'Chargement du réseau moyenne tension…') + '</div>';
+  }
   const currentDepart = networkData.departs[state.selectedDepartId] || networkData.departs['127H1C3'];
   const posteOptions = currentDepart.nodes.filter(n => n.type === 'POSTE_HTA_BT');
 
@@ -1848,7 +1883,9 @@ function renderQuickSearchModal() {
         />
 
         <div class="max-h-[300px] overflow-y-auto space-y-1 pt-1">
-          ${q.length < 2 ? `
+          ${!Object.keys(networkData.departs).length ? `
+            <div class="p-4 text-center text-xs text-blue-700">${escapeHtml(state.networkDataError || 'Chargement du réseau MT…')}</div>
+          ` : q.length < 2 ? `
             <div class="p-4 text-center text-xs text-slate-400">Tapez au moins 2 caractères...</div>
           ` : results.length === 0 ? `
             <div class="p-4 text-center text-xs text-slate-400">Aucun résultat trouvé pour "${escapeHtml(q)}"</div>
@@ -2051,6 +2088,7 @@ window.app = {
   setTab: (tabId) => {
     state.activeTab = tabId;
     renderApp();
+    if (['unifilaire', 'ouvrages', 'terrain'].includes(tabId)) void ensureNetworkData();
   },
   setAgency: (agency) => {
     state.selectedAgency = agency;
@@ -2063,9 +2101,9 @@ window.app = {
     state.selectedEdge = null;
     state.showBottomSheet = false;
     renderApp();
-    setTimeout(() => {
-      window.app.fitView();
-    }, 60);
+    void ensureNetworkData().then(() => {
+      if (state.activeTab === 'unifilaire') setTimeout(() => window.app.fitView(), 60);
+    });
   },
   selectDepart: (depId) => {
     state.selectedDepartId = depId;
@@ -2073,9 +2111,9 @@ window.app = {
     state.selectedEdge = null;
     state.showBottomSheet = false;
     renderApp();
-    setTimeout(() => {
-      window.app.fitView();
-    }, 60);
+    void ensureNetworkData().then(() => {
+      if (state.activeTab === 'unifilaire') setTimeout(() => window.app.fitView(), 60);
+    });
   },
   toggleJunctions: () => {
     state.showJunctions = !state.showJunctions;
@@ -2517,6 +2555,7 @@ window.app = {
     state.showQuickSearchModal = true;
     state.quickSearchQuery = '';
     renderApp();
+    void ensureNetworkData();
     setTimeout(() => {
       document.getElementById('quickSearchInput')?.focus();
     }, 100);
