@@ -16,8 +16,8 @@ L'application ne nécessite pas de serveur applicatif en production. Les paramè
 
 Le référentiel applicatif actuel indique :
 
-- 49 départs et 7 501 tronçons/arcs ;
-- 6 596 occurrences de nœuds dans les départs ;
+- 49 départs et 7 503 tronçons/arcs ;
+- 6 598 occurrences de nœuds dans les départs ;
 - 2 632,07 km de linéaire cumulé ;
 - 2 660 postes, 2 800 transformateurs et 1 638 IACM recensés ;
 - 39 IACM ouverts dans les statistiques du référentiel.
