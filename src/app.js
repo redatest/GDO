@@ -2088,7 +2088,11 @@ window.app = {
   setTab: (tabId) => {
     state.activeTab = tabId;
     renderApp();
-    if (['unifilaire', 'ouvrages', 'terrain'].includes(tabId)) void ensureNetworkData();
+    if (['unifilaire', 'ouvrages', 'terrain'].includes(tabId)) {
+      void ensureNetworkData().then(() => {
+        if (tabId === 'unifilaire') setTimeout(() => window.app.fitView(), 60);
+      });
+    }
   },
   setAgency: (agency) => {
     state.selectedAgency = agency;
