@@ -40,7 +40,7 @@ Ces écarts doivent être vérifiés avec les données métier. L'application ne
 
 ## Installation et développement
 
-Prérequis : [Bun](https://bun.sh/). Le projet utilise Bun pour l’installation des dépendances, les contrôles, l’audit topologique et la compilation ; Node.js n’est pas requis.
+Prérequis : [Bun](https://bun.sh/). Le projet utilise Bun pour l’installation des dépendances, les contrôles, l’audit topologique et la compilation .
 
 ```bash
 bun install --frozen-lockfile
