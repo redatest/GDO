@@ -40,7 +40,7 @@ Ces écarts doivent être vérifiés avec les données métier. L'application ne
 
 ## Installation et développement
 
-Prérequis : [Bun](https://bun.sh/) et une version de Node.js compatible avec Vite (Node.js 22 est utilisée dans le workflow CI).
+Prérequis : [Bun](https://bun.sh/). Le projet utilise Bun pour l’installation des dépendances, les contrôles, l’audit topologique et la compilation ; Node.js n’est pas requis.
 
 ```bash
 bun install --frozen-lockfile
@@ -74,7 +74,7 @@ Le workflow GitHub Actions situé dans `.github/workflows/deploy.yml` :
 
 1. récupère le code de la branche `main` ;
 2. installe les dépendances à partir de `bun.lock` ;
-3. vérifie la syntaxe JavaScript et lance l'audit topologique ;
+3. vérifie la syntaxe JavaScript et lance l'audit topologique avec Bun ;
 4. construit l'application dans `dist/` ;
 5. publie le résultat sur la branche `gh-pages`.
 
