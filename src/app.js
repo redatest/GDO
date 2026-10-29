@@ -1220,14 +1220,16 @@ function renderUnifilaireView() {
             <div class="space-y-2.5">
               <div class="flex items-center justify-between">
                 <span class="px-2.5 py-1 rounded-full text-xs font-bold ${
-                  state.selectedEdge.isSouterrain
-                    ? 'bg-indigo-100 text-indigo-800 border border-indigo-200'
-                    : 'bg-amber-100 text-amber-800 border border-amber-200'
+                  state.selectedEdge.isVirtual
+                    ? 'bg-slate-100 text-slate-700 border border-slate-300'
+                    : state.selectedEdge.isSouterrain
+                      ? 'bg-indigo-100 text-indigo-800 border border-indigo-200'
+                      : 'bg-amber-100 text-amber-800 border border-amber-200'
                 }">
-                  ${state.selectedEdge.isSouterrain ? '🚇 CÂBLE SOUTERRAIN (HTA 30kV)' : '⚡ LIGNE AÉRIENNE (HTA 30kV)'}
+                  ${state.selectedEdge.isVirtual ? 'ANCRAGE VIRTUEL — PAS DE LIAISON PHYSIQUE' : state.selectedEdge.isSouterrain ? 'CÂBLE SOUTERRAIN (HTA 30 kV)' : 'LIGNE AÉRIENNE (HTA 30 kV)'}
                 </span>
-                <span class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                  ${state.selectedEdge.longueur} mètres
+                <span class="text-xs font-mono font-bold ${state.selectedEdge.isVirtual ? 'text-slate-600 bg-slate-100 border-slate-300' : 'text-emerald-700 bg-emerald-50 border-emerald-200'} px-2 py-0.5 rounded border">
+                  ${state.selectedEdge.isVirtual ? 'Non physique' : state.selectedEdge.longueur + ' mètres'}
                 </span>
               </div>
 
