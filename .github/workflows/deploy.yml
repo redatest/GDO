@@ -1,10 +1,8 @@
-name: Build and deploy GDO-MT
+name: Deploy static GDO-MT site
 
 on:
   push:
     branches: [ main, master ]
-    paths-ignore:
-      - 'docs/**'
   workflow_dispatch:
 
 permissions:
@@ -15,32 +13,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  deploy-static-site:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Install dependencies from bun.lock
-        run: bun install --frozen-lockfile
-
-      - name: Check JavaScript syntax
-        run: bun run lint
-
-      - name: Audit network topology
-        run: bun run audit:topology
-
-      - name: Build static application
-        run: bun run build
-
-      - name: Add .nojekyll
-        run: touch dist/.nojekyll
-
-      - name: Deploy build to gh-pages
+      - name: Publish static files to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist
+          folder: .
           branch: gh-pages
+          clean: true
