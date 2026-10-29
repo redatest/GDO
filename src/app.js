@@ -2253,6 +2253,9 @@ window.app = {
         if (tabId === 'unifilaire') setTimeout(() => window.app.fitView(), 60);
       });
     }
+    // Le catalogue des ouvrages utilise aussi les tables embarquées (IACM,
+    // transformateurs et tronçons), indépendamment de la recherche rapide.
+    if (tabId === 'ouvrages') void ensureFullTablesData();
   },
   setAgency: (agency) => {
     state.selectedAgency = agency;
@@ -2524,14 +2527,22 @@ window.app = {
     }
   },
   showOuvrageOnMap: (nodeId, depId) => {
-    if (depId && networkData.departs[depId] && state.selectedDepartId !== depId) {
+    // Priorité au départ fourni uniquement s'il contient réellement le nœud.
+    // Les lignes du catalogue 2025 ne possèdent pas toutes un départ renseigné.
+    const requestedDepart = depId && networkData.departs[depId];
+    const requestedContainsNode = requestedDepart
+      && (requestedDepart.nodes || []).some(n => String(n.id) === String(nodeId));
+    if (requestedContainsNode) {
       state.selectedDepartId = depId;
-    } else if (!depId || !networkData.departs[state.selectedDepartId]?.nodes.some(n => n.id === nodeId)) {
-      // Rechercher dans quel départ se trouve ce nœud
-      for (const dId of Object.keys(networkData.departs)) {
-        if (networkData.departs[dId].nodes.some(n => n.id === nodeId)) {
-          state.selectedDepartId = dId;
-          break;
+    } else {
+      const currentContainsNode = networkData.departs[state.selectedDepartId]
+        ?.nodes.some(n => String(n.id) === String(nodeId));
+      if (!currentContainsNode) {
+        for (const [dId, depart] of Object.entries(networkData.departs || {})) {
+          if ((depart.nodes || []).some(n => String(n.id) === String(nodeId))) {
+            state.selectedDepartId = dId;
+            break;
+          }
         }
       }
     }
