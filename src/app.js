@@ -543,7 +543,7 @@ function renderUnifilaireView() {
   }
 
   // Racine du départ
-  let rootNode = nodes.find(n => n.type === 'POSTE_SOURCE' || n.type === 'CELLULE');
+  let rootNode = nodes.find(n => n.type === 'POSTE_SOURCE') || nodes.find(n => n.type === 'CELLULE');
   if (!rootNode) {
     const prefixMatch = currentDepart.id.match(/^(\d+[A-Z]\d+)/);
     if (prefixMatch) rootNode = nodes.find(n => n.id.startsWith(prefixMatch[1]));
@@ -1569,7 +1569,7 @@ function renderTerrainView() {
           <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-1.5 text-xs">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-1.5">
-                <span class="font-mono font-bold text-slate-900">${int.posteId}</span>
+                <span class="font-mono font-bold text-slate-900">${escapeHtml(int.posteId)}</span>
                 <span class="text-[10px] text-slate-500 font-semibold">${escapeHtml(int.posteNom || '')}</span>
               </div>
               <span class="text-[9px] font-bold px-1.5 py-0.2 rounded ${
@@ -1652,10 +1652,10 @@ function renderSettingsView() {
               <div>
                 <span class="font-mono font-bold text-amber-800 text-sm block">${t.kva} kVA</span>
                 <span class="text-slate-500 text-[11px]">Ucc: ${t.ucc}% &middot; In: ${t.in30}A &middot; P0: ${t.p0}W &middot; Pk: ${t.pk}W</span>
-                <span class="text-[10px] text-slate-400 block">${t.desc || ''}</span>
+                <span class="text-[10px] text-slate-400 block">${escapeHtml(t.desc || '')}</span>
               </div>
               <div class="flex items-center gap-1.5">
-                <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700">${t.type}</span>
+                <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700">${escapeHtml(t.type)}</span>
                 <button onclick="window.app.deleteTransfo(${index})" class="text-slate-400 hover:text-red-500 text-sm px-1 font-bold cursor-pointer">&times;</button>
               </div>
             </div>
@@ -1674,9 +1674,9 @@ function renderSettingsView() {
           ${conducteurs.map((c, index) => `
             <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between text-xs">
               <div>
-                <span class="font-mono font-bold text-slate-900 text-sm block">${c.nom}</span>
+                <span class="font-mono font-bold text-slate-900 text-sm block">${escapeHtml(c.nom)}</span>
                 <span class="text-slate-500 text-[11px]">R': ${c.r}&Omega;/km &middot; X': ${c.x}&Omega;/km &middot; Imax: ${c.iMax}A</span>
-                <span class="text-[10px] text-slate-400 block">Pose: ${c.pose}</span>
+                <span class="text-[10px] text-slate-400 block">Pose: ${escapeHtml(c.pose)}</span>
               </div>
               <div class="flex items-center gap-1.5">
                 <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-blue-50 text-blue-800 font-semibold">${c.section} mm²</span>
@@ -2533,7 +2533,12 @@ window.app = {
     const rows = currentTable.rows;
     if (!rows || rows.length === 0) return;
     const cols = Object.keys(rows[0]);
-    const csv = [cols.join(','), ...rows.map(r => cols.map(c => `"${String(r[c] ?? '').replace(/"/g, '""')}"`).join(','))].join('\n');
+    const csvCell = (value) => {
+      let text = String(value ?? '');
+      if (/^[\\s]*[=+\\-@]/.test(text)) text = "'" + text;
+      return `"${text.replace(/"/g, '""')}"`;
+    };
+    const csv = [cols.map(csvCell).join(','), ...rows.map(r => cols.map(c => csvCell(r[c])).join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
