@@ -355,7 +355,10 @@ const sourcesConfig = {
 // Fonction de détection du type de nœud
 function getNodeType(nodeId, departId) {
   if (sourcesConfig[nodeId] || nodeId === departId) return 'POSTE_SOURCE';
-  if (nodeId.match(/^[0-9]{3}H[0-9]+/)) return 'POSTE_SOURCE';
+  if (/^[0-9]{3}[HO][0-9]+$/.test(nodeId)) return 'POSTE_SOURCE';
+  // Les cellules/disjoncteurs de départ (ex. 125H3C20, 127H1B1)
+  // ne sont pas des postes sources : éviter de les confondre avec 125H3/127H1.
+  if (/^[0-9]{3}[HO][0-9]+[BC][0-9]+$/.test(nodeId)) return 'CELLULE';
   if (nodeId.includes('P') || nodeId.startsWith('P') || posteMap.has(nodeId)) return 'POSTE_HTA_BT';
   if (nodeId.includes('J') || nodeId.startsWith('J') || iacmMap.has(nodeId)) return 'INTERRUPTEUR_AERIEN';
   if (nodeId.includes('E') || nodeId.startsWith('E')) return 'ETOILEMENT';
@@ -467,7 +470,7 @@ for (const depId of Object.keys(rawDepartsMap)) {
     nodes.push({
       id: nId,
       type,
-      prefix: nId.match(/[A-Z]/)?.[0] || '',
+      prefix: type === 'CELLULE' ? (nId.match(/[BC][0-9]+$/)?.[0]?.[0] || 'C') : (nId.match(/[A-Z]/)?.[0] || ''),
       meta
     });
   }
@@ -554,7 +557,7 @@ const networkDataFinal = {
     totalTransformers: allTransformersList.length,
     totalIacms: allIacmsList.length,
     openIacms: allIacmsList.filter(x => x.isOpen).length,
-    totalArcs: totalArcsCount,
+    totalArcs: Object.values(finalDeparts).reduce((sum, depart) => sum + depart.edges.length, 0),
     totalTroncons: allTronconsList.length,
     lastUpdate: '31/12/2025'
   }
