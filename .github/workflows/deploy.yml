@@ -19,9 +19,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Prepare static site files
+        run: |
+          mkdir -p _site/assets _site/src/data
+          cp index.html _site/
+          cp assets/app.css _site/assets/
+          cp src/app.js _site/src/
+          cp src/data/*.js _site/src/data/
+
       - name: Publish static files to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: .
+          folder: _site
           branch: gh-pages
           clean: true
