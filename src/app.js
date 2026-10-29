@@ -2254,6 +2254,7 @@ window.app = {
   setOuvragesFilter: (type) => {
     state.ouvragesFilterType = type;
     renderApp();
+    if (type === 'T' || type === 'L' || state.ouvragesScope === 'ALL') void ensureFullTablesData();
   },
   setOuvragesScope: (scope) => {
     state.ouvragesScope = scope;
