@@ -1243,7 +1243,7 @@ function renderOuvragesView() {
   }
 
   const displayList = filtered.slice(0, 60);
-  const isLoadingGlobalData = isGlobalScope && Object.keys(fullTablesData).length === 0;
+  const isLoadingGlobalData = (isGlobalScope || fType === 'T' || fType === 'L') && Object.keys(fullTablesData).length === 0;
 
   return `
     <div class="p-4 space-y-3.5 max-w-2xl mx-auto">
