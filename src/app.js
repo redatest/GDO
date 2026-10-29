@@ -2719,7 +2719,7 @@ window.app = {
     a.href = url;
     a.download = `${state.tableSelected}.csv`;
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   },
   exportCurrentJson: () => {
     const currentTable = fullTablesData[state.tableSelected];
@@ -2731,7 +2731,7 @@ window.app = {
     a.href = url;
     a.download = `${state.tableSelected}.json`;
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   },
 
   // Recherche rapide globale
@@ -2768,9 +2768,8 @@ window.app = {
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  renderApp();
-});
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', renderApp, { once: true });
+} else {
   renderApp();
 }
