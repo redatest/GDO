@@ -1,68 +1,100 @@
-# GDO-MT — Visualisation & modernisation du réseau moyenne tension (HTA)
+# GDO-MT
 
-Application web statique en JavaScript pour consulter le réseau MT 30 kV, explorer les ouvrages, afficher les schémas unifilaires et enregistrer des relevés terrain. Le référentiel historique provient de données dBase/FoxPro et de classeurs Excel de la wilaya de Guelma, Algérie.
+**GDO-MT** est une application web de consultation, d'analyse et de modernisation du réseau électrique moyenne tension (MT/HTA) de la wilaya de Guelma, en Algérie.
 
-L'application ne nécessite pas de serveur applicatif en production. Les paramètres et les fiches de visite sont conservés dans le stockage local du navigateur (`localStorage`) et les visites peuvent être exportées en JSON. Ce stockage local ne synchronise pas les données entre plusieurs appareils.
+- **Application en ligne :** https://redatest.github.io/GDO/
+- **Dépôt source :** https://github.com/redatest/GDO
+- **Technologies :** JavaScript, Vite, Tailwind CSS et Bun
+- **Hébergement :** GitHub Pages — application statique, sans serveur applicatif en production
 
 ## Fonctionnalités
 
-- **Schéma unifilaire MT** : sélection d'un départ, zoom, panoramique, inspection des nœuds et tronçons, affichage des caractéristiques des ouvrages.
-- **Catalogue des ouvrages** : postes HTA/BT, IACM, transformateurs, tronçons et étoilements, avec recherche par texte.
-- **Carnet de terrain** : fiches de visite locales, suppression et export JSON.
-- **Référentiels et tables historiques** : consultation, filtrage, pagination et export CSV/JSON. Les données réseau et les tables volumineuses sont chargées à la demande.
-- **Audit des données réseau** : contrôle des identifiants, des extrémités des tronçons, des compteurs et des écarts entre instantanés.
+- **Schéma unifilaire MT :** sélection des départs, navigation dans le schéma, zoom, panoramique et inspection des nœuds et tronçons.
+- **Filtrage par agence :** affichage des départs correspondant à l'agence sélectionnée.
+- **Catalogue des ouvrages :** consultation et recherche des postes, transformateurs, IACM, tronçons et autres éléments du réseau.
+- **Carnet de terrain :** création et gestion locale de fiches de visite, avec export JSON.
+- **Tables de référence :** consultation, recherche, filtrage, pagination et export des données disponibles.
+- **Audit topologique :** vérification des identifiants, des extrémités de tronçons, des longueurs et de la cohérence des compteurs du référentiel.
 
-## Chiffres du référentiel actuel
+## Référentiel réseau
 
-Le référentiel applicatif actuel indique :
+L'instantané applicatif actuellement documenté contient notamment :
 
-- 49 départs et 7 501 tronçons/arcs ;
-- 6 596 occurrences de nœuds dans les départs ;
-- 2 632,07 km de linéaire cumulé ;
-- 2 660 postes, 2 800 transformateurs et 1 638 IACM recensés ;
-- 39 IACM ouverts dans les statistiques du référentiel.
+| Indicateur | Valeur |
+|---|---:|
+| Départs dans le référentiel courant | 49 |
+| Tronçons/arcs physiques | 7 501 |
+| Occurrences de nœuds dans les départs | 6 596 |
+| Linéaire cumulé déclaré | 2 632,07 km |
+| Postes recensés | 2 660 |
+| Transformateurs recensés | 2 800 |
+| IACM recensés | 1 638 |
 
-Ces chiffres décrivent l'instantané applicatif actuel ; ils ne constituent pas une validation de l'état électrique réel du réseau.
+Ces valeurs décrivent les données intégrées à l'application. Elles ne constituent pas une certification de l'état réel ou de la configuration électrique du réseau.
 
-## Contrôle topologique
+### Limites connues des données
 
-Lancer l'audit avec :
+Le dépôt conserve également un instantané topologique historique utilisé pour comparaison. Il diffère du référentiel courant : il contient 51 départs, et les totaux ainsi que la composition des départs ne sont pas identiques. L'audit peut aussi signaler des départs comportant plusieurs composantes topologiques disjointes.
 
-```bash
-bun run audit:topology
-```
+Ces écarts doivent être vérifiés avec les données métier. L'application ne crée pas automatiquement de raccordements électriques manquants, afin de ne pas inventer une liaison physique qui ne serait pas confirmée par la source de référence.
 
-Le contrôle vérifie les identifiants dupliqués, les extrémités de tronçons absentes, les longueurs invalides et la cohérence entre les compteurs de `networkData` et `departsSummary`.
+## Installation et développement
 
-**Écarts de données connus à résoudre avec la source métier :**
-
-- `networkTopology.json` contient 51 départs historiques, contre 49 dans le référentiel actuel ;
-- les deux instantanés ne portent pas sur les mêmes départs et leurs totaux de tronçons/linéaire diffèrent ;
-- plusieurs départs comportent des composantes topologiques disjointes.
-
-L'audit signale ces cas mais ne crée pas automatiquement de tronçons de raccordement : ajouter une liaison électrique sans preuve dans les données de référence pourrait fausser le schéma et les analyses de chemin amont.
-
-## Développement et validation
-
-Le dépôt utilise Bun et le fichier de verrouillage `bun.lock`.
+Prérequis : [Bun](https://bun.sh/) et une version de Node.js compatible avec Vite (Node.js 22 est utilisée dans le workflow CI).
 
 ```bash
 bun install --frozen-lockfile
 bun run dev
+```
+
+Vite démarre le serveur de développement sur le port **3000**. Pour générer et prévisualiser la version de production :
+
+```bash
 bun run lint
 bun run audit:topology
 bun run build
+bun run preview
 ```
 
-Le workflow GitHub Actions exécute les contrôles, construit l'application et publie le contenu de `dist/` sur la branche `gh-pages`.
+Le résultat de compilation est généré dans le dossier `dist/`. Ce dossier est un artefact de build : il peut être régénéré et n'a pas besoin d'être maintenu manuellement dans les sources.
 
-## GitHub Pages
+### Audit topologique
 
-Dépôt : https://github.com/redatest/GDO  
-Application : https://redatest.github.io/GDO/
+Pour lancer uniquement l'audit des données réseau :
 
-Dans **Settings → Pages**, la source de publication doit être la branche `gh-pages` si ce n'est pas déjà le cas.
+```bash
+bun run audit:topology
+```
 
-## Licence
+L'audit contrôle notamment les identifiants dupliqués, les extrémités de tronçons absentes, les longueurs invalides et les écarts de compteurs entre le référentiel courant et le résumé des départs. Il signale les anomalies de données sans les corriger en ajoutant des raccordements physiques supposés.
 
-Projet réalisé pour la modernisation des applications patrimoniales de gestion des réseaux électriques de distribution.
+## Déploiement
+
+Le workflow GitHub Actions situé dans `.github/workflows/deploy.yml` :
+
+1. récupère le code de la branche `main` ;
+2. installe les dépendances à partir de `bun.lock` ;
+3. vérifie la syntaxe JavaScript et lance l'audit topologique ;
+4. construit l'application dans `dist/` ;
+5. publie le résultat sur la branche `gh-pages`.
+
+Le site public est servi par GitHub Pages à l'adresse https://redatest.github.io/GDO/.
+
+## Données locales et confidentialité
+
+Les paramètres de l'application et les fiches du carnet de terrain sont enregistrés dans le stockage local du navigateur (`localStorage`). Ils restent donc propres au navigateur et à l'appareil utilisés : ils ne sont pas automatiquement synchronisés entre plusieurs appareils et peuvent être perdus si les données du navigateur sont effacées. Exportez régulièrement les fiches importantes.
+
+## Structure principale du projet
+
+- `src/app.js` : interface et logique de l'application.
+- `src/index.css` : styles.
+- `src/data/` : référentiels et données réseau.
+- `scripts/auditTopology.js` : contrôle de cohérence topologique.
+- `index.html` : page d'entrée.
+- `vite.config.ts` : configuration Vite.
+- `package.json` et `bun.lock` : scripts et dépendances.
+- `.github/workflows/deploy.yml` : intégration et déploiement continus.
+
+## Licence et usage
+
+Ce dépôt est destiné à la modernisation et à la consultation des données patrimoniales du réseau de distribution. Les résultats affichés dépendent de la qualité et de la date des données sources ; toute décision d'exploitation doit s'appuyer sur les référentiels et procédures techniques officiels.
