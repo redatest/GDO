@@ -9,7 +9,7 @@ L'application ne nécessite pas de serveur applicatif en production. Les paramè
 - **Schéma unifilaire MT** : sélection d'un départ, zoom, panoramique, inspection des nœuds et tronçons, affichage des caractéristiques des ouvrages.
 - **Catalogue des ouvrages** : postes HTA/BT, IACM, transformateurs, tronçons et étoilements, avec recherche par texte.
 - **Carnet de terrain** : fiches de visite locales, suppression et export JSON.
-- **Référentiels et tables historiques** : consultation, filtrage, pagination et export CSV/JSON. Les tables volumineuses sont chargées à la demande.
+- **Référentiels et tables historiques** : consultation, filtrage, pagination et export CSV/JSON. Les données réseau et les tables volumineuses sont chargées à la demande.
 - **Audit des données réseau** : contrôle des identifiants, des extrémités des tronçons, des compteurs et des écarts entre instantanés.
 
 ## Chiffres du référentiel actuel
