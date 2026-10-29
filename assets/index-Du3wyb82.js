@@ -934,13 +934,13 @@
                 <span class="text-[10px] text-slate-500 font-semibold">${y(e.posteNom||``)}</span>
               </div>
               <span class="text-[9px] font-bold px-1.5 py-0.2 rounded ${e.statut===`RAS`?`bg-emerald-100 text-emerald-800`:e.statut===`Anomalie Mineure`?`bg-amber-100 text-amber-800`:`bg-red-100 text-red-800`}">
-                ${e.statut}
+                ${y(e.statut)}
               </span>
             </div>
-            <div class="text-[11px] text-slate-600">${e.type}</div>
+            <div class="text-[11px] text-slate-600">${y(e.type)}</div>
             <div class="text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">${y(e.note)}</div>
             <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
-              <span>${e.date}</span>
+              <span>${y(e.date)}</span>
               <button onclick="window.app.deleteIntervention('${b(e.id)}')" class="text-red-500 hover:text-red-700 font-semibold cursor-pointer">Supprimer</button>
             </div>
           </div>
