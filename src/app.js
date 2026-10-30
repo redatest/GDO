@@ -149,6 +149,59 @@ const state = {
   networkDataError: ''
 };
 
+function persistLocalStorage(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    state.storageWarning = '';
+    return true;
+  } catch (error) {
+    console.error('Échec de sauvegarde locale:', error);
+    state.storageWarning = 'Sauvegarde locale impossible : les changements ne survivront pas à la fermeture du navigateur. Exportez vos données et vérifiez l’espace de stockage.';
+    return false;
+  }
+}
+
+function removeStoredValue(key) {
+  try {
+    localStorage.removeItem(key);
+    state.storageWarning = '';
+    return true;
+  } catch (error) {
+    console.error('Échec de suppression locale:', error);
+    state.storageWarning = 'Impossible de modifier le stockage local du navigateur.';
+    return false;
+  }
+}
+
+function formatNumber(num) {
+  if (num === undefined || num === null) return '0';
+  return Number(num).toLocaleString('fr-FR');
+}
+
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeJsString(value) {
+  return String(value ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, '\\x27')
+    .replace(/\r/g, '\\r')
+    .replace(/\n/g, '\\n')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 // --- EN-TÊTE GDO-MT (TOP BAR) ---
 function renderMobileTopBar() {
   return `
