@@ -1511,7 +1511,8 @@ function renderOuvragesView() {
             const id = item.id || item.code;
             const nom = item.nom || id;
             const pi = item.pi || item.p_instal || 0;
-            const dep = item.depart || state.selectedDepartId;
+            const dep = departByNodeId.get(String(id)) || '';
+            const hasMapNode = Boolean(dep);
             return `
               <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
                 <div class="truncate pr-2">
@@ -1520,7 +1521,7 @@ function renderOuvragesView() {
                     <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900">
                       ${pi} kVA
                     </span>
-                    ${item.depart ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">${item.depart}</span>` : ''}
+                    ${dep ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">${escapeHtml(dep)}</span>` : ''}
                   </div>
                   <span class="text-xs font-semibold text-slate-800 block truncate">${escapeHtml(nom)}</span>
                   <span class="text-[10px] text-slate-400 block">${escapeHtml(item.localite || item.district || 'SDO Guelma')} &middot; ${item.typePosteLabel || 'Poste HTA/BT'}</span>
@@ -1545,7 +1546,8 @@ function renderOuvragesView() {
           } else if (fType === 'J') {
             const code = item.code || `J${item.num}`;
             const isOpen = item.position === 'O' || item.isOpen || (item.positionLabel && item.positionLabel.includes('OUVERT'));
-            const dep = item.depart || state.selectedDepartId;
+            const dep = departByNodeId.get(String(code)) || '';
+            const hasMapNode = Boolean(dep);
             return `
               <div class="p-3 bg-white rounded-xl border ${isOpen ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200'} shadow-2xs flex items-center justify-between">
                 <div class="truncate pr-2">
@@ -1554,7 +1556,7 @@ function renderOuvragesView() {
                     <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${isOpen ? 'bg-rose-100 text-rose-800 border border-rose-200' : 'bg-emerald-100 text-emerald-800'}">
                       ${isOpen ? 'OUVERT (Coupure)' : 'FERMÉ (Passage)'}
                     </span>
-                    ${item.depart ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">${item.depart}</span>` : ''}
+                    ${dep ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">${escapeHtml(dep)}</span>` : ''}
                   </div>
                   <span class="text-xs font-semibold text-slate-700 block">${item.mode || 'Manuel (M)'} &middot; Inom ${item.intensiteNominale || 200} A</span>
                   <span class="text-[10px] text-slate-400 block">District ${item.district || item.agence || '121'} &middot; MES: ${item.dateMES || '31-12-2025'}</span>
@@ -1571,7 +1573,10 @@ function renderOuvragesView() {
               </div>
             `;
           } else if (fType === 'T') {
-            const pCode = item.codePoste || item.code || '';
+            const rawPosteCode = String(item.codePoste || item.code || '');
+            const pCode = /^\d{3}P/.test(rawPosteCode) ? rawPosteCode : (posteIdByShortCode.get(rawPosteCode) || '');
+            const dep = pCode ? (departByNodeId.get(pCode) || '') : '';
+            const hasMapNode = Boolean(pCode && dep);
             const pwr = item.puissanceKva || 0;
             return `
               <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
@@ -1587,7 +1592,7 @@ function renderOuvragesView() {
                 </div>
                 <div class="shrink-0">
                   <button
-                    onclick="window.app.showOuvrageOnMap('${escapeJsString(pCode)}', '')"
+                    onclick="window.app.showOuvrageOnMap('${escapeJsString(pCode)}', '${escapeJsString(dep)}')"
                     class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
                   >
                     ⚡ Schéma
