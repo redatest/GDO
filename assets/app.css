@@ -215,3 +215,87 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
     background: linear-gradient(105deg, #123449 0%, #174c5b 58%, #126b70 100%);
   }
 }
+
+
+/* ==========================================================================
+   GDO-MT — Identité Sonelgaz : bleu institutionnel et orange énergie
+   L'orange est réservé aux accents d'interface, jamais aux états réseau.
+   ========================================================================== */
+:root {
+  --gdo-sonelgaz-blue: #07518a;
+  --gdo-sonelgaz-blue-deep: #06385f;
+  --gdo-sonelgaz-orange: #f47721;
+  --gdo-sonelgaz-orange-dark: #d95d0b;
+  --gdo-sonelgaz-orange-soft: #fff1e6;
+  --gdo-sonelgaz-orange-line: #ffc18f;
+}
+.gdo-topbar {
+  border-bottom: 3px solid var(--gdo-sonelgaz-orange);
+  background: linear-gradient(100deg, #ffffff 0%, #f5f9fd 72%, #fff5ec 100%);
+}
+.gdo-main-nav {
+  background: linear-gradient(105deg, #06385f 0%, #07518a 72%, #0b628e 100%);
+  box-shadow: 0 6px 20px rgba(6, 56, 95, .22);
+}
+.gdo-main-nav button { color: #edf6ff; }
+.gdo-main-nav button[aria-current="page"] {
+  color: #ffffff;
+  background: linear-gradient(135deg, #f47721 0%, #ff913f 100%);
+  box-shadow: 0 3px 10px rgba(244, 119, 33, .32), inset 0 -2px 0 rgba(145, 55, 0, .18);
+}
+.gdo-main-nav button:hover:not([aria-current="page"]) {
+  color: #ffffff;
+  background: rgba(255,255,255,.13);
+}
+.gdo-main-nav button[aria-current="page"] span:first-child { filter: saturate(1.1); }
+/* Actions primaires : orange Sonelgaz, contraste texte blanc. */
+.gdo-app-shell .bg-blue-600,
+.gdo-app-shell .bg-indigo-600 {
+  background-color: var(--gdo-sonelgaz-orange);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(217, 93, 11, .18);
+}
+.gdo-app-shell .hover\\:bg-blue-700:hover,
+.gdo-app-shell .hover\\:bg-blue-800:hover,
+.gdo-app-shell .hover\\:bg-indigo-700:hover {
+  background-color: var(--gdo-sonelgaz-orange-dark);
+  color: #ffffff;
+}
+.gdo-app-shell .text-blue-600,
+.gdo-app-shell .text-blue-700,
+.gdo-app-shell .text-indigo-600,
+.gdo-app-shell .text-indigo-700 { color: var(--gdo-sonelgaz-blue); }
+.gdo-app-shell .border-blue-200,
+.gdo-app-shell .border-indigo-200 { border-color: #c6dced; }
+.gdo-app-shell .bg-blue-50,
+.gdo-app-shell .bg-indigo-50 {
+  background-color: #edf5fb;
+}
+/* Onglets actifs et champs sélectionnés. */
+.gdo-app-shell [role="tab"][aria-selected="true"] {
+  color: var(--gdo-sonelgaz-blue-deep);
+  background: var(--gdo-sonelgaz-orange-soft);
+  box-shadow: inset 0 -3px 0 var(--gdo-sonelgaz-orange);
+}
+.gdo-app-shell :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea):focus {
+  border-color: var(--gdo-sonelgaz-orange);
+  box-shadow: 0 0 0 3px rgba(244,119,33,.16);
+}
+.gdo-app-shell :is(button, a):focus-visible,
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+  outline-color: rgba(244,119,33,.58);
+}
+/* Accents orange visibles sur le tableau de bord et les cartes de contenu. */
+.gdo-main > div > .grid.grid-cols-2 > div {
+  border-top: 3px solid var(--gdo-sonelgaz-orange);
+}
+.gdo-app-shell :is(.bg-white.rounded-xl, .bg-white.rounded-2xl) {
+  border-color: #d8e3ec;
+}
+.gdo-app-shell a:hover { text-decoration-color: var(--gdo-sonelgaz-orange); }
+@media (max-width: 767px) {
+  .gdo-main-nav {
+    background: linear-gradient(105deg, #06385f 0%, #07518a 72%, #0b628e 100%);
+  }
+}
