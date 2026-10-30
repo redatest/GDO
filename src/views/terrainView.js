@@ -24,9 +24,14 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
         </div>
       ` : ''}
 
-      <!-- Les deux formulaires restent côte à côte, y compris sur mobile. -->
-      <div class="grid grid-cols-2 gap-2 md:gap-4 items-start">
+      <!-- Sous-onglets au même format que les Paramètres. -->
+      <div class="flex items-center p-1 bg-slate-200/80 rounded-xl text-xs" role="tablist" aria-label="Type de fiche">
+        <button type="button" role="tab" aria-selected="${(state.terrainSubTab || 'visite') === 'visite'}" onclick="window.app.setTerrainSubTab('visite')" class="flex-1 py-2 rounded-lg font-semibold transition-colors cursor-pointer ${(state.terrainSubTab || 'visite') === 'visite' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}">Visite technique</button>
+        <button type="button" role="tab" aria-selected="${state.terrainSubTab === 'thermovision'}" onclick="window.app.setTerrainSubTab('thermovision')" class="flex-1 py-2 rounded-lg font-semibold transition-colors cursor-pointer ${state.terrainSubTab === 'thermovision' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}">Thermovision</button>
+      </div>
+      <div>
       <!-- Formulaire de visite technique -->
+      ${(state.terrainSubTab || 'visite') === 'visite' ? `
       <div class="bg-white rounded-xl border-2 border-slate-300 p-4 shadow-sm space-y-3 overflow-hidden">
         <div class="-mx-4 -mt-4 mb-3 px-3 py-2 bg-blue-50 border-b border-blue-200">
           <h2 class="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-1.5">
@@ -96,8 +101,10 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
         </form>
 
       </div>
+      ` : ''}
 
       <!-- Formulaire indépendant d’inspection thermographique -->
+      ${state.terrainSubTab === 'thermovision' ? `
       <div class="bg-white rounded-xl border-2 border-slate-300 p-4 shadow-sm space-y-3 overflow-hidden">
           <div class="-mx-4 -mt-4 mb-3 px-3 py-2 bg-orange-50 border-b border-orange-200 flex items-start justify-between gap-2">
             <div>
@@ -179,6 +186,7 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
             <button type="submit" class="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl text-xs shadow-xs">Enregistrer l’inspection thermographique</button>
           </form>
       </div>
+      ` : ''}
       </div>
 
       <!-- Historique des Visites Enregistrées -->
