@@ -1352,7 +1352,7 @@ function renderOuvragesView() {
     if (isGlobalScope) {
       rawList = fullTablesData['IACM_2025']?.rows || [];
     } else {
-      rawList = (currentDepart.nodes || []).filter(n => n.type === 'INTERRUPTEUR_AERIEN' || n.type === 'JONCTION').map(n => ({
+      rawList = (currentDepart.nodes || []).filter(n => n.type === 'INTERRUPTEUR_AERIEN').map(n => ({
         code: n.id,
         num: n.meta?.num || n.id,
         district: currentDepart.agency,
