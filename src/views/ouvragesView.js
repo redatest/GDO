@@ -193,8 +193,8 @@ export function renderOuvragesView({ state, networkData, fullTablesData, getNode
         class="w-full bg-white text-slate-900 text-xs rounded-xl px-3 py-2 border border-slate-300 shadow-2xs focus:outline-blue-500"
       />
 
-      <!-- Liste des Ouvrages Mobile -->
-      <div class="space-y-2">
+      <!-- Catalogue responsive des ouvrages -->
+      <div class="gdo-ouvrage-list space-y-2">
         <div class="flex items-center justify-between px-1">
           <span class="text-[11px] font-bold text-slate-500">
             ${filtered.length} élément(s) ${filtered.length > 60 ? `(affichage des 60 premiers)` : ''} :
