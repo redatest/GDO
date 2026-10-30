@@ -2061,12 +2061,13 @@ function renderQuickSearchModal() {
     if (results.length < 25) {
       const allIacms = fullTablesData['IACM_2025']?.rows || [];
       for (const iacm of allIacms) {
-        const iCode = iacm.code || `J${iacm.num}`;
-        if (iCode.toLowerCase().includes(q) || (iacm.depart && iacm.depart.toLowerCase().includes(q))) {
+        const iCode = String(iacm.code || `J${iacm.num}`);
+        const departId = getNodeDepartIndex().get(iCode);
+        if (departId && (iCode.toLowerCase().includes(q) || String(iacm.agence || '').toLowerCase().includes(q))) {
           results.push({
             type: 'IACM',
             id: iCode,
-            depId: iacm.depart || state.selectedDepartId,
+              depId: departId,
             label: `${iCode} · ${iacm.positionLabel || (iacm.isOpen ? 'OUVERT' : 'FERMÉ')}`
           });
         }
@@ -2594,21 +2595,10 @@ window.app = {
     // Les lignes du catalogue 2025 ne possèdent pas toutes un départ renseigné.
     const requestedDepart = depId && networkData.departs[depId];
     const requestedContainsNode = requestedDepart
-      && (requestedDepart.nodes || []).some(n => String(n.id) === String(nodeId));
-    if (requestedContainsNode) {
-      state.selectedDepartId = depId;
-    } else {
-      const currentContainsNode = networkData.departs[state.selectedDepartId]
-        ?.nodes.some(n => String(n.id) === String(nodeId));
-      if (!currentContainsNode) {
-        for (const [dId, depart] of Object.entries(networkData.departs || {})) {
-          if ((depart.nodes || []).some(n => String(n.id) === String(nodeId))) {
-            state.selectedDepartId = dId;
-            break;
-          }
-        }
-      }
-    }
+      && (requestedDepart.nodes || []).some(node => String(node.id) === String(nodeId));
+    const resolvedDepartId = requestedContainsNode ? depId : getNodeDepartIndex().get(String(nodeId));
+    if (!resolvedDepartId) return;
+    state.selectedDepartId = resolvedDepartId;
     const targetSummary = departsSummary.find(item => item.id === state.selectedDepartId);
     if (targetSummary) {
       state.selectedAgency = String(targetSummary.agency || state.selectedDepartId.slice(0, 3));
