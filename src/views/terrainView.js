@@ -3,8 +3,6 @@
  * Les dépendances applicatives sont injectées par app.js.
  */
 
-import { renderThermovisionView } from './thermovisionView.js';
-
 export function renderTerrainView({ state, networkData, escapeHtml, escapeJsString }) {
   if (!Object.keys(networkData.departs).length) {
     return '<div class="p-8 text-center text-sm font-semibold text-blue-800">' + escapeHtml(state.networkDataError || 'Chargement du réseau moyenne tension…') + '</div>';
@@ -26,8 +24,8 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
         </div>
       ` : ''}
 
-      <!-- Les deux formulaires sont côte à côte sur écran large. -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+      <!-- Les deux formulaires restent côte à côte, y compris sur mobile. -->
+      <div class="grid grid-cols-2 gap-2 md:gap-4 items-start">
       <!-- Formulaire de visite technique -->
       <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
         <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
