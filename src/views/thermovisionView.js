@@ -46,6 +46,7 @@ export function renderThermovisionView({ state, escapeHtml, escapeJsString }) {
             <div>
               <div class="font-mono text-xs font-bold text-slate-900">${escapeHtml(item.posteId || '')} <span class="font-sans font-medium text-slate-500">${escapeHtml(item.posteNom || '')}</span></div>
               <div class="text-[10px] text-slate-500 mt-0.5">${escapeHtml(item.date || '')} ${item.inspecteur ? '· ' + escapeHtml(item.inspecteur) : ''}</div>
+              ${item.temperatureAmbiante !== null && item.temperatureAmbiante !== undefined ? `<div class="text-[10px] text-slate-500">Température ambiante : ${escapeHtml(item.temperatureAmbiante)} °C</div>` : ''}
             </div>
             <span class="rounded-lg px-2 py-1 text-[9px] font-bold ${severityClass(item.criticite)}">${escapeHtml(item.criticite || 'Non classée')}</span>
           </div>
