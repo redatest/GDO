@@ -243,13 +243,13 @@ function renderMobileBottomBar() {
 
   return `
     <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 shadow-lg">
-      <div class="max-w-3xl mx-auto grid grid-cols-6 gap-1 md:gap-3">
+      <div class="max-w-3xl mx-auto" style="display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:4px;">
         ${navItems.map(item => {
           const isActive = state.activeTab === item.id;
           return `
             <button
               onclick="window.app.setTab('${escapeJsString(item.id)}')"
-              class="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-2 py-1.5 md:py-2.5 px-1 md:px-4 rounded-xl transition-all cursor-pointer select-none ${
+              class="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-2 py-1.5 md:py-2.5 px-1 md:px-4 rounded-xl transition-all cursor-pointer select-none" style="flex:1 1 0;min-width:0;${
                 isActive
                   ? 'text-blue-600 font-bold bg-blue-50/80 shadow-2xs'
                   : 'text-slate-500 hover:text-slate-900'
