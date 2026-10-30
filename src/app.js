@@ -1598,8 +1598,79 @@ window.app = {
   },
   deleteIntervention: (id) => {
     state.interventions = state.interventions.filter(item => item.id !== id);
-    const saved = persistLocalStorage('gdo_mt_interventions', state.interventions);
+    persistLocalStorage('gdo_mt_interventions', state.interventions);
     renderApp();
+  },
+  addThermovisionRow: () => {
+    state.thermovisionRows.push({ equipement: '', phase: 'A', point: '', temperature: '', reference: '' });
+    state.thermovisionError = '';
+    renderApp();
+  },
+  removeThermovisionRow: (index) => {
+    if (state.thermovisionRows.length <= 1) return;
+    state.thermovisionRows.splice(index, 1);
+    renderApp();
+  },
+  saveThermovision: (e) => {
+    e.preventDefault();
+    const posteId = document.getElementById('fieldVisitPoste')?.value || state.newVisitPosteId;
+    const measureRows = [...document.querySelectorAll('.thermo-measure-row')];
+    const mesures = measureRows.map((row) => {
+      const read = (name) => row.querySelector('[data-thermo-field="' + name + '"]')?.value?.trim() || '';
+      const temperature = read('temperature');
+      const reference = read('reference');
+      return {
+        equipement: read('equipement'),
+        phase: read('phase'),
+        point: read('point'),
+        temperature: temperature === '' ? null : Number(temperature),
+        reference: reference === '' ? null : Number(reference),
+        deltaT: temperature !== '' && reference !== '' ? Number((Number(temperature) - Number(reference)).toFixed(1)) : null
+      };
+    });
+    if (!posteId || !mesures.length || mesures.some(m => !m.equipement || m.temperature === null || !Number.isFinite(m.temperature) || (m.reference !== null && !Number.isFinite(m.reference)))) {
+      state.thermovisionError = 'Renseignez le poste, l’équipement et une température valide pour chaque point de mesure.';
+      renderApp();
+      return;
+    }
+    const matchingNode = Object.values(networkData.departs || {}).flatMap(depart => depart.nodes || []).find(node => String(node.id) === String(posteId));
+    const posteNom = matchingNode?.meta?.nom || (String(posteId) === String(state.newVisitPosteId) ? state.newVisitPosteNom : '') || posteId;
+    const now = new Date();
+    const inspection = {
+      id: 'THERMO-' + now.getTime(),
+      posteId,
+      posteNom,
+      date: document.getElementById('fieldThermoDate')?.value || now.toISOString().slice(0, 10),
+      inspecteur: document.getElementById('fieldThermoInspector')?.value?.trim() || '',
+      criticite: document.getElementById('fieldThermoSeverity')?.value || 'Surveillance',
+      observations: document.getElementById('fieldThermoNotes')?.value?.trim() || '',
+      recommandations: document.getElementById('fieldThermoRecommendations')?.value?.trim() || '',
+      mesures
+    };
+    state.thermovisions.unshift(inspection);
+    const saved = persistLocalStorage('gdo_mt_thermovisions', state.thermovisions);
+    state.thermovisionRows = [{ equipement: '', phase: 'A', point: '', temperature: '', reference: '' }];
+    state.thermovisionError = saved ? '' : state.storageWarning;
+    state.thermovisionSuccessNotice = saved;
+    renderApp();
+  },
+  closeThermovisionNotice: () => {
+    state.thermovisionSuccessNotice = false;
+    renderApp();
+  },
+  deleteThermovision: (id) => {
+    state.thermovisions = state.thermovisions.filter(item => item.id !== id);
+    persistLocalStorage('gdo_mt_thermovisions', state.thermovisions);
+    renderApp();
+  },
+  exportThermovisions: () => {
+    const blob = new Blob([JSON.stringify(state.thermovisions, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Thermovision_GDO_MT_' + new Date().toISOString().slice(0, 10) + '.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   },
   exportInterventions: () => {
     const blob = new Blob([JSON.stringify(state.interventions, null, 2)], { type: 'application/json' });
