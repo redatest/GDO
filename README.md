@@ -45,6 +45,7 @@ Le navigateur charge directement :
 - `src/app.js` : orchestration de l'interface et des interactions ;
 - `src/config/defaultSettings.js` : paramètres MT par défaut ;
 - `src/views/settingsViews.js` : rendu des tables et des modales de paramètres ;
+- `src/views/quickSearchView.js` : rendu de la recherche rapide des ouvrages ;
 - `src/data/dataRepository.js` : chargement différé et normalisation des référentiels ;
 - `src/data/` : modules JavaScript et référentiels réseau ;
 - `src/utils/formatters.js` : fonctions communes de formatage et d'échappement HTML/JavaScript.
