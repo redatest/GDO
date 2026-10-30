@@ -280,6 +280,10 @@ function renderHomeView() {
   const filteredDeparts = state.selectedAgency === 'ALL'
     ? departsSummary
     : departsSummary.filter(d => d.id.startsWith(state.selectedAgency));
+  const agencyStats = ['121','123','125','127'].map(id => {
+    const rows = departsSummary.filter(d => String(d.agency || d.id.slice(0,3)) === id);
+    return { id, departures: rows.length, postes: rows.reduce((n,d) => n + (Number(d.posteCount)||0),0), iacms: rows.reduce((n,d) => n + (Number(d.iacmCount)||0),0), open: rows.reduce((n,d) => n + (Number(d.openIacmCount)||0),0), km: rows.reduce((n,d) => n + (Number(d.totalLengthKm)||0),0), kva: rows.reduce((n,d) => n + (Number(d.totalPowerKva)||0),0) };
+  });
 
   return `
     <div class="p-4 md:p-6 xl:p-8 space-y-4 md:space-y-6 max-w-screen-2xl mx-auto">
