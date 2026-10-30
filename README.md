@@ -43,6 +43,7 @@ Le navigateur charge directement :
 - `index.html` : page d'entrée ;
 - `assets/app.css` : feuille de style CSS statique ;
 - `src/app.js` : orchestration de l'interface et des interactions ;
+- `src/config/defaultSettings.js` : paramètres MT par défaut ;
 - `src/data/dataRepository.js` : chargement différé et normalisation des référentiels ;
 - `src/data/` : modules JavaScript et référentiels réseau ;
 - `src/utils/formatters.js` : fonctions communes de formatage et d'échappement HTML/JavaScript.
@@ -75,6 +76,7 @@ Les paramètres de l'application et les fiches du carnet de terrain sont enregis
 - `assets/app.css` : CSS statique ;
 - `src/app.js` : orchestration de l'interface ;
 - `src/data/` : chargement, modules et données réseau ;
+- `src/config/` : configuration initiale de l'application ;
 - `src/utils/` : fonctions utilitaires partagées ;
 - `.github/workflows/deploy.yml` : déploiement statique vers GitHub Pages.
 
