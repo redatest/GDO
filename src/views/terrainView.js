@@ -3,6 +3,8 @@
  * Les dépendances applicatives sont injectées par app.js.
  */
 
+import { renderThermovisionView } from './thermovisionView.js';
+
 export function renderTerrainView({ state, networkData, escapeHtml, escapeJsString }) {
   if (!Object.keys(networkData.departs).length) {
     return '<div class="p-8 text-center text-sm font-semibold text-blue-800">' + escapeHtml(state.networkDataError || 'Chargement du réseau moyenne tension…') + '</div>';
@@ -11,7 +13,7 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
   const posteOptions = currentDepart.nodes.filter(n => n.type === 'POSTE_HTA_BT');
 
   return `
-    <div class="p-4 space-y-4 max-w-2xl mx-auto">
+    <div class="p-4 space-y-4 max-w-7xl mx-auto">
       <div>
         <h1 class="text-base font-bold text-slate-900">Carnet de Terrain &amp; Visites Techniques</h1>
         <p class="text-xs text-slate-500">Relevés d'anomalies, fiches d'inspection et contrôle des postes MT</p>
@@ -24,7 +26,9 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
         </div>
       ` : ''}
 
-      <!-- Formulaire Tactile d'Inspection sur Site -->
+      <!-- Les deux formulaires sont côte à côte sur écran large. -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+      <!-- Formulaire de visite technique -->
       <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
         <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
           <span>📝 Nouvelle Fiche de Visite de Poste</span>
@@ -90,7 +94,10 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
           </button>
         </form>
 
-        <div class="border-t border-slate-200 pt-3 space-y-3">
+      </div>
+
+      <!-- Formulaire indépendant d’inspection thermographique -->
+      <div class="bg-white rounded-2xl border border-orange-200 p-4 shadow-2xs space-y-3">
           <div class="flex items-start justify-between gap-2">
             <div>
               <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Volet 2 — Inspection thermographique</h3>
@@ -170,7 +177,7 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
             </div>
             <button type="submit" class="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl text-xs shadow-xs">Enregistrer l’inspection thermographique</button>
           </form>
-        </div>
+      </div>
       </div>
 
       <!-- Historique des Visites Enregistrées -->
