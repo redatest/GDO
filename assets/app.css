@@ -143,3 +143,75 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 @media (min-width: 1024px) { .gdo-main > div > .grid.grid-cols-2 { grid-template-columns: repeat(6, minmax(0, 1fr)); } .gdo-ouvrage-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .gdo-ouvrage-list > div:first-child { grid-column: 1 / -1; } .gdo-ouvrage-list > div:not(:first-child) { min-width: 0; } }
 @media (min-width: 1500px) { .gdo-ouvrage-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 767px) { .gdo-ouvrage-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; } }
+
+
+/* ==========================================================================
+   GDO-MT — Palette bleu pétrole / turquoise
+   Ajustement chromatique uniquement : statuts métier conservés.
+   ========================================================================== */
+:root {
+  --gdo-ink: #142b3b;
+  --gdo-muted: #607586;
+  --gdo-line: #d7e3e9;
+  --gdo-surface: #ffffff;
+  --gdo-canvas: #f2f7f8;
+  --gdo-blue: #087e8b;
+  --gdo-blue-dark: #123b50;
+  --gdo-accent: #12a6a0;
+  --gdo-radius: 16px;
+}
+body,
+.gdo-app-shell { background-color: var(--gdo-canvas); color: var(--gdo-ink); }
+.gdo-topbar {
+  background: linear-gradient(105deg, #ffffff 0%, #f4fafb 100%);
+  border-bottom-color: #cbdde3;
+}
+.gdo-main-nav {
+  background: linear-gradient(105deg, #123449 0%, #174c5b 58%, #126b70 100%);
+  border-color: rgba(255,255,255,.13);
+  box-shadow: 0 5px 18px rgba(13, 48, 65, .18);
+}
+.gdo-main-nav button { color: #e6f2f4; }
+.gdo-main-nav button[aria-current="page"] {
+  color: #ffffff;
+  background: rgba(31, 190, 177, .2);
+  box-shadow: inset 0 -3px 0 #48d2c2;
+}
+.gdo-main-nav button:hover { background: rgba(255,255,255,.1); color: #ffffff; }
+.gdo-app-shell [role="tab"][aria-selected="true"] {
+  color: #086f78;
+  background: #e5f5f4;
+  box-shadow: inset 0 -2px 0 #12a6a0;
+}
+.gdo-app-shell :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea):focus {
+  border-color: #0b9294;
+  box-shadow: 0 0 0 3px rgba(18,166,160,.13);
+}
+.gdo-app-shell :is(button, a):focus-visible,
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+  outline-color: rgba(18,166,160,.48);
+}
+/* Bleu primaire : actions et éléments de navigation, sans toucher aux couleurs d'état. */
+.gdo-app-shell .bg-blue-600,
+.gdo-app-shell .bg-indigo-600 { background-color: #087e8b; }
+.gdo-app-shell .hover\:bg-blue-700:hover { background-color: #086b78; }
+.gdo-app-shell .hover\:bg-blue-800:hover { background-color: #075965; }
+.gdo-app-shell .hover\:bg-emerald-700:hover { background-color: #087e70; }
+.gdo-app-shell .text-blue-600,
+.gdo-app-shell .text-blue-700,
+.gdo-app-shell .text-indigo-600,
+.gdo-app-shell .text-indigo-700 { color: #087e8b; }
+.gdo-app-shell .border-blue-200,
+.gdo-app-shell .border-indigo-200 { border-color: #b9dddc; }
+.gdo-app-shell .bg-blue-50,
+.gdo-app-shell .bg-indigo-50 { background-color: #eaf6f5; }
+.gdo-app-shell .hover\:bg-blue-50:hover { background-color: #e4f3f2; }
+.gdo-app-shell :is(.bg-white.rounded-xl, .bg-white.rounded-2xl) {
+  border-color: #d7e3e9;
+}
+@media (max-width: 767px) {
+  .gdo-main-nav {
+    background: linear-gradient(105deg, #123449 0%, #174c5b 58%, #126b70 100%);
+  }
+}
