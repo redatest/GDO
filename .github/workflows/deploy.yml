@@ -28,6 +28,7 @@ jobs:
           cp src/utils/formatters.js _site/src/utils/
           cp src/config/defaultSettings.js _site/src/config/
           cp src/views/settingsViews.js _site/src/views/
+          cp src/views/quickSearchView.js _site/src/views/
           cp src/data/departsSummary.js _site/src/data/
           cp src/data/dataRepository.js _site/src/data/
           cp src/data/tableSchemas.js _site/src/data/
