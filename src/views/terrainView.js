@@ -27,10 +27,13 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
       <!-- Les deux formulaires restent côte à côte, y compris sur mobile. -->
       <div class="grid grid-cols-2 gap-2 md:gap-4 items-start">
       <!-- Formulaire de visite technique -->
-      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-          <span>📝 Nouvelle Fiche de Visite de Poste</span>
-        </h2>
+      <div class="bg-white rounded-xl border-2 border-slate-300 p-4 shadow-sm space-y-3 overflow-hidden">
+        <div class="-mx-4 -mt-4 mb-3 px-3 py-2 bg-blue-50 border-b border-blue-200">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-1.5">
+            <span>📝 Visite technique</span>
+          </h2>
+          <p class="text-[10px] text-blue-700 mt-1">Fiche de visite normale du poste MT</p>
+        </div>
 
         <form onsubmit="window.app.saveIntervention(event)" class="space-y-3 text-xs">
           <div>
@@ -95,13 +98,13 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
       </div>
 
       <!-- Formulaire indépendant d’inspection thermographique -->
-      <div class="bg-white rounded-2xl border border-orange-200 p-4 shadow-2xs space-y-3">
-          <div class="flex items-start justify-between gap-2">
+      <div class="bg-white rounded-xl border-2 border-slate-300 p-4 shadow-sm space-y-3 overflow-hidden">
+          <div class="-mx-4 -mt-4 mb-3 px-3 py-2 bg-orange-50 border-b border-orange-200 flex items-start justify-between gap-2">
             <div>
-              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Volet 2 — Inspection thermographique</h3>
-              <p class="text-[10px] text-slate-500 mt-1">Enregistrement indépendant de la visite technique. Aucune image n’est stockée.</p>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-orange-900">Inspection thermographique</h3>
+              <p class="text-[10px] text-orange-800 mt-1">Enregistrement indépendant de la visite technique.</p>
             </div>
-            <span class="text-[10px] font-bold text-orange-700 bg-orange-50 border border-orange-200 rounded-lg px-2 py-1">THERMOVISION</span>
+            <span class="text-[10px] font-bold text-orange-800 bg-white border border-orange-200 rounded-lg px-2 py-1">THERMOVISION</span>
           </div>
           ${state.thermovisionSuccessNotice ? `
             <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold flex justify-between">
