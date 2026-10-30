@@ -1529,7 +1529,7 @@ function renderOuvragesView() {
 
                 <div class="flex items-center gap-1.5 shrink-0">
                   <button
-                    onclick="window.app.showOuvrageOnMap('${escapeJsString(id)}', '${escapeJsString(dep)}')"
+                    style="pointer-events:${hasMapNode ? 'auto' : 'none'};opacity:${hasMapNode ? 1 : 0.4}" onclick="window.app.showOuvrageOnMap('${escapeJsString(id)}', '${escapeJsString(dep)}')"
                     class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
                   >
                     ⚡ Schéma
@@ -1564,7 +1564,7 @@ function renderOuvragesView() {
 
                 <div class="shrink-0">
                   <button
-                    onclick="window.app.showOuvrageOnMap('${escapeJsString(code)}', '${escapeJsString(dep)}')"
+                    style="pointer-events:${hasMapNode ? 'auto' : 'none'};opacity:${hasMapNode ? 1 : 0.4}" onclick="window.app.showOuvrageOnMap('${escapeJsString(code)}', '${escapeJsString(dep)}')"
                     class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
                   >
                     ⚡ Schéma
@@ -1592,7 +1592,7 @@ function renderOuvragesView() {
                 </div>
                 <div class="shrink-0">
                   <button
-                    onclick="window.app.showOuvrageOnMap('${escapeJsString(pCode)}', '${escapeJsString(dep)}')"
+                    style="pointer-events:${hasMapNode ? 'auto' : 'none'};opacity:${hasMapNode ? 1 : 0.4}" onclick="window.app.showOuvrageOnMap('${escapeJsString(pCode)}', '${escapeJsString(dep)}')"
                     class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer"
                   >
                     ⚡ Schéma
