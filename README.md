@@ -48,6 +48,7 @@ Le navigateur charge directement :
 - `src/views/quickSearchView.js` : rendu de la recherche rapide des ouvrages ;
 - `src/views/ouvragesView.js` : rendu du catalogue des ouvrages (postes, IACM, transformateurs, tronçons et étoilements) ;
 - `src/views/terrainView.js` : rendu du carnet de terrain et de l'historique des visites techniques ;
+- `src/views/settingsView.js` : rendu de la vue Paramètres et des référentiels MT ;
 - `src/data/dataRepository.js` : chargement différé et normalisation des référentiels ;
 - `src/data/` : modules JavaScript et référentiels réseau ;
 - `src/utils/formatters.js` : fonctions communes de formatage et d'échappement HTML/JavaScript.
