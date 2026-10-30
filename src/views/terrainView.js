@@ -109,12 +109,16 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="block text-slate-600 font-semibold text-[11px] mb-1">Date d’inspection</label>
-                <input id="fieldThermoDate" type="date" value="${new Date().toISOString().slice(0, 10)}" required class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs" />
+                <input id="fieldThermoDate" type="date" value="${escapeHtml(state.thermovisionDraft?.date || new Date().toISOString().slice(0, 10))}" required class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs" />
               </div>
               <div>
                 <label class="block text-slate-600 font-semibold text-[11px] mb-1">Inspecteur</label>
-                <input id="fieldThermoInspector" type="text" placeholder="Nom et prénom" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs" />
+                <input id="fieldThermoInspector" type="text" value="${escapeHtml(state.thermovisionDraft?.inspecteur || '')}" placeholder="Nom et prénom" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs" />
               </div>
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Température ambiante (°C)</label>
+              <input id="fieldThermoAmbient" type="number" step="0.1" value="${escapeHtml(state.thermovisionDraft?.temperatureAmbiante || '')}" placeholder="Facultatif" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs" />
             </div>
             <div class="space-y-2">
               <div class="flex items-center justify-between">
@@ -151,18 +155,18 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
               <div>
                 <label class="block text-slate-600 font-semibold text-[11px] mb-1">Niveau de criticité</label>
                 <select id="fieldThermoSeverity" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs">
-                  <option>Normal</option><option selected>Surveillance</option><option>Anomalie</option><option>Critique</option>
+                  <option value="Normal" ${state.thermovisionDraft?.criticite === 'Normal' ? 'selected' : ''}>Normal</option><option value="Surveillance" ${(state.thermovisionDraft?.criticite || 'Surveillance') === 'Surveillance' ? 'selected' : ''}>Surveillance</option><option value="Anomalie" ${state.thermovisionDraft?.criticite === 'Anomalie' ? 'selected' : ''}>Anomalie</option><option value="Critique" ${state.thermovisionDraft?.criticite === 'Critique' ? 'selected' : ''}>Critique</option>
                 </select>
               </div>
               <div class="text-[10px] text-slate-500 self-end pb-2">ΔT calculé automatiquement si une température de référence est saisie.</div>
             </div>
             <div>
               <label class="block text-slate-600 font-semibold text-[11px] mb-1">Observations / diagnostic</label>
-              <textarea id="fieldThermoNotes" rows="2" placeholder="Description de l’échauffement constaté…" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs"></textarea>
+              <textarea id="fieldThermoNotes" rows="2" placeholder="Description de l’échauffement constaté…" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs">${escapeHtml(state.thermovisionDraft?.observations || '')}</textarea>
             </div>
             <div>
               <label class="block text-slate-600 font-semibold text-[11px] mb-1">Recommandations / actions à entreprendre</label>
-              <textarea id="fieldThermoRecommendations" rows="2" placeholder="Contrôle, resserrage, remplacement, nouvelle mesure…" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs"></textarea>
+              <textarea id="fieldThermoRecommendations" rows="2" placeholder="Contrôle, resserrage, remplacement, nouvelle mesure…" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs">${escapeHtml(state.thermovisionDraft?.recommandations || '')}</textarea>
             </div>
             <button type="submit" class="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl text-xs shadow-xs">Enregistrer l’inspection thermographique</button>
           </form>

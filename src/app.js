@@ -3,7 +3,7 @@
  * Wilaya de Guelma (24) — Direction de Distribution de l'Électricité (SDO)
  *
  * Interface GDO-MT :
- * - Navigation mobile dock (Accueil, Schéma MT, Parc Ouvrages, Carnet Terrain, Paramètres & Tables)
+ * - Navigation mobile dock (Accueil, Schéma MT, Parc Ouvrages, Carnet Terrain, Thermovision, Paramètres & Tables)
  * - Thème Clair haute visibilité pour agents de terrain
  * - HTML5 et JavaScript natifs, exécutés directement dans le navigateur (compatible GitHub Pages)
  */
@@ -127,6 +127,7 @@ const state = {
   visitSuccessNotice: false,
   thermovisions: loadStoredThermovisions(),
   thermovisionRows: [{ equipement: '', phase: 'A', point: '', temperature: '', reference: '' }],
+  thermovisionDraft: { date: '', inspecteur: '', temperatureAmbiante: '', criticite: 'Surveillance', observations: '', recommandations: '' },
   thermovisionSuccessNotice: false,
   thermovisionError: '',
 
@@ -146,6 +147,19 @@ const state = {
   dataLoadError: '',
   networkDataError: ''
 };
+
+function captureThermovisionDraft() {
+  const value = (id) => document.getElementById(id)?.value ?? '';
+  state.thermovisionDraft = {
+    date: value('fieldThermoDate'), inspecteur: value('fieldThermoInspector'), temperatureAmbiante: value('fieldThermoAmbient'),
+    criticite: value('fieldThermoSeverity') || 'Surveillance', observations: value('fieldThermoNotes'),
+    recommandations: value('fieldThermoRecommendations')
+  };
+  state.thermovisionRows = [...document.querySelectorAll('.thermo-measure-row')].map(row => {
+    const read = (name) => row.querySelector('[data-thermo-field="' + name + '"]')?.value ?? '';
+    return { equipement: read('equipement'), phase: read('phase') || 'A', point: read('point'), temperature: read('temperature'), reference: read('reference') };
+  });
+}
 
 function persistLocalStorage(key, value) {
   try {
@@ -1602,12 +1616,14 @@ window.app = {
     renderApp();
   },
   addThermovisionRow: () => {
+    captureThermovisionDraft();
     state.thermovisionRows.push({ equipement: '', phase: 'A', point: '', temperature: '', reference: '' });
     state.thermovisionError = '';
     renderApp();
   },
   removeThermovisionRow: (index) => {
     if (state.thermovisionRows.length <= 1) return;
+    captureThermovisionDraft();
     state.thermovisionRows.splice(index, 1);
     renderApp();
   },
@@ -1642,6 +1658,7 @@ window.app = {
       posteNom,
       date: document.getElementById('fieldThermoDate')?.value || now.toISOString().slice(0, 10),
       inspecteur: document.getElementById('fieldThermoInspector')?.value?.trim() || '',
+      temperatureAmbiante: document.getElementById('fieldThermoAmbient')?.value === '' ? null : Number(document.getElementById('fieldThermoAmbient')?.value),
       criticite: document.getElementById('fieldThermoSeverity')?.value || 'Surveillance',
       observations: document.getElementById('fieldThermoNotes')?.value?.trim() || '',
       recommandations: document.getElementById('fieldThermoRecommendations')?.value?.trim() || '',
@@ -1650,6 +1667,7 @@ window.app = {
     state.thermovisions.unshift(inspection);
     const saved = persistLocalStorage('gdo_mt_thermovisions', state.thermovisions);
     state.thermovisionRows = [{ equipement: '', phase: 'A', point: '', temperature: '', reference: '' }];
+    state.thermovisionDraft = { date: '', inspecteur: '', temperatureAmbiante: '', criticite: 'Surveillance', observations: '', recommandations: '' };
     state.thermovisionError = saved ? '' : state.storageWarning;
     state.thermovisionSuccessNotice = saved;
     renderApp();
