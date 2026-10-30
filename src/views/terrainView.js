@@ -64,20 +64,20 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
             <div>
               <label class="block text-slate-600 font-semibold text-[11px] mb-1">Type de Contrôle</label>
               <select id="fieldVisitType" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs">
-                <option value="Inspection Visuelle Générale">Inspection Visuelle Générale</option>
-                <option value="Contrôle Huile Transfo">Contrôle Huile &amp; Étanchéité</option>
-                <option value="Vérification Fusibles MT / BT">Vérification Fusibles &amp; Disjoncteur</option>
-                <option value="Mesure Tension BT &amp; Équilibrage">Mesure Tension BT &amp; Équilibrage</option>
-                <option value="Contrôle Terre &amp; Parafoudres">Prise de Terre &amp; Parafoudres</option>
+                <option value="Inspection Visuelle Générale" ${(state.newVisitDraft?.type || 'Inspection Visuelle Générale') === 'Inspection Visuelle Générale' ? 'selected' : ''}>Inspection Visuelle Générale</option>
+                <option value="Contrôle Huile Transfo" ${state.newVisitDraft?.type === 'Contrôle Huile Transfo' ? 'selected' : ''}>Contrôle Huile &amp; Étanchéité</option>
+                <option value="Vérification Fusibles MT / BT" ${state.newVisitDraft?.type === 'Vérification Fusibles MT / BT' ? 'selected' : ''}>Vérification Fusibles &amp; Disjoncteur</option>
+                <option value="Mesure Tension BT &amp; Équilibrage" ${state.newVisitDraft?.type === 'Mesure Tension BT &amp; Équilibrage' ? 'selected' : ''}>Mesure Tension BT &amp; Équilibrage</option>
+                <option value="Contrôle Terre &amp; Parafoudres" ${state.newVisitDraft?.type === 'Contrôle Terre &amp; Parafoudres' ? 'selected' : ''}>Prise de Terre &amp; Parafoudres</option>
               </select>
             </div>
 
             <div>
               <label class="block text-slate-600 font-semibold text-[11px] mb-1">Constat Technique</label>
               <select id="fieldVisitStatut" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs font-semibold">
-                <option value="RAS" class="text-emerald-700">Bon état (RAS)</option>
-                <option value="Anomalie Mineure" class="text-amber-700">Anomalie Mineure</option>
-                <option value="Anomalie Critique" class="text-red-700">Anomalie Critique (Urgent)</option>
+                <option value="RAS" ${(state.newVisitDraft?.statut || 'RAS') === 'RAS' ? 'selected' : ''} class="text-emerald-700">Bon état (RAS)</option>
+                <option value="Anomalie Mineure" ${state.newVisitDraft?.statut === 'Anomalie Mineure' ? 'selected' : ''} class="text-amber-700">Anomalie Mineure</option>
+                <option value="Anomalie Critique" ${state.newVisitDraft?.statut === 'Anomalie Critique' ? 'selected' : ''} class="text-red-700">Anomalie Critique (Urgent)</option>
               </select>
             </div>
           </div>
@@ -89,7 +89,7 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
               rows="3"
               placeholder="Ex : Niveau d'huile OK, tension 232V/402V, serrage des cosses BT effectué..."
               class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs text-slate-900"
-            ></textarea>
+            >${escapeHtml(state.newVisitDraft?.note || '')}</textarea>
           </div>
 
           <button
