@@ -1635,7 +1635,7 @@ window.app = {
   },
   saveThermovision: (e) => {
     e.preventDefault();
-    const posteId = document.getElementById('fieldVisitPoste')?.value || state.newVisitPosteId;
+    const posteId = document.getElementById('fieldThermoPoste')?.value || state.newVisitPosteId;
     const measureRows = [...document.querySelectorAll('.thermo-measure-row')];
     const mesures = measureRows.map((row) => {
       const read = (name) => row.querySelector('[data-thermo-field="' + name + '"]')?.value?.trim() || '';
