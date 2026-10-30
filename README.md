@@ -13,7 +13,8 @@
 - **Schéma unifilaire MT :** sélection des départs, navigation dans le schéma, zoom, panoramique et inspection des nœuds et tronçons.
 - **Filtrage par agence :** affichage des départs correspondant à l'agence sélectionnée.
 - **Catalogue des ouvrages :** consultation et recherche des postes, transformateurs, IACM, tronçons et autres éléments du réseau.
-- **Carnet de terrain :** création et gestion locale de fiches de visite, avec export JSON.
+- **Carnet de terrain :** création et gestion locale des fiches de visite technique.
+- **Thermovision :** volet d’inspection thermographique indépendant dans la fiche de visite, avec plusieurs points de mesure par poste et historique dédié. Les températures, écarts ΔT, diagnostics et recommandations sont enregistrés sans stocker d’images.
 - **Tables de référence :** consultation, recherche, filtrage, pagination et export des données disponibles.
 - **Stockage local :** paramètres et fiches de terrain conservés dans le navigateur avec `localStorage`.
 
@@ -47,7 +48,8 @@ Le navigateur charge directement :
 - `src/views/settingsViews.js` : rendu des tables et des modales de paramètres ;
 - `src/views/quickSearchView.js` : rendu de la recherche rapide des ouvrages ;
 - `src/views/ouvragesView.js` : rendu du catalogue des ouvrages (postes, IACM, transformateurs, tronçons et étoilements) ;
-- `src/views/terrainView.js` : rendu du carnet de terrain et de l'historique des visites techniques ;
+- `src/views/terrainView.js` : rendu du carnet de terrain, de la visite technique et du volet de saisie thermographique ;
+- `src/views/thermovisionView.js` : rendu de l'historique indépendant des inspections thermographiques ;
 - `src/views/settingsView.js` : rendu de la vue Paramètres et des référentiels MT ;
 - `src/data/dataRepository.js` : chargement différé et normalisation des référentiels ;
 - `src/data/` : modules JavaScript et référentiels réseau ;
@@ -73,7 +75,7 @@ Le site public est servi par GitHub Pages à l'adresse https://redatest.github.i
 
 ## Données locales et confidentialité
 
-Les paramètres de l'application et les fiches du carnet de terrain sont enregistrés dans le stockage local du navigateur (`localStorage`). Ils restent propres au navigateur et à l'appareil utilisés : ils ne sont pas automatiquement synchronisés entre plusieurs appareils et peuvent être perdus si les données du navigateur sont effacées. Exportez régulièrement les fiches importantes.
+Les paramètres, les fiches de visite et les inspections thermographiques sont enregistrés séparément dans le stockage local du navigateur (`localStorage`). Les inspections thermographiques ne contiennent que des données textuelles et numériques : aucune image ni aucun thermogramme n'est stocké. Ils restent propres au navigateur et à l'appareil utilisés : ils ne sont pas automatiquement synchronisés entre plusieurs appareils et peuvent être perdus si les données du navigateur sont effacées. Exportez régulièrement les fiches importantes.
 
 ## Structure principale du projet
 
