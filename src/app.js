@@ -2559,6 +2559,8 @@ window.app = {
     }
     state.activeTab = 'unifilaire';
     state.selectedNode = null;
+    state.selectedEdge = null;
+    state.showBottomSheet = false;
     const dep = networkData.departs[state.selectedDepartId];
     const n = dep?.nodes.find(item => item.id === nodeId);
     if (n) {
@@ -2590,7 +2592,10 @@ window.app = {
       if ((depart.nodes || []).some(node => String(node.id) === String(nodeId))) {
         state.selectedDepartId = depId;
         const targetSummary = departsSummary.find(item => item.id === depId);
-        if (targetSummary) state.selectedAgency = String(targetSummary.agency || depId.slice(0, 3));
+        if (targetSummary) {
+          state.selectedAgency = String(targetSummary.agency || depId.slice(0, 3));
+          state.schemaAgencyInitialized = true;
+        }
         break;
       }
     }
