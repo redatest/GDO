@@ -249,11 +249,11 @@ function renderMobileBottomBar() {
           return `
             <button
               onclick="window.app.setTab('${escapeJsString(item.id)}')"
-              class="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-2 py-1.5 md:py-2.5 px-1 md:px-4 rounded-xl transition-all cursor-pointer select-none" style="flex:1 1 0;min-width:0;${
+              class="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-2 py-1.5 md:py-2.5 px-1 md:px-4 rounded-xl transition-all cursor-pointer select-none ${
                 isActive
                   ? 'text-blue-600 font-bold bg-blue-50/80 shadow-2xs'
                   : 'text-slate-500 hover:text-slate-900'
-              }"
+              }" style="flex:1 1 0;min-width:0;"
             >
               <span class="text-base md:text-lg leading-none mb-0.5 md:mb-0">${item.icon}</span>
               <span class="text-[10px] md:text-sm leading-tight truncate tracking-tight">${item.label}</span>
