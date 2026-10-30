@@ -136,3 +136,6 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
     scroll-behavior: auto !important;
   }
 }
+
+@media (min-width: 768px) { .gdo-main-nav { position: fixed; top: 64px; left: 0; right: 0; bottom: auto; width: 100%; } .gdo-main { padding-top: 58px; } }
+@media (min-width: 1200px) { .gdo-main-nav { top: 72px; } .gdo-main { padding-top: 62px; } }
