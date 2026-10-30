@@ -2021,15 +2021,17 @@ function renderQuickSearchModal() {
     }
     // 2. Recherche dans les 2 660 Postes du catalogue 2025
     const allPostes = fullTablesData['POSTE_2025']?.rows || [];
+    const topologyDepartByPoste = getNodeDepartIndex();
     for (const p of allPostes) {
       const pId = String(p.id || p.code || '');
+      const topologyDepartId = topologyDepartByPoste.get(pId);
       const pNom = String(p.nom || '');
       const pLoc = String(p.localite || '');
-      if (pId.toLowerCase().includes(q) || pNom.toLowerCase().includes(q) || pLoc.toLowerCase().includes(q)) {
+      if (topologyDepartId && (pId.toLowerCase().includes(q) || pNom.toLowerCase().includes(q) || pLoc.toLowerCase().includes(q))) {
         results.push({
           type: 'POSTE',
           id: pId,
-          depId: p.depart || state.selectedDepartId,
+          depId: topologyDepartId,
           label: `${pNom || pId} · ${p.pi || 0} kVA · ${pLoc || p.district || ''}`
         });
       }
