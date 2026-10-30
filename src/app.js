@@ -189,7 +189,7 @@ function removeStoredValue(key) {
 // --- EN-TÊTE GDO-MT (TOP BAR) ---
 function renderMobileTopBar() {
   return `
-    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 py-2 shadow-xs">
+    <header class="gdo-topbar sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 py-2 shadow-xs">
       <div class="max-w-screen-2xl mx-auto flex items-center justify-between gap-3 md:gap-6">
         <!-- Logo & Identité GDO-MT -->
         <div class="flex items-center gap-2">
@@ -242,7 +242,7 @@ function renderMobileBottomBar() {
   ];
 
   return `
-    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 shadow-lg">
+    <nav class="gdo-main-nav fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 shadow-lg" aria-label="Navigation principale">
       <div class="max-w-3xl mx-auto" style="display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:4px;">
         ${navItems.map(item => {
           const isActive = state.activeTab === item.id;
@@ -1190,10 +1190,10 @@ export function renderApp() {
   else if (state.activeTab === 'settings') viewHtml = renderSettingsView({ state, fullTablesData, escapeHtml, formatNumber });
 
   root.innerHTML = `
-    <div class="min-h-screen bg-slate-50 text-slate-900 pb-20 flex flex-col antialiased">
+    <div class="gdo-app-shell min-h-screen bg-slate-50 text-slate-900 pb-20 flex flex-col antialiased">
       ${renderMobileTopBar()}
       ${state.storageWarning ? '<div role="alert" class="mx-3 mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">' + escapeHtml(state.storageWarning) + '</div>' : ''}
-      <main class="flex-1">
+      <main class="gdo-main flex-1" id="main-content">
         ${viewHtml}
       </main>
       ${renderMobileBottomBar()}
