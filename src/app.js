@@ -127,7 +127,7 @@ const state = {
   visitSuccessNotice: false,
   thermovisions: loadStoredThermovisions(),
   thermovisionRows: [{ equipement: '', phase: 'A', point: '', temperature: '', reference: '' }],
-  thermovisionDraft: { date: '', inspecteur: '', criticite: 'Surveillance', observations: '', recommandations: '' },
+  thermovisionDraft: { date: '', inspecteur: '', temperatureAmbiante: '', criticite: 'Surveillance', observations: '', recommandations: '' },
   thermovisionSuccessNotice: false,
   thermovisionError: '',
 
@@ -151,7 +151,7 @@ const state = {
 function captureThermovisionDraft() {
   const value = (id) => document.getElementById(id)?.value ?? '';
   state.thermovisionDraft = {
-    date: value('fieldThermoDate'), inspecteur: value('fieldThermoInspector'),
+    date: value('fieldThermoDate'), inspecteur: value('fieldThermoInspector'), temperatureAmbiante: value('fieldThermoAmbient'),
     criticite: value('fieldThermoSeverity') || 'Surveillance', observations: value('fieldThermoNotes'),
     recommandations: value('fieldThermoRecommendations')
   };
@@ -1658,6 +1658,7 @@ window.app = {
       posteNom,
       date: document.getElementById('fieldThermoDate')?.value || now.toISOString().slice(0, 10),
       inspecteur: document.getElementById('fieldThermoInspector')?.value?.trim() || '',
+      temperatureAmbiante: document.getElementById('fieldThermoAmbient')?.value === '' ? null : Number(document.getElementById('fieldThermoAmbient')?.value),
       criticite: document.getElementById('fieldThermoSeverity')?.value || 'Surveillance',
       observations: document.getElementById('fieldThermoNotes')?.value?.trim() || '',
       recommandations: document.getElementById('fieldThermoRecommendations')?.value?.trim() || '',
@@ -1666,7 +1667,7 @@ window.app = {
     state.thermovisions.unshift(inspection);
     const saved = persistLocalStorage('gdo_mt_thermovisions', state.thermovisions);
     state.thermovisionRows = [{ equipement: '', phase: 'A', point: '', temperature: '', reference: '' }];
-    state.thermovisionDraft = { date: '', inspecteur: '', criticite: 'Surveillance', observations: '', recommandations: '' };
+    state.thermovisionDraft = { date: '', inspecteur: '', temperatureAmbiante: '', criticite: 'Surveillance', observations: '', recommandations: '' };
     state.thermovisionError = saved ? '' : state.storageWarning;
     state.thermovisionSuccessNotice = saved;
     renderApp();
