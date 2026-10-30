@@ -7,7 +7,7 @@ export function renderSettingsView({ state, fullTablesData, escapeHtml, formatNu
   const { transfos, conducteurs, seuils } = state.settings;
 
   return `
-    <div class="p-4 space-y-4 max-w-2xl mx-auto">
+    <div class="p-4 space-y-4 max-w-screen-2xl mx-auto">
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-base font-bold text-slate-900">Paramètres &amp; Référentiel MT</h1>
@@ -22,27 +22,27 @@ export function renderSettingsView({ state, fullTablesData, escapeHtml, formatNu
       </div>
 
       <!-- Segmented Control Sous-Onglets -->
-      <div class="flex items-center p-1 bg-slate-200/80 rounded-xl text-xs">
+      <div class="flex items-center p-1 bg-slate-200/80 rounded-xl text-xs" role="tablist" aria-label="Sections des paramètres">
         <button
-          onclick="window.app.setSettingsSubTab('transfos')"
+          onclick="window.app.setSettingsSubTab('transfos')" role="tab" aria-selected="${state.settingsSubTab === 'transfos'}"
           class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'transfos' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
         >
           Transfos
         </button>
         <button
-          onclick="window.app.setSettingsSubTab('conducteurs')"
+          onclick="window.app.setSettingsSubTab('conducteurs')" role="tab" aria-selected="${state.settingsSubTab === 'conducteurs'}"
           class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'conducteurs' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
         >
           Lignes
         </button>
         <button
-          onclick="window.app.setSettingsSubTab('seuils')"
+          onclick="window.app.setSettingsSubTab('seuils')" role="tab" aria-selected="${state.settingsSubTab === 'seuils'}"
           class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'seuils' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
         >
           Seuils MT
         </button>
         <button
-          onclick="window.app.setSettingsSubTab('tables')"
+          onclick="window.app.setSettingsSubTab('tables')" role="tab" aria-selected="${state.settingsSubTab === 'tables'}"
           class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'tables' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
         >
           Données 2025 / Tables
