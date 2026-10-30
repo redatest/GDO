@@ -10,6 +10,7 @@
 
 let networkData = { sources: {}, departs: {}, stats: { totalDeparts: 49, totalPostes: 2660, totalTransformers: 2800, totalIacms: 1638, openIacms: 39, totalArcs: 7501, totalTroncons: 1372, lastUpdate: '31/12/2025' } };
 let networkDataLoadPromise = null;
+let nodeDepartIndex = null;
 import { departsSummary } from './data/departsSummary.js';
 let fullTablesData = {};
 let fullTablesLoadPromise = null;
@@ -233,12 +234,25 @@ function normalizeNetworkData(data) {
   return data;
 }
 
+function getNodeDepartIndex() {
+  if (nodeDepartIndex) return nodeDepartIndex;
+  nodeDepartIndex = new Map();
+  for (const [departId, depart] of Object.entries(networkData.departs || {})) {
+    for (const node of depart.nodes || []) {
+      const nodeId = String(node.id || '');
+      if (nodeId && !nodeDepartIndex.has(nodeId)) nodeDepartIndex.set(nodeId, departId);
+    }
+  }
+  return nodeDepartIndex;
+}
+
 async function ensureNetworkData() {
   if (Object.keys(networkData.departs).length) return true;
   if (!networkDataLoadPromise) {
     networkDataLoadPromise = import('./data/networkData.js')
       .then((module) => {
         networkData = normalizeNetworkData(module.networkData || { sources: {}, departs: {}, stats: {} });
+        nodeDepartIndex = null;
         state.networkDataError = Object.keys(networkData.departs).length
           ? ''
           : 'Le référentiel topologique est vide.';
