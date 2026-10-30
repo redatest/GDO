@@ -116,6 +116,10 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
                 <input id="fieldThermoInspector" type="text" value="${escapeHtml(state.thermovisionDraft?.inspecteur || '')}" placeholder="Nom et prénom" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs" />
               </div>
             </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Température ambiante (°C)</label>
+              <input id="fieldThermoAmbient" type="number" step="0.1" value="${escapeHtml(state.thermovisionDraft?.temperatureAmbiante || '')}" placeholder="Facultatif" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs" />
+            </div>
             <div class="space-y-2">
               <div class="flex items-center justify-between">
                 <label class="text-slate-700 font-bold text-[11px]">Équipements et points de mesure</label>
