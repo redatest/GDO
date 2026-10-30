@@ -117,13 +117,6 @@ const state = {
   ouvragesSearch: '',
 
   // Terrain & Visites (GDO-MT)
-  setTerrainSubTab: (subTab) => {
-    const value = (id) => document.getElementById(id)?.value;
-    if (value('fieldVisitType') !== undefined) state.newVisitDraft = { type: value('fieldVisitType'), statut: value('fieldVisitStatut'), note: value('fieldVisitNotes') };
-    captureThermovisionDraft();
-    state.terrainSubTab = subTab === 'thermovision' ? 'thermovision' : 'visite';
-    renderApp();
-  },
   interventions: loadStoredInterventions(),
   newVisitPosteId: '121P8036',
   newVisitPosteNom: 'Pge Bentabouche',
@@ -1557,6 +1550,13 @@ window.app = {
   },
 
   // Terrain & Visites (GDO-MT)
+  setTerrainSubTab: (subTab) => {
+    const value = (id) => document.getElementById(id)?.value;
+    if (value('fieldVisitType') !== undefined) state.newVisitDraft = { type: value('fieldVisitType'), statut: value('fieldVisitStatut'), note: value('fieldVisitNotes') };
+    captureThermovisionDraft();
+    state.terrainSubTab = subTab === 'thermovision' ? 'thermovision' : 'visite';
+    renderApp();
+  },
   createInterventionForPoste: (nodeId, nodeNom) => {
     state.newVisitPosteId = String(nodeId || '');
     state.newVisitPosteNom = String(nodeNom || '');
