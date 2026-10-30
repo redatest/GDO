@@ -1517,14 +1517,14 @@ function renderOuvragesView() {
               <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
                 <div class="truncate pr-2">
                   <div class="flex items-center gap-1.5">
-                    <span class="font-mono font-bold text-xs text-slate-900">${id}</span>
+                    <span class="font-mono font-bold text-xs text-slate-900">${escapeHtml(id)}</span>
                     <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900">
-                      ${pi} kVA
+                      ${escapeHtml(pi)} kVA
                     </span>
                     ${dep ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">${escapeHtml(dep)}</span>` : ''}
                   </div>
                   <span class="text-xs font-semibold text-slate-800 block truncate">${escapeHtml(nom)}</span>
-                  <span class="text-[10px] text-slate-400 block">${escapeHtml(item.localite || item.district || 'SDO Guelma')} &middot; ${item.typePosteLabel || 'Poste HTA/BT'}</span>
+                  <span class="text-[10px] text-slate-400 block">${escapeHtml(item.localite || item.district || 'SDO Guelma')} &middot; ${escapeHtml(item.typePosteLabel || 'Poste HTA/BT')}</span>
                 </div>
 
                 <div class="flex items-center gap-1.5 shrink-0">
@@ -1552,14 +1552,14 @@ function renderOuvragesView() {
               <div class="p-3 bg-white rounded-xl border ${isOpen ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200'} shadow-2xs flex items-center justify-between">
                 <div class="truncate pr-2">
                   <div class="flex items-center gap-1.5">
-                    <span class="font-mono font-bold text-xs text-slate-900">${code}</span>
+                    <span class="font-mono font-bold text-xs text-slate-900">${escapeHtml(code)}</span>
                     <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${isOpen ? 'bg-rose-100 text-rose-800 border border-rose-200' : 'bg-emerald-100 text-emerald-800'}">
                       ${isOpen ? 'OUVERT (Coupure)' : 'FERMÉ (Passage)'}
                     </span>
                     ${dep ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">${escapeHtml(dep)}</span>` : ''}
                   </div>
-                  <span class="text-xs font-semibold text-slate-700 block">${item.mode || 'Manuel (M)'} &middot; Inom ${item.intensiteNominale || 200} A</span>
-                  <span class="text-[10px] text-slate-400 block">District ${item.district || item.agence || '121'} &middot; MES: ${item.dateMES || '31-12-2025'}</span>
+                  <span class="text-xs font-semibold text-slate-700 block">${escapeHtml(item.mode || 'Manuel (M)')} &middot; Inom ${formatNumber(item.intensiteNominale || 200)} A</span>
+                  <span class="text-[10px] text-slate-400 block">Agence ${escapeHtml(item.agence || item.district || '121')} &middot; MES: ${escapeHtml(item.dateMES || '31-12-2025')}</span>
                 </div>
 
                 <div class="shrink-0">
@@ -1582,13 +1582,13 @@ function renderOuvragesView() {
               <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
                 <div class="truncate pr-2">
                   <div class="flex items-center gap-1.5">
-                    <span class="font-mono font-bold text-xs text-slate-900">${pCode} &middot; Trf ${item.numTransfo || 1}</span>
+                    <span class="font-mono font-bold text-xs text-slate-900">${escapeHtml(pCode)} &middot; Trf ${escapeHtml(item.numTransfo || 1)}</span>
                     <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-purple-100 text-purple-900">
-                      ${pwr} kVA
+                      ${escapeHtml(pwr)} kVA
                     </span>
                   </div>
-                  <span class="text-xs font-semibold text-slate-700 block">${item.marque ? item.marque : 'Fabricant normalisé'} ${item.numSerie ? '&middot; S/N: ' + item.numSerie : ''}</span>
-                  <span class="text-[10px] text-slate-400 block">${item.anneeFab ? 'Fab: ' + item.anneeFab + ' &middot; ' : ''}${item.iNomMT ? item.iNomMT + 'A MT' : '30 kV / 400 V'}</span>
+                  <span class="text-xs font-semibold text-slate-700 block">${escapeHtml(item.marque || 'Fabricant normalisé')} ${item.numSerie ? '&middot; S/N: ' + escapeHtml(item.numSerie) : ''}</span>
+                  <span class="text-[10px] text-slate-400 block">${item.anneeFab ? 'Fab: ' + escapeHtml(item.anneeFab) + ' &middot; ' : ''}${item.iNomMT ? escapeHtml(item.iNomMT) + 'A MT' : '30 kV / 400 V'}</span>
                 </div>
                 <div class="shrink-0">
                   <button
@@ -1605,7 +1605,7 @@ function renderOuvragesView() {
               <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
                 <div class="truncate pr-2">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="font-mono font-bold text-xs text-slate-900">Tronçon ${item.troncon}</span>
+                    <span class="font-mono font-bold text-xs text-slate-900">Tronçon ${escapeHtml(item.troncon)}</span>
                     <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-800 border border-slate-200">
                       Total: ${formatNumber(item.totalM)} m
                     </span>
@@ -1619,7 +1619,7 @@ function renderOuvragesView() {
                         ⚡ Aér: ${formatNumber(item.aerienM)} m
                       </span>
                     ` : ''}
-                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-50 text-slate-500">Agence ${item.agence}</span>
+                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-50 text-slate-500">Agence ${escapeHtml(item.agence)}</span>
                   </div>
                   <span class="text-xs text-slate-600 block mt-1">
                     Répartition : ${item.souterrainM > 0 && item.aerienM > 0 ? 'Mixte (Aérien + Câble Souterrain)' : (item.souterrainM > 0 ? 'Câble 100% Souterrain' : 'Ligne 100% Aérienne')}
@@ -1631,8 +1631,8 @@ function renderOuvragesView() {
             return `
               <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between">
                 <div>
-                  <span class="font-mono font-bold text-xs text-slate-900">${item.id}</span>
-                  <span class="text-xs text-slate-500 block">${item.nom}</span>
+                  <span class="font-mono font-bold text-xs text-slate-900">${escapeHtml(item.id)}</span>
+                  <span class="text-xs text-slate-500 block">${escapeHtml(item.nom)}</span>
                 </div>
                 <button
                   onclick="window.app.showOuvrageOnMap('${escapeJsString(item.id)}', '${escapeJsString(item.depart)}')"
