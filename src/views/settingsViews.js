@@ -2,7 +2,7 @@
  * Vues secondaires des paramètres et tables réseau.
  * Le contexte et l'état sont injectés par le module applicatif.
  */
-export function renderTablesView({ state, fullTablesData, escapeHtml, formatNumber })
+export function renderTablesView({ state, fullTablesData, escapeHtml, formatNumber }) {
   if (!Object.keys(fullTablesData).length) {
     return '<div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-center text-xs font-semibold text-blue-800">' + escapeHtml(state.dataLoadError || 'Chargement des tables réseau…') + '</div>';
   }
@@ -100,7 +100,7 @@ export function renderTablesView({ state, fullTablesData, escapeHtml, formatNumb
 }
 
 // --- MODAL AJOUT TRANSFORMATEUR ---
-export function renderNewTransfoModal(state)
+export function renderNewTransfoModal(state) {
   if (!state.showNewTransfoModal) return '';
 
   return `
@@ -150,7 +150,7 @@ export function renderNewTransfoModal(state)
 }
 
 // --- MODAL AJOUT CONDUCTEUR ---
-export function renderNewConducteurModal(state)
+export function renderNewConducteurModal(state) {
   if (!state.showNewConducteurModal) return '';
 
   return `
