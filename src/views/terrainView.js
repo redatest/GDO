@@ -113,6 +113,13 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
             </div>
             <span class="text-[10px] font-bold text-orange-800 bg-white border border-orange-200 rounded-lg px-2 py-1">THERMOVISION</span>
           </div>
+          <div>
+            <label class="block text-slate-600 font-semibold text-[11px] mb-1">Poste MT inspecté</label>
+            <select id="fieldThermoPoste" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 font-mono text-xs font-semibold">
+              ${!posteOptions.some(p => String(p.id) === String(state.newVisitPosteId)) && state.newVisitPosteId ? `<option value="${escapeHtml(state.newVisitPosteId)}" selected>${escapeHtml(state.newVisitPosteId)} · ${escapeHtml(state.newVisitPosteNom || 'Poste sélectionné')}</option>` : ''}
+              ${posteOptions.map(p => `<option value="${escapeHtml(p.id)}" ${String(p.id) === String(state.newVisitPosteId) ? 'selected' : ''}>${escapeHtml(p.id)} · ${escapeHtml(p.meta?.nom || 'Poste')} (${escapeHtml(p.meta?.p_instal || 160)} kVA)</option>`).join('')}
+            </select>
+          </div>
           ${state.thermovisionSuccessNotice ? `
             <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold flex justify-between">
               <span>Inspection thermographique enregistrée.</span>
