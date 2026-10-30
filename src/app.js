@@ -373,6 +373,8 @@ function renderHomeView() {
         </div>
       </div>
 
+      <section class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3"><h2 class="text-sm font-black text-slate-800">Statistiques par agence</h2><div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">${agencyStats.map(a => '<div class="rounded-xl border border-slate-200 bg-slate-50 p-3"><div class="flex justify-between"><b>'+({121:'Guelma',123:'Oued Zenati',125:'Bouchegouf',127:'District Est'}[a.id])+'</b><span class="text-xs">'+a.id+'</span></div><div class="mt-2 text-2xl font-black">'+formatNumber(a.postes)+' <small class="text-xs font-normal">Postes HTA/BT</small></div><div class="mt-2 text-xs text-slate-600">'+a.departures+' départs · '+formatNumber(a.iacms)+' IACM · '+formatNumber(a.open)+' ouverts</div><div class="mt-1 text-xs text-slate-600">'+a.km.toFixed(1)+' km · '+formatNumber(a.kva)+' kVA</div></div>').join('')}</div></section>
+
       <!-- Liste Rapide des Départs MT -->
       <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
         <div class="flex items-center justify-between">
