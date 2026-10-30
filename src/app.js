@@ -117,12 +117,21 @@ const state = {
   ouvragesSearch: '',
 
   // Terrain & Visites (GDO-MT)
+  setTerrainSubTab: (subTab) => {
+    const value = (id) => document.getElementById(id)?.value;
+    if (value('fieldVisitType') !== undefined) state.newVisitDraft = { type: value('fieldVisitType'), statut: value('fieldVisitStatut'), note: value('fieldVisitNotes') };
+    captureThermovisionDraft();
+    state.terrainSubTab = subTab === 'thermovision' ? 'thermovision' : 'visite';
+    renderApp();
+  },
   interventions: loadStoredInterventions(),
   newVisitPosteId: '121P8036',
   newVisitPosteNom: 'Pge Bentabouche',
   newVisitType: 'Inspection Visuelle Générale',
   newVisitStatut: 'RAS',
   newVisitNote: '',
+  terrainSubTab: 'visite',
+  newVisitDraft: { type: 'Inspection Visuelle Générale', statut: 'RAS', note: '' },
   visitSuccessNotice: false,
   thermovisions: loadStoredThermovisions(),
   thermovisionRows: [{ equipement: '', phase: 'A', point: '', temperature: '', reference: '' }],
