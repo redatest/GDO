@@ -1348,9 +1348,45 @@ function renderOuvragesView() {
       }));
     }
   } else if (fType === 'T') {
-    rawList = fullTablesData['TRANSFO_MTBT_2025']?.rows || [];
+    if (isGlobalScope) {
+      rawList = fullTablesData['TRANSFO_MTBT_2025']?.rows || [];
+    } else {
+      // En vue Départ, utiliser les transformateurs réellement rattachés aux postes
+      // de la topologie courante, plutôt que le catalogue global partiel.
+      rawList = (currentDepart.nodes || [])
+        .filter(node => node.type === 'POSTE_HTA_BT')
+        .flatMap(node => (node.meta?.transformers || []).map(transformer => ({
+          ...transformer,
+          codePoste: node.id,
+          posteNom: node.meta?.nom || node.id,
+          depart: state.selectedDepartId
+        })));
+    }
   } else if (fType === 'L') {
-    rawList = fullTablesData['TRONCON_2025']?.rows || [];
+    if (isGlobalScope) {
+      rawList = fullTablesData['TRONCON_2025']?.rows || [];
+    } else {
+      // La table globale ne couvre pas tous les tronçons du référentiel topologique.
+      // Reconstituer la vue du départ à partir de ses arcs, sans modifier les données sources.
+      const tronconsById = new Map();
+      for (const edge of currentDepart.edges || []) {
+        const troncon = String(edge.troncon || '');
+        if (!troncon) continue;
+        const item = tronconsById.get(troncon) || {
+          agence: currentDepart.agency || state.selectedDepartId.slice(0, 3),
+          troncon,
+          aerienM: 0,
+          souterrainM: 0,
+          totalM: 0
+        };
+        const longueur = Math.max(0, Number(edge.longueur) || 0);
+        item.totalM += longueur;
+        if (edge.isSouterrain) item.souterrainM += longueur;
+        else item.aerienM += longueur;
+        tronconsById.set(troncon, item);
+      }
+      rawList = [...tronconsById.values()];
+    }
   } else if (fType === 'E') {
     rawList = (currentDepart.nodes || []).filter(n => n.type === 'ETOILEMENT').map(n => ({
       id: n.id,
@@ -1370,7 +1406,7 @@ function renderOuvragesView() {
   }
 
   const displayList = filtered.slice(0, 60);
-  const isLoadingGlobalData = (isGlobalScope || fType === 'T' || fType === 'L') && Object.keys(fullTablesData).length === 0;
+  const isLoadingGlobalData = isGlobalScope && Object.keys(fullTablesData).length === 0;
 
   return `
     <div class="p-4 md:p-6 xl:p-8 space-y-3.5 md:space-y-5 max-w-screen-2xl mx-auto">
@@ -2510,7 +2546,7 @@ window.app = {
   setOuvragesFilter: (type) => {
     state.ouvragesFilterType = type;
     renderApp();
-    if (type === 'T' || type === 'L' || state.ouvragesScope === 'ALL') void ensureFullTablesData();
+    if (state.ouvragesScope === 'ALL') void ensureFullTablesData();
   },
   setOuvragesScope: (scope) => {
     state.ouvragesScope = scope;
