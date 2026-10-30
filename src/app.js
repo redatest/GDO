@@ -249,6 +249,7 @@ function renderMobileBottomBar() {
           return `
             <button
               onclick="window.app.setTab('${escapeJsString(item.id)}')"
+              aria-current="${isActive ? 'page' : 'false'}" aria-label="${escapeHtml(item.label)}"
               class="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-2 py-1.5 md:py-2.5 px-1 md:px-4 rounded-xl transition-all cursor-pointer select-none ${
                 isActive
                   ? 'text-blue-600 font-bold bg-blue-50/80 shadow-2xs'
