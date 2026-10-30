@@ -17,6 +17,7 @@ import { renderQuickSearchModal } from './views/quickSearchView.js';
 import { renderOuvragesView } from './views/ouvragesView.js';
 import { renderTerrainView } from './views/terrainView.js';
 import { renderSettingsView } from './views/settingsView.js';
+import { renderThermovisionView } from './views/thermovisionView.js';
 let initialStorageWarning = '';
 
 // --- RÉFÉRENTIEL DES PARAMÈTRES RÉSEAU MT ---
@@ -34,6 +35,20 @@ function loadStoredSettings() {
     initialStorageWarning = 'Impossible de lire les paramètres locaux. Les valeurs par défaut sont utilisées.';
   }
   return JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+}
+
+function loadStoredThermovisions() {
+  try {
+    const saved = localStorage.getItem('gdo_mt_thermovisions');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return parsed;
+      initialStorageWarning = 'Les inspections thermographiques enregistrées sont invalides.';
+    }
+  } catch (error) {
+    initialStorageWarning = 'Impossible de lire les inspections thermographiques locales.';
+  }
+  return [];
 }
 
 function loadStoredInterventions() {
@@ -71,7 +86,7 @@ function loadStoredInterventions() {
 
 // --- ÉTAT GLOBAL DE L'APPLICATION ---
 const state = {
-  activeTab: 'home', // 'home' | 'unifilaire' | 'ouvrages' | 'terrain' | 'settings'
+  activeTab: 'home', // 'home' | 'unifilaire' | 'ouvrages' | 'terrain' | 'thermovision' | 'settings'
   selectedDepartId: '121H5C1',
   selectedAgency: 'ALL', // 'ALL' | '121' | '123' | '125' | '127'
   schemaAgencyInitialized: false,
@@ -110,6 +125,10 @@ const state = {
   newVisitStatut: 'RAS',
   newVisitNote: '',
   visitSuccessNotice: false,
+  thermovisions: loadStoredThermovisions(),
+  thermovisionRows: [{ equipement: '', phase: 'A', point: '', temperature: '', reference: '' }],
+  thermovisionSuccessNotice: false,
+  thermovisionError: '',
 
   // Paramètres & Tables
   settingsSubTab: 'transfos', // 'transfos' | 'conducteurs' | 'seuils' | 'tables'
@@ -204,12 +223,13 @@ function renderMobileBottomBar() {
     { id: 'unifilaire', label: 'Schéma MT', icon: '⚡' },
     { id: 'ouvrages', label: 'Ouvrages', icon: '🏢' },
     { id: 'terrain', label: 'Visites', icon: '📝' },
+    { id: 'thermovision', label: 'Thermovision', icon: '🌡️' },
     { id: 'settings', label: 'Paramètres', icon: '⚙️' }
   ];
 
   return `
     <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 shadow-lg">
-      <div class="max-w-3xl mx-auto grid grid-cols-5 gap-2 md:gap-4">
+      <div class="max-w-3xl mx-auto grid grid-cols-6 gap-1 md:gap-3">
         ${navItems.map(item => {
           const isActive = state.activeTab === item.id;
           return `
@@ -1153,6 +1173,7 @@ export function renderApp() {
   else if (state.activeTab === 'unifilaire') viewHtml = renderUnifilaireView();
   else if (state.activeTab === 'ouvrages') viewHtml = renderOuvragesView({ state, networkData, fullTablesData, getNodeDepartIndex, escapeHtml, escapeJsString, formatNumber });
   else if (state.activeTab === 'terrain') viewHtml = renderTerrainView({ state, networkData, escapeHtml, escapeJsString });
+  else if (state.activeTab === 'thermovision') viewHtml = renderThermovisionView({ state, escapeHtml, escapeJsString });
   else if (state.activeTab === 'settings') viewHtml = renderSettingsView({ state, fullTablesData, escapeHtml, formatNumber });
 
   root.innerHTML = `
