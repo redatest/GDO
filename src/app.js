@@ -2259,6 +2259,8 @@ window.app = {
   },
   setAgency: (agency) => {
     state.selectedAgency = agency;
+    // Une sélection explicite dans l'en-tête doit prévaloir sur l'agence initiale par défaut.
+    state.schemaAgencyInitialized = true;
     if (agency !== 'ALL') {
       const currentSummary = departsSummary.find(d => d.id === state.selectedDepartId);
       const currentAgency = currentSummary ? String(currentSummary.agency || currentSummary.id.slice(0, 3)) : '';
@@ -2278,7 +2280,11 @@ window.app = {
     }
   },
   openDepart: (depId) => {
+    const targetSummary = departsSummary.find(item => item.id === depId);
+    if (!targetSummary) return;
     state.selectedDepartId = depId;
+    state.selectedAgency = String(targetSummary.agency || depId.slice(0, 3));
+    state.schemaAgencyInitialized = true;
     state.activeTab = 'unifilaire';
     state.selectedNode = null;
     state.selectedEdge = null;
@@ -2546,6 +2552,11 @@ window.app = {
         }
       }
     }
+    const targetSummary = departsSummary.find(item => item.id === state.selectedDepartId);
+    if (targetSummary) {
+      state.selectedAgency = String(targetSummary.agency || state.selectedDepartId.slice(0, 3));
+      state.schemaAgencyInitialized = true;
+    }
     state.activeTab = 'unifilaire';
     state.selectedNode = null;
     const dep = networkData.departs[state.selectedDepartId];
@@ -2578,6 +2589,8 @@ window.app = {
     for (const [depId, depart] of Object.entries(networkData.departs || {})) {
       if ((depart.nodes || []).some(node => String(node.id) === String(nodeId))) {
         state.selectedDepartId = depId;
+        const targetSummary = departsSummary.find(item => item.id === depId);
+        if (targetSummary) state.selectedAgency = String(targetSummary.agency || depId.slice(0, 3));
         break;
       }
     }
