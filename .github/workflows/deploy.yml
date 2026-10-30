@@ -31,6 +31,7 @@ jobs:
           cp src/views/quickSearchView.js _site/src/views/
           cp src/views/ouvragesView.js _site/src/views/
           cp src/views/terrainView.js _site/src/views/
+          cp src/views/settingsView.js _site/src/views/
           cp src/data/departsSummary.js _site/src/data/
           cp src/data/dataRepository.js _site/src/data/
           cp src/data/tableSchemas.js _site/src/data/
