@@ -11,7 +11,7 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
   const posteOptions = currentDepart.nodes.filter(n => n.type === 'POSTE_HTA_BT');
 
   return `
-    <div class="p-4 space-y-4 max-w-7xl mx-auto">
+    <div class="p-4 md:p-6 xl:p-8 space-y-5 max-w-screen-2xl mx-auto">
       <div>
         <h1 class="text-base font-bold text-slate-900">Carnet de Terrain &amp; Visites Techniques</h1>
         <p class="text-xs text-slate-500">Relevés d'anomalies, fiches d'inspection et contrôle des postes MT</p>
