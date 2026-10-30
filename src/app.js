@@ -1309,6 +1309,8 @@ function renderOuvragesView() {
   }
   const currentDepart = networkData.departs[state.selectedDepartId] || networkData.departs['127H1C3'] || networkData.departs['125H3C20'];
   const isGlobalScope = state.ouvragesScope === 'ALL';
+  const departByNodeId = getNodeDepartIndex();
+  const posteIdByShortCode = new Map((fullTablesData['POSTE_2025']?.rows || []).map(poste => [String(poste.id || '').slice(3), String(poste.id || '')]).filter(([shortCode, fullId]) => shortCode && fullId));
 
   let rawList = [];
   const fType = state.ouvragesFilterType;
