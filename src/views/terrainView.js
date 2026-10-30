@@ -89,6 +89,84 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
             &check; Enregistrer la visite dans GDO-MT
           </button>
         </form>
+
+        <div class="border-t border-slate-200 pt-3 space-y-3">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Volet 2 — Inspection thermographique</h3>
+              <p class="text-[10px] text-slate-500 mt-1">Enregistrement indépendant de la visite technique. Aucune image n’est stockée.</p>
+            </div>
+            <span class="text-[10px] font-bold text-orange-700 bg-orange-50 border border-orange-200 rounded-lg px-2 py-1">THERMOVISION</span>
+          </div>
+          ${state.thermovisionSuccessNotice ? `
+            <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold flex justify-between">
+              <span>Inspection thermographique enregistrée.</span>
+              <button type="button" onclick="window.app.closeThermovisionNotice()" aria-label="Fermer">&times;</button>
+            </div>
+          ` : ''}
+          ${state.thermovisionError ? `<div role="alert" class="p-2 rounded-lg bg-red-50 border border-red-200 text-red-800 text-[11px] font-semibold">${escapeHtml(state.thermovisionError)}</div>` : ''}
+          <form onsubmit="window.app.saveThermovision(event)" class="space-y-3">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-slate-600 font-semibold text-[11px] mb-1">Date d’inspection</label>
+                <input id="fieldThermoDate" type="date" value="${new Date().toISOString().slice(0, 10)}" required class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs" />
+              </div>
+              <div>
+                <label class="block text-slate-600 font-semibold text-[11px] mb-1">Inspecteur</label>
+                <input id="fieldThermoInspector" type="text" placeholder="Nom et prénom" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs" />
+              </div>
+            </div>
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="text-slate-700 font-bold text-[11px]">Équipements et points de mesure</label>
+                <button type="button" onclick="window.app.addThermovisionRow()" class="text-[11px] text-blue-700 font-bold">+ Ajouter un point</button>
+              </div>
+              ${(state.thermovisionRows || []).map((measure, index) => `
+                <div class="thermo-measure-row rounded-xl border border-slate-200 bg-slate-50 p-2.5 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-slate-600">Point de mesure ${index + 1}</span>
+                    ${state.thermovisionRows.length > 1 ? `<button type="button" onclick="window.app.removeThermovisionRow(${index})" class="text-[10px] text-red-600 font-semibold">Supprimer</button>` : ''}
+                  </div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <input data-thermo-field="equipement" value="${escapeHtml(measure.equipement)}" placeholder="Équipement (cellule, transfo…)" required class="w-full min-w-0 bg-white rounded-lg p-2 border border-slate-300 text-[11px]" />
+                    <select data-thermo-field="phase" class="w-full min-w-0 bg-white rounded-lg p-2 border border-slate-300 text-[11px]">
+                      ${['A','B','C','N','Autre'].map(phase => `<option value="${phase}" ${measure.phase === phase ? 'selected' : ''}>${phase === 'Autre' ? 'Autre' : 'Phase ' + phase}</option>`).join('')}
+                    </select>
+                  </div>
+                  <input data-thermo-field="point" value="${escapeHtml(measure.point)}" placeholder="Point précis (borne, cosse, connexion…)" class="w-full bg-white rounded-lg p-2 border border-slate-300 text-[11px]" />
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="block text-[10px] text-slate-500 mb-1">Température mesurée (°C)</label>
+                      <input data-thermo-field="temperature" type="number" step="0.1" required value="${escapeHtml(measure.temperature)}" placeholder="Ex. 68.5" class="w-full bg-white rounded-lg p-2 border border-slate-300 text-xs" />
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-500 mb-1">Température référence (°C)</label>
+                      <input data-thermo-field="reference" type="number" step="0.1" value="${escapeHtml(measure.reference)}" placeholder="Facultatif" class="w-full bg-white rounded-lg p-2 border border-slate-300 text-xs" />
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-slate-600 font-semibold text-[11px] mb-1">Niveau de criticité</label>
+                <select id="fieldThermoSeverity" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs">
+                  <option>Normal</option><option selected>Surveillance</option><option>Anomalie</option><option>Critique</option>
+                </select>
+              </div>
+              <div class="text-[10px] text-slate-500 self-end pb-2">ΔT calculé automatiquement si une température de référence est saisie.</div>
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Observations / diagnostic</label>
+              <textarea id="fieldThermoNotes" rows="2" placeholder="Description de l’échauffement constaté…" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs"></textarea>
+            </div>
+            <div>
+              <label class="block text-slate-600 font-semibold text-[11px] mb-1">Recommandations / actions à entreprendre</label>
+              <textarea id="fieldThermoRecommendations" rows="2" placeholder="Contrôle, resserrage, remplacement, nouvelle mesure…" class="w-full bg-slate-50 rounded-lg p-2 border border-slate-300 text-xs"></textarea>
+            </div>
+            <button type="submit" class="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl text-xs shadow-xs">Enregistrer l’inspection thermographique</button>
+          </form>
+        </div>
       </div>
 
       <!-- Historique des Visites Enregistrées -->
