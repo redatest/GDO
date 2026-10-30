@@ -3,7 +3,7 @@
  * Wilaya de Guelma (24) — Direction de Distribution de l'Électricité (SDO)
  *
  * Interface GDO-MT :
- * - Navigation mobile dock (Accueil, Schéma MT, Parc Ouvrages, Carnet Terrain, Paramètres & Tables)
+ * - Navigation mobile dock (Accueil, Schéma MT, Parc Ouvrages, Carnet Terrain, Thermovision, Paramètres & Tables)
  * - Thème Clair haute visibilité pour agents de terrain
  * - HTML5 et JavaScript natifs, exécutés directement dans le navigateur (compatible GitHub Pages)
  */
