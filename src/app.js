@@ -127,6 +127,7 @@ const state = {
   visitSuccessNotice: false,
   thermovisions: loadStoredThermovisions(),
   thermovisionRows: [{ equipement: '', phase: 'A', point: '', temperature: '', reference: '' }],
+  thermovisionDraft: { date: '', inspecteur: '', criticite: 'Surveillance', observations: '', recommandations: '' },
   thermovisionSuccessNotice: false,
   thermovisionError: '',
 
@@ -146,6 +147,19 @@ const state = {
   dataLoadError: '',
   networkDataError: ''
 };
+
+function captureThermovisionDraft() {
+  const value = (id) => document.getElementById(id)?.value ?? '';
+  state.thermovisionDraft = {
+    date: value('fieldThermoDate'), inspecteur: value('fieldThermoInspector'),
+    criticite: value('fieldThermoSeverity') || 'Surveillance', observations: value('fieldThermoNotes'),
+    recommandations: value('fieldThermoRecommendations')
+  };
+  state.thermovisionRows = [...document.querySelectorAll('.thermo-measure-row')].map(row => {
+    const read = (name) => row.querySelector('[data-thermo-field="' + name + '"]')?.value ?? '';
+    return { equipement: read('equipement'), phase: read('phase') || 'A', point: read('point'), temperature: read('temperature'), reference: read('reference') };
+  });
+}
 
 function persistLocalStorage(key, value) {
   try {
@@ -1602,12 +1616,14 @@ window.app = {
     renderApp();
   },
   addThermovisionRow: () => {
+    captureThermovisionDraft();
     state.thermovisionRows.push({ equipement: '', phase: 'A', point: '', temperature: '', reference: '' });
     state.thermovisionError = '';
     renderApp();
   },
   removeThermovisionRow: (index) => {
     if (state.thermovisionRows.length <= 1) return;
+    captureThermovisionDraft();
     state.thermovisionRows.splice(index, 1);
     renderApp();
   },
@@ -1650,6 +1666,7 @@ window.app = {
     state.thermovisions.unshift(inspection);
     const saved = persistLocalStorage('gdo_mt_thermovisions', state.thermovisions);
     state.thermovisionRows = [{ equipement: '', phase: 'A', point: '', temperature: '', reference: '' }];
+    state.thermovisionDraft = { date: '', inspecteur: '', criticite: 'Surveillance', observations: '', recommandations: '' };
     state.thermovisionError = saved ? '' : state.storageWarning;
     state.thermovisionSuccessNotice = saved;
     renderApp();
