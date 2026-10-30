@@ -3,7 +3,7 @@
  * Wilaya de Guelma (24) — Direction de Distribution de l'Électricité (SDO)
  *
  * Interface GDO-MT :
- * - Navigation mobile dock (Accueil, Schéma MT, Parc Ouvrages, Carnet Terrain, Thermovision, Paramètres & Tables)
+ * - Navigation mobile dock (Accueil, Schéma MT, Parc Ouvrages, Carnet Terrain, Paramètres & Tables)
  * - Thème Clair haute visibilité pour agents de terrain
  * - HTML5 et JavaScript natifs, exécutés directement dans le navigateur (compatible GitHub Pages)
  */
@@ -17,7 +17,6 @@ import { renderQuickSearchModal } from './views/quickSearchView.js';
 import { renderOuvragesView } from './views/ouvragesView.js';
 import { renderTerrainView } from './views/terrainView.js';
 import { renderSettingsView } from './views/settingsView.js';
-import { renderThermovisionView } from './views/thermovisionView.js';
 let initialStorageWarning = '';
 
 // --- RÉFÉRENTIEL DES PARAMÈTRES RÉSEAU MT ---
@@ -86,7 +85,7 @@ function loadStoredInterventions() {
 
 // --- ÉTAT GLOBAL DE L'APPLICATION ---
 const state = {
-  activeTab: 'home', // 'home' | 'unifilaire' | 'ouvrages' | 'terrain' | 'thermovision' | 'settings'
+  activeTab: 'home', // 'home' | 'unifilaire' | 'ouvrages' | 'terrain' | 'settings'
   selectedDepartId: '121H5C1',
   selectedAgency: 'ALL', // 'ALL' | '121' | '123' | '125' | '127'
   schemaAgencyInitialized: false,
@@ -237,7 +236,6 @@ function renderMobileBottomBar() {
     { id: 'unifilaire', label: 'Schéma MT', icon: '⚡' },
     { id: 'ouvrages', label: 'Ouvrages', icon: '🏢' },
     { id: 'terrain', label: 'Visites', icon: '📝' },
-    { id: 'thermovision', label: 'Thermovision', icon: '🌡️' },
     { id: 'settings', label: 'Paramètres', icon: '⚙️' }
   ];
 
@@ -1187,7 +1185,6 @@ export function renderApp() {
   else if (state.activeTab === 'unifilaire') viewHtml = renderUnifilaireView();
   else if (state.activeTab === 'ouvrages') viewHtml = renderOuvragesView({ state, networkData, fullTablesData, getNodeDepartIndex, escapeHtml, escapeJsString, formatNumber });
   else if (state.activeTab === 'terrain') viewHtml = renderTerrainView({ state, networkData, escapeHtml, escapeJsString });
-  else if (state.activeTab === 'thermovision') viewHtml = renderThermovisionView({ state, escapeHtml, escapeJsString });
   else if (state.activeTab === 'settings') viewHtml = renderSettingsView({ state, fullTablesData, escapeHtml, formatNumber });
 
   root.innerHTML = `
