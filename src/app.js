@@ -800,6 +800,10 @@ function renderUnifilaireView() {
                   Numéro de Tronçon & longueur en mètres
                 </div>
               </div>
+              <div class="pt-2 mt-2 border-t border-slate-100 font-bold text-slate-800">Nature des postes HTA/BT</div>
+              <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-sm border border-amber-600 bg-amber-200 shrink-0"></span><span class="text-slate-700">Distribution publique (DP)</span></div>
+              <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-sm border border-amber-950 bg-amber-900 shrink-0"></span><span class="text-slate-700">Poste abonné (AB)</span></div>
+              <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-sm border border-amber-700 bg-amber-100 shrink-0" style="background-image:repeating-linear-gradient(135deg,transparent 0 3px,#92400e 3px 4px)"></span><span class="text-slate-700">Poste mixte (MX)</span></div>
             </div>
             <div class="pt-1 border-t border-slate-100 text-[9px] text-slate-400">
               💡 Touchez n'importe quel segment sur le schéma pour consulter sa fiche détaillée.
@@ -945,8 +949,12 @@ function renderUnifilaireView() {
                 fillColor = node.isVirtual ? '#e2e8f0' : '#7c3aed';
                 strokeColor = node.isVirtual ? '#64748b' : '#5b21b6';
               } else if (node.type === 'POSTE_HTA_BT') {
-                fillColor = node.meta?.typePoste === 'MS' ? '#d97706' : '#ea580c';
-                strokeColor = '#78350f';
+                const posteRow = (fullTablesData.Poste_htabt_lig?.rows || [])
+                  .concat(fullTablesData.Poste_htabt_pst?.rows || [])
+                  .find(row => String(row.code || '').trim() === String(node.id || '').trim());
+                const posteNature = String(node.meta?.fonction || posteRow?.fonction || '').trim().toUpperCase();
+                fillColor = posteNature === 'DP' ? '#fde68a' : (posteNature === 'AB' ? '#92400e' : (posteNature === 'MX' ? '#fef3c7' : '#cbd5e1'));
+                strokeColor = posteNature === 'AB' ? '#451a03' : (posteNature === 'DP' ? '#a16207' : '#475569');
               } else if (node.type === 'ETOILEMENT') {
                 fillColor = '#0d9488';
                 strokeColor = '#115e59';
@@ -976,7 +984,16 @@ function renderUnifilaireView() {
                     <text y="3" fill="${node.isVirtual ? '#475569' : '#ffffff'}" font-size="9" font-weight="bold" text-anchor="middle">${node.isVirtual ? 'V' : 'HT'}</text>
                   ` : node.type === 'POSTE_HTA_BT' ? `
                     <rect x="${-r}" y="${-r}" width="${r * 2}" height="${r * 2}" rx="3.5" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2"/>
-                    <text y="3.5" fill="#ffffff" font-size="9" font-weight="bold" font-family="monospace" text-anchor="middle">T</text>
+                    ${(() => {
+                      const posteRow = (fullTablesData.Poste_htabt_lig?.rows || [])
+                        .concat(fullTablesData.Poste_htabt_pst?.rows || [])
+                        .find(row => String(row.code || '').trim() === String(node.id || '').trim());
+                      const nature = String(node.meta?.fonction || posteRow?.fonction || '').trim().toUpperCase();
+                      return nature === 'MX'
+                        ? '<path d="M -10 -6 L -6 -10 M -10 0 L 0 -10 M -10 6 L 6 -10 M -6 10 L 10 -6 M 0 10 L 10 0 M 6 10 L 10 6" stroke="#92400e" stroke-width="1.5" fill="none"/>'
+                        : '';
+                    })()}
+                    <text y="3.5" fill="${node.meta?.fonction === 'DP' ? '#78350f' : '#ffffff'}" font-size="9" font-weight="bold" font-family="monospace" text-anchor="middle">T</text>
                   ` : node.type === 'ETOILEMENT' ? `
                     <polygon points="0,${-r} ${r},${r} ${-r},${r}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="1.5"/>
                   ` : node.type === 'INTERRUPTEUR_AERIEN' ? `
@@ -1260,6 +1277,8 @@ window.app = {
         if (tabId === 'unifilaire') setTimeout(() => window.app.fitView(), 60);
       });
     }
+    // La classification des postes (AB/DP/MX) provient du référentiel HTA/BT.
+    if (tabId === 'unifilaire') void loadFullTablesData(state, renderApp);
     // Le catalogue des ouvrages utilise aussi les tables embarquées (IACM,
     // transformateurs et tronçons), indépendamment de la recherche rapide.
     if (tabId === 'ouvrages') void loadFullTablesData(state, renderApp);
