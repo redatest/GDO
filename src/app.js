@@ -50,6 +50,28 @@ function loadStoredThermovisions() {
   return [];
 }
 
+function getConductorDescription(edge) {
+  if (!edge || edge.isVirtual) return 'Non applicable';
+
+  const nature = String(edge.nat_cond || '').trim().toUpperCase();
+  const section = Number(edge.section) || 0;
+  if (!nature || nature === '-') return 'Non renseigné';
+
+  const configured = state.settings?.conducteurs?.find((item) =>
+    String(item.nat || '').trim().toUpperCase() === nature &&
+    Number(item.section) === section
+  );
+  if (configured?.nom) return configured.nom;
+
+  const natureLabels = {
+    AM: 'Almélec',
+    AL: 'Aluminium',
+    CU: 'Cuivre'
+  };
+  const label = natureLabels[nature] || nature;
+  return section > 0 ? `${label} (${nature}) — ${section} mm²` : `${label} (${nature})`;
+}
+
 function loadStoredInterventions() {
   try {
     const saved = localStorage.getItem('gdo_mt_interventions');
@@ -1115,8 +1137,8 @@ function renderUnifilaireView() {
                   <span class="text-slate-900 font-bold">${escapeHtml(state.selectedEdge.structLabel || state.selectedEdge.structRaw || state.selectedEdge.struct)}</span>
                 </div>
                 <div>
-                  <span class="text-slate-400 block text-[9px]">Conducteur & Métal</span>
-                  <span class="text-slate-900 font-bold">${state.selectedEdge.nat_cond} ${state.selectedEdge.section} mm²</span>
+                  <span class="text-slate-400 block text-[9px]">Type de conducteur</span>
+                  <span class="text-slate-900 font-bold">${escapeHtml(getConductorDescription(state.selectedEdge))}</span>
                 </div>
                 <div>
                   <span class="text-slate-400 block text-[9px]">Tension Nominale</span>
