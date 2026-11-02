@@ -11,7 +11,7 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
   const posteOptions = currentDepart.nodes.filter(n => n.type === 'POSTE_HTA_BT');
 
   return `
-    <div class="p-4 md:p-6 xl:p-8 space-y-5 max-w-screen-2xl mx-auto">
+    <div class="gdo-terrain-view p-4 md:p-6 xl:p-8 space-y-5 max-w-screen-2xl mx-auto">
       <div>
         <h1 class="text-base font-bold text-slate-900">Carnet de Terrain &amp; Visites Techniques</h1>
         <p class="text-xs text-slate-500">Relevés d'anomalies, fiches d'inspection et contrôle des postes MT</p>
@@ -25,9 +25,9 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
       ` : ''}
 
       <!-- Sous-onglets au même format que les Paramètres. -->
-      <div class="flex items-center p-1 bg-slate-200/80 rounded-xl text-xs" role="tablist" aria-label="Type de fiche">
-        <button type="button" role="tab" aria-selected="${(state.terrainSubTab || 'visite') === 'visite'}" onclick="window.app.setTerrainSubTab('visite')" class="flex-1 py-2 rounded-lg font-semibold transition-colors cursor-pointer ${(state.terrainSubTab || 'visite') === 'visite' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}">Visite technique</button>
-        <button type="button" role="tab" aria-selected="${state.terrainSubTab === 'thermovision'}" onclick="window.app.setTerrainSubTab('thermovision')" class="flex-1 py-2 rounded-lg font-semibold transition-colors cursor-pointer ${state.terrainSubTab === 'thermovision' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}">Thermovision</button>
+      <div class="gdo-view-tabs gdo-terrain-tabs" role="tablist" aria-label="Type de fiche">
+        <button type="button" role="tab" aria-selected="${(state.terrainSubTab || 'visite') === 'visite'}" onclick="window.app.setTerrainSubTab('visite')" class="gdo-view-tab ${(state.terrainSubTab || 'visite') === 'visite' ? 'is-active' : ''}">Visite technique</button>
+        <button type="button" role="tab" aria-selected="${state.terrainSubTab === 'thermovision'}" onclick="window.app.setTerrainSubTab('thermovision')" class="gdo-view-tab ${state.terrainSubTab === 'thermovision' ? 'is-active' : ''}">Thermovision</button>
       </div>
       <div>
       <!-- Formulaire de visite technique -->
