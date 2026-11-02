@@ -237,6 +237,13 @@ function renderMobileTopBar() {
             🔍
           </button>
 
+          <button
+            type="button"
+            onclick="window.app.logout()"
+            title="Fermer la session GDO-MT"
+            class="rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 text-[10px] md:text-xs font-semibold px-2 py-1.5 cursor-pointer whitespace-nowrap"
+          >Déconnexion</button>
+
           <select
             onchange="window.app.setAgency(this.value)"
             class="bg-slate-50 text-slate-800 text-[11px] font-semibold rounded-lg px-2 py-1 border border-slate-300 cursor-pointer shadow-2xs max-w-[130px]"
@@ -265,7 +272,7 @@ function renderMobileBottomBar() {
 
   return `
     <nav class="gdo-main-nav fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 shadow-lg" aria-label="Navigation principale">
-      <div class="max-w-3xl mx-auto" style="display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:4px;">
+      <div class="w-full mx-auto" style="max-width:none;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:6px;">
         ${navItems.map(item => {
           const isActive = state.activeTab === item.id;
           return `
@@ -1260,6 +1267,10 @@ export function renderApp() {
 
 // --- MÉTHODES GLOBALES ACCESSIBLES ---
 window.app = {
+  logout: () => {
+    sessionStorage.removeItem('gdo_mt_authenticated');
+    window.location.reload();
+  },
   setTab: (tabId) => {
     if (tabId === 'unifilaire' && !state.schemaAgencyInitialized) {
       departsSummary.sort((a, b) => String(a.id || '').localeCompare(String(b.id || ''), 'fr', { numeric: true, sensitivity: 'base' }));
