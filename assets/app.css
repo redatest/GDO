@@ -646,4 +646,25 @@ html, body, .gdo-app-shell { background: #f8fafc; color: #172b4d; }
   .gdo-schema-length { justify-self: start; }
   .gdo-schema-action { font-size: 10px; }
 }
+/* Visites et Paramètres — composants alignés sur le style du Schéma MT */
+.gdo-terrain-view, .gdo-settings-view { color: #1e293b; }
+.gdo-view-tabs { display:flex; align-items:stretch; gap:6px; padding:5px; border:1px solid #e2e8f0; border-radius:11px; background:#f1f5f9; }
+.gdo-view-tab { display:inline-flex; flex:1 1 0; align-items:center; justify-content:center; min-width:0; min-height:40px; padding:8px 12px; border:1px solid transparent; border-radius:8px; background:transparent; color:#475569; font-size:12px; font-weight:600; line-height:1.25; text-align:center; white-space:normal; cursor:pointer; transition:background .15s ease,border-color .15s ease,color .15s ease; }
+.gdo-view-tab:hover { background:#f8fafc; color:#1d4ed8; }
+.gdo-view-tab.is-active { background:#fff; border-color:#dbe4ef; color:#1d4ed8; box-shadow:0 1px 2px #0f172a0d; }
+.gdo-terrain-view > .bg-white.rounded-xl, .gdo-terrain-view .thermo-measure-row, .gdo-settings-view > .space-y-2 > .bg-white, .gdo-settings-view > .bg-white { border-width:1px; border-color:#e2e8f0; border-radius:12px; box-shadow:0 1px 2px #0f172a08; }
+.gdo-terrain-view form > button[type="submit"], .gdo-settings-view form > button[type="submit"] { min-height:40px; border-radius:9px; font-size:12px; font-weight:700; box-shadow:none; }
+.gdo-settings-heading { min-height:42px; }
+.gdo-settings-reset { display:inline-flex; align-items:center; justify-content:center; min-height:38px; padding:7px 12px; border:1px solid #dbe4ef; border-radius:9px; background:#fff; color:#475569; font-size:12px; font-weight:600; white-space:nowrap; cursor:pointer; }
+.gdo-settings-reset:hover { background:#f8fafc; border-color:#bfdbfe; color:#1d4ed8; }
+/* Bouton Déconnexion */
+.gdo-header-tools button[title="Fermer la session GDO-MT"] { display:inline-flex; align-items:center; justify-content:center; min-height:38px; padding:7px 12px; border:1px solid #fecaca; border-radius:9px; background:#fff; color:#b91c1c; font-size:11px; font-weight:700; line-height:1; }
+.gdo-header-tools button[title="Fermer la session GDO-MT"]:hover { background:#fef2f2; border-color:#fca5a5; color:#991b1b; }
+@media (max-width:600px) {
+ .gdo-view-tabs { gap:4px; padding:4px; }
+ .gdo-view-tab { min-height:42px; padding:7px 5px; font-size:11px; }
+ .gdo-settings-heading { align-items:flex-start; }
+ .gdo-settings-reset { min-height:36px; padding-inline:9px; font-size:10px; }
+ .gdo-header-tools button[title="Fermer la session GDO-MT"] { min-height:34px; padding:6px 8px; }
+}
 
