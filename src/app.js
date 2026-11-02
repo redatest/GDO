@@ -620,14 +620,16 @@ function renderUnifilaireView() {
   }
 
   return `
-    <div class="flex flex-col h-[calc(100vh-105px)] bg-slate-50 text-slate-800 relative overflow-hidden">
-      <!-- Toolbar GDO-MT pour Schéma MT -->
-      <div class="bg-white border-b border-slate-200 px-3 py-2 shrink-0 z-20 shadow-xs space-y-1.5">
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-1.5 min-w-0">
+    <div class="gdo-schema-view flex flex-col h-[calc(100vh-105px)] bg-slate-50 text-slate-800 relative overflow-hidden">
+      <!-- Barre de commandes Schéma MT -->
+      <div class="gdo-schema-toolbar bg-white border-b border-slate-200 px-3 py-2 shrink-0 z-20 shadow-xs">
+        <div class="gdo-schema-toolbar-main">
+          <div class="gdo-schema-depart">
+            <label for="schemaDepartSelect">Départ MT</label>
             <select
+              id="schemaDepartSelect"
               onchange="window.app.selectDepart(this.value)"
-              class="bg-slate-50 text-slate-900 text-xs font-mono font-bold rounded-lg px-2 py-1.5 border border-slate-300 max-w-[170px] truncate"
+              class="bg-white text-slate-900 text-xs font-mono font-bold rounded-lg border border-slate-300 truncate"
             >
               ${availableDeparts.map(d => `
                 <option value="${d.id}" ${d.id === state.selectedDepartId ? 'selected' : ''}>
@@ -635,72 +637,43 @@ function renderUnifilaireView() {
                 </option>
               `).join('')}
             </select>
-            <span class="text-[10px] text-slate-500 font-medium hidden sm:inline">
-              ${currentDepart.totalLengthKm} km
-            </span>
+            <span class="gdo-schema-length">${currentDepart.totalLengthKm} km</span>
           </div>
 
-          <div class="flex items-center gap-1">
+          <div class="gdo-schema-actions" aria-label="Commandes du schéma">
             <button
+              type="button"
               onclick="window.app.togglePoseLegend()"
-              class="px-2 py-1 text-[11px] font-semibold rounded-lg border transition-all ${
-                state.showPoseLegend ? 'bg-indigo-50 border-indigo-300 text-indigo-700' : 'bg-slate-50 border-slate-300 text-slate-600'
-              }"
+              class="gdo-schema-action ${state.showPoseLegend ? 'is-active' : ''}"
               title="Légende Souterrain / Aérien"
+              aria-pressed="${state.showPoseLegend}"
             >
-              📖 Légende
+              <span aria-hidden="true">📖</span><span>Légende</span>
             </button>
             <button
+              type="button"
               onclick="window.app.toggleJunctions()"
-              class="px-2 py-1 text-[11px] font-semibold rounded-lg border ${
-                state.showJunctions ? 'bg-blue-50 border-blue-300 text-blue-800' : 'bg-slate-50 border-slate-300 text-slate-600'
-              }"
+              class="gdo-schema-action ${state.showJunctions ? 'is-active' : ''}"
+              aria-pressed="${state.showJunctions}"
             >
-              Jonct. ${state.showJunctions ? 'ON' : 'OFF'}
+              <span aria-hidden="true">⌁</span><span>Jonctions ${state.showJunctions ? 'ON' : 'OFF'}</span>
             </button>
-            <button
-              onclick="window.app.fitView()"
-              class="px-2 py-1 text-[11px] font-semibold rounded-lg bg-slate-50 border border-slate-300 text-slate-700"
-            >
-              Centrer
+            <button type="button" onclick="window.app.fitView()" class="gdo-schema-action">
+              <span aria-hidden="true">⌖</span><span>Centrer</span>
             </button>
           </div>
         </div>
 
-        <!-- Filtre rapide Tronçons MT : Tous / Souterrain / Aérien -->
-        <div class="flex items-center gap-1.5 overflow-x-auto text-[11px] font-medium no-scrollbar pt-0.5">
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-0.5">Tronçons :</span>
-          <button
-            onclick="window.app.setPoseFilter('ALL')"
-            class="px-2.5 py-1 rounded-full border text-xs shrink-0 font-semibold transition-all ${
-              state.poseFilter === 'ALL'
-                ? 'bg-slate-800 text-white border-slate-800 shadow-xs'
-                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-            }"
-          >
-            Tous (${renderEdges.filter(e => !e.isVirtual).length})
+        <div class="gdo-schema-filters" aria-label="Filtre des tronçons">
+          <span class="gdo-schema-filter-label">Tronçons</span>
+          <button type="button" onclick="window.app.setPoseFilter('ALL')" class="gdo-schema-filter ${state.poseFilter === 'ALL' ? 'is-active' : ''}" aria-pressed="${state.poseFilter === 'ALL'}">
+            <span>Tous</span><strong>${renderEdges.filter(e => !e.isVirtual).length}</strong>
           </button>
-          <button
-            onclick="window.app.setPoseFilter('SOUT_HIGHLIGHT')"
-            class="px-2.5 py-1 rounded-full border text-xs shrink-0 font-semibold flex items-center gap-1 transition-all ${
-              state.poseFilter === 'SOUT_HIGHLIGHT'
-                ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs ring-2 ring-indigo-200'
-                : 'bg-indigo-50/80 text-indigo-800 border-indigo-200 hover:bg-indigo-100'
-            }"
-          >
-            <span>🚇 Souterrain</span>
-            <span class="font-mono text-[10px] font-bold ${state.poseFilter === 'SOUT_HIGHLIGHT' ? 'text-indigo-100' : 'text-indigo-600'}">(${soutKm} km)</span>
+          <button type="button" onclick="window.app.setPoseFilter('SOUT_HIGHLIGHT')" class="gdo-schema-filter schema-filter-sout ${state.poseFilter === 'SOUT_HIGHLIGHT' ? 'is-active' : ''}" aria-pressed="${state.poseFilter === 'SOUT_HIGHLIGHT'}">
+            <span>🚇 Souterrain</span><strong>${soutKm} km</strong>
           </button>
-          <button
-            onclick="window.app.setPoseFilter('AER_ONLY')"
-            class="px-2.5 py-1 rounded-full border text-xs shrink-0 font-semibold flex items-center gap-1 transition-all ${
-              state.poseFilter === 'AER_ONLY'
-                ? 'bg-amber-600 text-white border-amber-600 shadow-xs ring-2 ring-amber-200'
-                : 'bg-amber-50/80 text-amber-800 border-amber-200 hover:bg-amber-100'
-            }"
-          >
-            <span>⚡ Aérien</span>
-            <span class="font-mono text-[10px] font-bold ${state.poseFilter === 'AER_ONLY' ? 'text-amber-100' : 'text-amber-600'}">(${aerKm} km)</span>
+          <button type="button" onclick="window.app.setPoseFilter('AER_ONLY')" class="gdo-schema-filter schema-filter-aer ${state.poseFilter === 'AER_ONLY' ? 'is-active' : ''}" aria-pressed="${state.poseFilter === 'AER_ONLY'}">
+            <span>⚡ Aérien</span><strong>${aerKm} km</strong>
           </button>
         </div>
       </div>
