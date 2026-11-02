@@ -373,3 +373,91 @@ html, body, .gdo-app-shell { background: #f8fafc; color: #172b4d; }
     min-width: 82px !important;
   }
 }
+
+
+/* En-tête unifié GDO-MT : identité, navigation et commandes dans une seule barre */
+.gdo-topbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 40 !important;
+  min-height: 0 !important;
+  padding: 10px clamp(12px, 2vw, 28px) !important;
+}
+.gdo-header-inner {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 14px !important;
+  max-width: 1680px !important;
+}
+.gdo-brand { min-width: max-content; }
+.gdo-header-tools { justify-content: flex-end; min-width: 0; }
+.gdo-main-nav {
+  position: static !important;
+  inset: auto !important;
+  width: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+.gdo-main-nav > div {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  max-width: none !important;
+}
+.gdo-main-nav > div > button,
+.gdo-main-nav > div > button:hover,
+.gdo-main-nav > div > button:focus {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 7px 10px !important;
+  gap: 7px !important;
+  border-radius: 10px !important;
+  white-space: nowrap !important;
+}
+.gdo-main-nav > div > button > span:first-child { font-size: 15px !important; }
+.gdo-main-nav > div > button > span:last-child { font-size: 12px !important; }
+.gdo-app-shell { padding-bottom: 0 !important; }
+.gdo-main { padding-top: 0 !important; }
+@media (max-width: 1100px) {
+  .gdo-header-inner {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    row-gap: 9px !important;
+  }
+  .gdo-main-nav {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+  }
+  .gdo-main-nav > div { justify-content: stretch !important; }
+}
+@media (max-width: 600px) {
+  .gdo-topbar { padding: 8px 10px !important; }
+  .gdo-header-inner { column-gap: 8px !important; row-gap: 8px !important; }
+  .gdo-brand { gap: 7px !important; }
+  .gdo-brand > div:first-child { width: 30px !important; height: 30px !important; }
+  .gdo-header-tools { gap: 5px !important; }
+  .gdo-header-tools select { max-width: 112px !important; padding-inline: 5px !important; font-size: 10px !important; }
+  .gdo-header-tools button[title="Fermer la session GDO-MT"] { padding: 6px 7px !important; font-size: 10px !important; }
+  .gdo-main-nav > div { gap: 4px !important; }
+  .gdo-main-nav > div > button,
+  .gdo-main-nav > div > button:hover,
+  .gdo-main-nav > div > button:focus {
+    flex-direction: column !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    padding: 5px 2px !important;
+    gap: 2px !important;
+  }
+  .gdo-main-nav > div > button > span:first-child { font-size: 14px !important; }
+  .gdo-main-nav > div > button > span:last-child { font-size: 9px !important; }
+}
