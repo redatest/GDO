@@ -210,58 +210,6 @@ function removeStoredValue(key) {
 
 // --- EN-TÊTE GDO-MT (TOP BAR) ---
 function renderMobileTopBar() {
-  return `
-    <header class="gdo-topbar sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 py-2 shadow-xs">
-      <div class="max-w-screen-2xl mx-auto flex items-center justify-between gap-3 md:gap-6">
-        <!-- Logo & Identité GDO-MT -->
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-black text-xs shadow-xs tracking-wider">
-            GDO
-          </div>
-          <div>
-            <div class="flex items-center gap-1.5">
-              <span class="text-sm md:text-base font-black tracking-tight text-slate-900 leading-none">GDO-MT</span>
-              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">MT 30kV</span>
-            </div>
-            <span class="text-[10px] text-slate-500 font-medium">SDO &middot; Wilaya de Guelma (24)</span>
-          </div>
-        </div>
-
-        <!-- Outils & Sélecteur d'Agence -->
-        <div class="flex items-center gap-1.5">
-          <button
-            onclick="window.app.openQuickSearch()"
-            title="Recherche rapide d'ouvrage"
-            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold border border-slate-200 cursor-pointer"
-          >
-            🔍
-          </button>
-
-          <button
-            type="button"
-            onclick="window.app.logout()"
-            title="Fermer la session GDO-MT"
-            class="rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 text-[10px] md:text-xs font-semibold px-2 py-1.5 cursor-pointer whitespace-nowrap"
-          >Déconnexion</button>
-
-          <select
-            onchange="window.app.setAgency(this.value)"
-            class="bg-slate-50 text-slate-800 text-[11px] font-semibold rounded-lg px-2 py-1 border border-slate-300 cursor-pointer shadow-2xs max-w-[130px]"
-          >
-            <option value="ALL" ${state.selectedAgency === 'ALL' ? 'selected' : ''}>Toutes agences</option>
-            <option value="121" ${state.selectedAgency === '121' ? 'selected' : ''}>121 &middot; Guelma</option>
-            <option value="123" ${state.selectedAgency === '123' ? 'selected' : ''}>123 &middot; Oued Zenati</option>
-            <option value="125" ${state.selectedAgency === '125' ? 'selected' : ''}>125 &middot; Bouchegouf</option>
-            <option value="127" ${state.selectedAgency === '127' ? 'selected' : ''}>127 &middot; District Est</option>
-          </select>
-        </div>
-      </div>
-    </header>
-  `;
-}
-
-// --- DOCK DE NAVIGATION GDO-MT (BOTTOM BAR) ---
-function renderMobileBottomBar() {
   const navItems = [
     { id: 'home', label: 'Accueil', icon: '🏠' },
     { id: 'unifilaire', label: 'Schéma MT', icon: '⚡' },
@@ -271,27 +219,52 @@ function renderMobileBottomBar() {
   ];
 
   return `
-    <nav class="gdo-main-nav fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 shadow-lg" aria-label="Navigation principale">
-      <div class="w-full mx-auto" style="max-width:none;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:6px;">
-        ${navItems.map(item => {
-          const isActive = state.activeTab === item.id;
-          return `
-            <button
-              onclick="window.app.setTab('${escapeJsString(item.id)}')"
-              aria-current="${isActive ? 'page' : 'false'}" aria-label="${escapeHtml(item.label)}"
-              class="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-2 py-1.5 md:py-2.5 px-1 md:px-4 rounded-xl transition-all cursor-pointer select-none ${
-                isActive
-                  ? 'text-blue-600 font-bold bg-blue-50/80 shadow-2xs'
-                  : 'text-slate-500 hover:text-slate-900'
-              }" style="flex:1 1 0;min-width:0;"
-            >
-              <span class="text-base md:text-lg leading-none mb-0.5 md:mb-0">${item.icon}</span>
-              <span class="text-[10px] md:text-sm leading-tight truncate tracking-tight">${item.label}</span>
-            </button>
-          `;
-        }).join('')}
+    <header class="gdo-topbar z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 py-2 shadow-xs">
+      <div class="gdo-header-inner max-w-screen-2xl mx-auto">
+        <div class="gdo-brand flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-black text-xs shadow-xs tracking-wider">GDO</div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm md:text-base font-black tracking-tight text-slate-900 leading-none">GDO-MT</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">MT 30kV</span>
+            </div>
+            <span class="text-[10px] text-slate-500 font-medium">SDO &middot; Wilaya de Guelma (24)</span>
+          </div>
+        </div>
+
+        <nav class="gdo-main-nav" aria-label="Navigation principale">
+          <div>
+            ${navItems.map(item => {
+              const isActive = state.activeTab === item.id;
+              return `
+                <button type="button"
+                  onclick="window.app.setTab('${escapeJsString(item.id)}')"
+                  aria-current="${isActive ? 'page' : 'false'}" aria-label="${escapeHtml(item.label)}">
+                  <span aria-hidden="true">${item.icon}</span>
+                  <span>${item.label}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </nav>
+
+        <div class="gdo-header-tools flex items-center gap-1.5">
+          <button type="button" onclick="window.app.openQuickSearch()" title="Recherche rapide d'ouvrage"
+            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold border border-slate-200 cursor-pointer">🔍</button>
+          <button type="button" onclick="window.app.logout()" title="Fermer la session GDO-MT"
+            class="rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 text-[10px] md:text-xs font-semibold px-2 py-1.5 cursor-pointer whitespace-nowrap">Déconnexion</button>
+          <select onchange="window.app.setAgency(this.value)"
+            aria-label="Sélectionner une agence"
+            class="bg-slate-50 text-slate-800 text-[11px] font-semibold rounded-lg px-2 py-1 border border-slate-300 cursor-pointer shadow-2xs max-w-[130px]">
+            <option value="ALL" ${state.selectedAgency === 'ALL' ? 'selected' : ''}>Toutes agences</option>
+            <option value="121" ${state.selectedAgency === '121' ? 'selected' : ''}>121 &middot; Guelma</option>
+            <option value="123" ${state.selectedAgency === '123' ? 'selected' : ''}>123 &middot; Oued Zenati</option>
+            <option value="125" ${state.selectedAgency === '125' ? 'selected' : ''}>125 &middot; Bouchegouf</option>
+            <option value="127" ${state.selectedAgency === '127' ? 'selected' : ''}>127 &middot; District Est</option>
+          </select>
+        </div>
       </div>
-    </nav>
+    </header>
   `;
 }
 
@@ -1243,13 +1216,12 @@ export function renderApp() {
   else if (state.activeTab === 'settings') viewHtml = renderSettingsView({ state, fullTablesData, escapeHtml, formatNumber });
 
   root.innerHTML = `
-    <div class="gdo-app-shell min-h-screen bg-slate-50 text-slate-900 pb-20 flex flex-col antialiased">
+    <div class="gdo-app-shell min-h-screen bg-slate-50 text-slate-900 flex flex-col antialiased">
       ${renderMobileTopBar()}
       ${state.storageWarning ? '<div role="alert" class="mx-3 mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">' + escapeHtml(state.storageWarning) + '</div>' : ''}
       <main class="gdo-main flex-1" id="main-content">
         ${viewHtml}
       </main>
-      ${renderMobileBottomBar()}
 
       <!-- Modals Flottantes -->
       ${renderQuickSearchModal({ state, departsSummary, fullTablesData, networkData, getNodeDepartIndex, escapeHtml, escapeJsString })}
