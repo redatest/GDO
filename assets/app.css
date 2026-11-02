@@ -668,3 +668,60 @@ html, body, .gdo-app-shell { background: #f8fafc; color: #172b4d; }
  .gdo-header-tools button[title="Fermer la session GDO-MT"] { min-height:34px; padding:6px 8px; }
 }
 
+/* Ajustement desktop Visites / Paramètres : bleu standard et commandes compactes */
+@media (min-width: 701px) {
+  .gdo-terrain-view form > button[type="submit"],
+  .gdo-settings-view form > button[type="submit"] {
+    width: auto !important;
+    min-width: 210px;
+    min-height: 36px !important;
+    padding: 8px 16px !important;
+    font-size: 11px !important;
+    border-radius: 8px !important;
+    background: #2563eb !important;
+    color: #fff !important;
+    box-shadow: none !important;
+  }
+  .gdo-terrain-view form > button[type="submit"]:hover,
+  .gdo-settings-view form > button[type="submit"]:hover {
+    background: #1d4ed8 !important;
+  }
+  .gdo-terrain-view .bg-white.rounded-xl form > button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .gdo-terrain-view button.text-blue-700,
+  .gdo-settings-view button.text-blue-600 {
+    min-height: 30px;
+    padding: 5px 10px;
+    border: 1px solid #dbeafe;
+    border-radius: 7px;
+    background: #eff6ff;
+    color: #1d4ed8 !important;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .gdo-terrain-view button.text-blue-700:hover,
+  .gdo-settings-view button.text-blue-600:hover {
+    background: #dbeafe;
+    border-color: #bfdbfe;
+  }
+}
+.gdo-terrain-view form > button[type="submit"],
+.gdo-settings-view form > button[type="submit"] {
+  background-color: #2563eb !important;
+  color: #fff !important;
+}
+.gdo-terrain-view form > button[type="submit"]:hover,
+.gdo-settings-view form > button[type="submit"]:hover {
+  background-color: #1d4ed8 !important;
+}
+@media (max-width: 700px) {
+  .gdo-terrain-view form > button[type="submit"],
+  .gdo-settings-view form > button[type="submit"] {
+    min-height: 40px !important;
+    width: 100%;
+  }
+}
+
