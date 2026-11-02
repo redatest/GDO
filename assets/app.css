@@ -226,3 +226,60 @@ html, body, .gdo-app-shell { background: #f8fafc; color: #172b4d; }
 .gdo-app-shell .bg-gradient-to-br.from-blue-700 button:hover {
   background: #eff6ff !important;
 }
+
+/* Navigation principale — boutons homogènes, thème clair */
+.gdo-main-nav > div > button,
+.gdo-main-nav > div > button:hover,
+.gdo-main-nav > div > button:focus {
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex: 1 1 0 !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  min-height: 46px !important;
+  height: 46px !important;
+  margin: 0 !important;
+  padding: 8px 10px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #475569 !important;
+  border: 1px solid #dbe4ef !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  font-weight: 600 !important;
+}
+.gdo-main-nav > div > button[aria-current="page"] {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border-color: #bfdbfe !important;
+  box-shadow: inset 0 -3px 0 #3b82f6 !important;
+}
+.gdo-main-nav > div > button:hover:not([aria-current="page"]) {
+  background: #f8fafc !important;
+  color: #1e40af !important;
+}
+.gdo-main-nav > div > button > span:first-child {
+  flex: 0 0 auto;
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+.gdo-main-nav > div > button > span:last-child {
+  min-width: 0;
+  line-height: 1.2 !important;
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .gdo-main-nav > div > button {
+    min-height: 48px !important;
+    height: 48px !important;
+    padding: 6px 3px !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+  }
+  .gdo-main-nav > div > button > span:last-child {
+    font-size: 10px !important;
+  }
+}
