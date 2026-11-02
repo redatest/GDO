@@ -125,7 +125,7 @@ export function renderOuvragesView({ state, networkData, fullTablesData, getNode
   const isLoadingGlobalData = isGlobalScope && Object.keys(fullTablesData).length === 0;
 
   return `
-    <div class="p-4 md:p-6 xl:p-8 space-y-3.5 md:space-y-5 max-w-screen-2xl mx-auto">
+    <div class="gdo-ouvrage-view p-4 md:p-6 xl:p-8 space-y-3.5 md:space-y-5 max-w-screen-2xl mx-auto">
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-base font-bold text-slate-900">Catalogue des Ouvrages MT</h1>
