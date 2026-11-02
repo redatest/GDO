@@ -461,3 +461,189 @@ html, body, .gdo-app-shell { background: #f8fafc; color: #172b4d; }
   .gdo-main-nav > div > button > span:first-child { font-size: 14px !important; }
   .gdo-main-nav > div > button > span:last-child { font-size: 9px !important; }
 }
+
+/* Schéma MT — barre de commandes alignée sur le catalogue Ouvrages */
+.gdo-schema-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.gdo-schema-toolbar-main {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+.gdo-schema-depart {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.gdo-schema-depart label {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .045em;
+  white-space: nowrap;
+}
+.gdo-schema-depart select {
+  box-sizing: border-box;
+  width: min(230px, 100%);
+  min-width: 0;
+  height: 40px;
+  padding: 7px 10px;
+  border-radius: 9px;
+}
+.gdo-schema-length {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.gdo-schema-actions {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.gdo-schema-action {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 104px;
+  height: 40px;
+  padding: 7px 12px;
+  border: 1px solid #dbe4ef;
+  border-radius: 9px;
+  background: #fff;
+  color: #475569;
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.gdo-schema-action:hover {
+  background: #f8fafc;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+.gdo-schema-action.is-active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+.gdo-schema-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  background: #f1f5f9;
+}
+.gdo-schema-filter-label {
+  padding: 0 7px;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.gdo-schema-filter {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 1 1 130px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 110px;
+  height: 36px;
+  padding: 6px 12px;
+  border: 1px solid #dbe4ef;
+  border-radius: 8px;
+  background: #fff;
+  color: #475569;
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.gdo-schema-filter strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+}
+.gdo-schema-filter:hover {
+  background: #f8fafc;
+  border-color: #bfdbfe;
+}
+.gdo-schema-filter.is-active {
+  background: #eaf2ff;
+  color: #1d4ed8;
+  border-color: #c7dcff;
+}
+.gdo-schema-filter.is-active strong { color: #1d4ed8; }
+.gdo-schema-filter.schema-filter-sout.is-active {
+  background: #eef2ff;
+  color: #4338ca;
+  border-color: #c7d2fe;
+}
+.gdo-schema-filter.schema-filter-sout.is-active strong { color: #4338ca; }
+.gdo-schema-filter.schema-filter-aer.is-active {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fde68a;
+}
+.gdo-schema-filter.schema-filter-aer.is-active strong { color: #b45309; }
+@media (max-width: 700px) {
+  .gdo-schema-toolbar-main {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .gdo-schema-depart {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .gdo-schema-depart select { width: 100%; }
+  .gdo-schema-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .gdo-schema-action {
+    min-width: 0;
+    padding: 7px 5px;
+    gap: 4px;
+    font-size: 11px;
+  }
+  .gdo-schema-filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .gdo-schema-filter-label {
+    grid-column: 1 / -1;
+    padding: 1px 3px 0;
+  }
+  .gdo-schema-filter {
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+    height: 42px;
+    padding: 5px 3px;
+    font-size: 10px;
+  }
+}
+@media (max-width: 380px) {
+  .gdo-schema-depart { grid-template-columns: 1fr; gap: 4px; }
+  .gdo-schema-depart label { display: none; }
+  .gdo-schema-length { justify-self: start; }
+  .gdo-schema-action { font-size: 10px; }
+}
+
