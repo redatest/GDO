@@ -8,7 +8,8 @@
     <meta name="description" content="Accès à la plateforme GDO-MT." />
     <style>
       * { box-sizing: border-box; }
-      body { margin: 0; min-height: 100vh; font-family: Arial, sans-serif; background: radial-gradient(circle at top, #1e3a5f 0, #0f172a 55%, #020617 100%); color: #0f172a; }\n      body.login-mode { display: grid; place-items: center; padding: 20px; }\n      #root { width: 100%; min-width: 0; }
+      body { margin: 0; min-height: 100vh; font-family: Arial, sans-serif; background: #f8fafc; color: #0f172a; }
+      body.login-mode { display: grid; place-items: center; padding: 20px; background: linear-gradient(145deg, #eaf0f7 0%, #f8fafc 55%, #e8eef5 100%); }\n      #root { width: 100%; min-width: 0; }
       .login-card { width: min(100%, 390px); background: #fff; border: 1px solid #dbeafe; border-radius: 18px; padding: 32px 28px; box-shadow: 0 24px 70px #0006; }
       .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
       .brand-mark { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; color: white; font-weight: 900; background: linear-gradient(135deg,#2563eb,#1e40af); letter-spacing: .04em; }
@@ -22,8 +23,7 @@
       button:disabled { opacity: .65; cursor: wait; }
       #login-error { min-height: 18px; margin: 12px 0 0; color: #b91c1c; font-size: 12px; font-weight: 600; }
       .footer { margin-top: 20px; text-align: center; color: #94a3b8; font-size: 11px; }
-      #gdo-logout { position: fixed; z-index: 10000; top: 10px; right: 10px; width: auto; margin: 0; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 9px; background: #fff; color: #334155; box-shadow: 0 2px 8px #0002; font-size: 12px; }
-      #gdo-logout:hover { background: #f1f5f9; }
+
     </style>
   </head>
   <body class="login-mode">
@@ -67,17 +67,6 @@
           stylesheet.rel = "stylesheet";
           stylesheet.href = "./assets/app.css";
           document.head.appendChild(stylesheet);
-
-          const logout = document.createElement("button");
-          logout.id = "gdo-logout";
-          logout.type = "button";
-          logout.textContent = "Déconnexion";
-          logout.title = "Fermer la session GDO-MT";
-          logout.addEventListener("click", () => {
-            sessionStorage.removeItem(SESSION_KEY);
-            window.location.reload();
-          });
-          document.body.appendChild(logout);
 
           try {
             await import("./src/app.js");
