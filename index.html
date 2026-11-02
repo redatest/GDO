@@ -9,7 +9,8 @@
     <style>
       * { box-sizing: border-box; }
       body { margin: 0; min-height: 100vh; font-family: Arial, sans-serif; background: #f8fafc; color: #0f172a; }
-      body.login-mode { display: grid; place-items: center; padding: 20px; background: linear-gradient(145deg, #eaf0f7 0%, #f8fafc 55%, #e8eef5 100%); }\n      #root { width: 100%; min-width: 0; }
+      body.login-mode { display: grid; place-items: center; padding: 20px; background: linear-gradient(145deg, #eaf0f7 0%, #f8fafc 55%, #e8eef5 100%); }
+      #root { width: 100%; min-width: 0; }
       .login-card { width: min(100%, 390px); background: #fff; border: 1px solid #dbeafe; border-radius: 18px; padding: 32px 28px; box-shadow: 0 24px 70px #0006; }
       .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
       .brand-mark { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; color: white; font-weight: 900; background: linear-gradient(135deg,#2563eb,#1e40af); letter-spacing: .04em; }
@@ -62,6 +63,10 @@
 
         async function openApplication() {
           panel.hidden = true;
+          document.body.classList.remove("login-mode");
+          document.body.style.display = "block";
+          document.body.style.padding = "0";
+          document.body.style.background = "#f2f7f8";
           document.title = "GDO-MT — Gestion des ouvrages Moyenne Tension";
           const stylesheet = document.createElement("link");
           stylesheet.rel = "stylesheet";
