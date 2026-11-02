@@ -310,30 +310,6 @@ function renderHomeView() {
           </p>
         </div>
 
-        <!-- 3 Boutons d'Action Rapide de Terrain -->
-        <div class="pt-1 grid grid-cols-3 gap-2 text-xs">
-          <button
-            onclick="window.app.openDepart('${escapeJsString(filteredDeparts[0]?.id || '127H1C3')}')"
-            class="py-2 px-2 bg-white text-blue-700 font-bold rounded-xl shadow-xs text-center cursor-pointer flex flex-col items-center justify-center hover:bg-blue-50"
-          >
-            <span class="text-sm mb-0.5">⚡</span>
-            <span>Schéma MT</span>
-          </button>
-          <button
-            onclick="window.app.setTab('ouvrages')"
-            class="py-2 px-2 bg-blue-800/80 hover:bg-blue-800 text-white font-semibold rounded-xl text-center cursor-pointer flex flex-col items-center justify-center border border-white/10"
-          >
-            <span class="text-sm mb-0.5">🏢</span>
-            <span>Ouvrages (${formatNumber(totalPostes)})</span>
-          </button>
-          <button
-            onclick="window.app.setTab('terrain')"
-            class="py-2 px-2 bg-emerald-700 hover:bg-emerald-600 text-white font-semibold rounded-xl text-center cursor-pointer flex flex-col items-center justify-center border border-white/10"
-          >
-            <span class="text-sm mb-0.5">📝</span>
-            <span>Visite Terrain</span>
-          </button>
-        </div>
       </div>
 
       <!-- 6 Compteurs Statistiques 2025 -->
