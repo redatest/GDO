@@ -7,43 +7,43 @@ export function renderSettingsView({ state, fullTablesData, escapeHtml, formatNu
   const { transfos, conducteurs, seuils } = state.settings;
 
   return `
-    <div class="p-4 space-y-4 max-w-screen-2xl mx-auto">
-      <div class="flex items-center justify-between">
+    <div class="gdo-settings-view p-4 md:p-6 xl:p-8 space-y-5 max-w-screen-2xl mx-auto">
+      <div class="gdo-settings-heading flex items-center justify-between gap-3">
         <div>
           <h1 class="text-base font-bold text-slate-900">Paramètres &amp; Référentiel MT</h1>
           <p class="text-xs text-slate-500">Calibres transformateurs, câbles, seuils &amp; tables DBase</p>
         </div>
         <button
           onclick="window.app.resetDefaultSettings()"
-          class="px-2.5 py-1 text-xs font-semibold text-slate-600 bg-white border border-slate-300 rounded-lg shadow-2xs cursor-pointer"
+          class="gdo-settings-reset"
         >
           Reset Normes
         </button>
       </div>
 
       <!-- Segmented Control Sous-Onglets -->
-      <div class="flex items-center p-1 bg-slate-200/80 rounded-xl text-xs" role="tablist" aria-label="Sections des paramètres">
+      <div class="gdo-view-tabs gdo-settings-tabs" role="tablist" aria-label="Sections des paramètres">
         <button
           onclick="window.app.setSettingsSubTab('transfos')" role="tab" aria-selected="${state.settingsSubTab === 'transfos'}"
-          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'transfos' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+          class="gdo-view-tab ${state.settingsSubTab === 'transfos' ? 'is-active' : ''}"
         >
           Transfos
         </button>
         <button
           onclick="window.app.setSettingsSubTab('conducteurs')" role="tab" aria-selected="${state.settingsSubTab === 'conducteurs'}"
-          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'conducteurs' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+          class="gdo-view-tab ${state.settingsSubTab === 'conducteurs' ? 'is-active' : ''}"
         >
           Lignes
         </button>
         <button
           onclick="window.app.setSettingsSubTab('seuils')" role="tab" aria-selected="${state.settingsSubTab === 'seuils'}"
-          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'seuils' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+          class="gdo-view-tab ${state.settingsSubTab === 'seuils' ? 'is-active' : ''}"
         >
           Seuils MT
         </button>
         <button
           onclick="window.app.setSettingsSubTab('tables')" role="tab" aria-selected="${state.settingsSubTab === 'tables'}"
-          class="flex-1 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${state.settingsSubTab === 'tables' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}"
+          class="gdo-view-tab ${state.settingsSubTab === 'tables' ? 'is-active' : ''}"
         >
           Données 2025 / Tables
         </button>
