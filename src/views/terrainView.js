@@ -96,7 +96,7 @@ export function renderTerrainView({ state, networkData, escapeHtml, escapeJsStri
             type="submit"
             class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer"
           >
-            &check; Enregistrer la visite dans GDO-MT
+            &check; Enregistrer la visite
           </button>
         </form>
 
