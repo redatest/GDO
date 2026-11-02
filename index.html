@@ -3,17 +3,119 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-    <meta name="theme-color" content="#f8fafc" />
-    <title>GDO-MT Web — Analyse &amp; Visualisation Réseau Moyenne Tension</title>
-    <meta name="description" content="Application web de consultation, d'analyse et de visualisation du réseau électrique moyenne tension (HTA)." />
-    <meta property="og:title" content="GDO-MT Web — Analyse &amp; Visualisation Réseau Moyenne Tension" />
-    <meta property="og:description" content="Application web de consultation, d'analyse et de visualisation du réseau électrique moyenne tension (HTA)" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="stylesheet" href="./assets/app.css" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>Connexion — GDO-MT</title>
+    <meta name="description" content="Accès à la plateforme GDO-MT." />
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; font-family: Arial, sans-serif; background: radial-gradient(circle at top, #1e3a5f 0, #0f172a 55%, #020617 100%); color: #0f172a; display: grid; place-items: center; padding: 20px; }
+      .login-card { width: min(100%, 390px); background: #fff; border: 1px solid #dbeafe; border-radius: 18px; padding: 32px 28px; box-shadow: 0 24px 70px #0006; }
+      .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+      .brand-mark { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; color: white; font-weight: 900; background: linear-gradient(135deg,#2563eb,#1e40af); letter-spacing: .04em; }
+      h1 { font-size: 22px; margin: 0; color: #0f172a; }
+      .subtitle { margin: 5px 0 0; font-size: 12px; color: #64748b; }
+      label { display: block; margin: 0 0 8px; font-size: 13px; font-weight: 700; color: #334155; }
+      input { width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; padding: 13px 14px; font-size: 16px; outline: none; }
+      input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px #2563eb22; }
+      button { width: 100%; border: 0; border-radius: 10px; padding: 13px; margin-top: 16px; color: #fff; background: #1d4ed8; font-size: 14px; font-weight: 700; cursor: pointer; }
+      button:hover { background: #1e40af; }
+      button:disabled { opacity: .65; cursor: wait; }
+      #login-error { min-height: 18px; margin: 12px 0 0; color: #b91c1c; font-size: 12px; font-weight: 600; }
+      .footer { margin-top: 20px; text-align: center; color: #94a3b8; font-size: 11px; }
+      #gdo-logout { position: fixed; z-index: 10000; top: 10px; right: 10px; width: auto; margin: 0; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 9px; background: #fff; color: #334155; box-shadow: 0 2px 8px #0002; font-size: 12px; }
+      #gdo-logout:hover { background: #f1f5f9; }
+    </style>
   </head>
-  <body class="bg-slate-50 text-slate-900 antialiased">
+  <body>
+    <main id="login-panel" class="login-card">
+      <div class="brand">
+        <div class="brand-mark">GDO</div>
+        <div>
+          <h1>GDO-MT</h1>
+          <p class="subtitle">Gestion des ouvrages Moyenne Tension</p>
+        </div>
+      </div>
+      <form id="login-form">
+        <label for="access-password">Mot de passe d'accès</label>
+        <input id="access-password" type="password" autocomplete="current-password" placeholder="Saisir le mot de passe" required autofocus />
+        <button id="login-submit" type="submit">Accéder à la plateforme</button>
+        <p id="login-error" role="alert" aria-live="polite"></p>
+      </form>
+      <div class="footer">Accès réservé aux utilisateurs autorisés</div>
+    </main>
     <div id="root"></div>
-    <script type="module" src="./src/app.js"></script>
+    <script>
+      (() => {
+        const PASSWORD_SHA256 = "f2593099ee4ccfc6d97af8ff7a5fe5e3c68ed25c3b044a58f0bba4f7c7bea469";
+        const SESSION_KEY = "gdo_mt_authenticated";
+        const panel = document.getElementById("login-panel");
+        const form = document.getElementById("login-form");
+        const input = document.getElementById("access-password");
+        const submit = document.getElementById("login-submit");
+        const error = document.getElementById("login-error");
+
+        async function sha256(value) {
+          const bytes = new TextEncoder().encode(value);
+          const digest = await crypto.subtle.digest("SHA-256", bytes);
+          return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
+        }
+
+        async function openApplication() {
+          panel.hidden = true;
+          document.title = "GDO-MT — Gestion des ouvrages Moyenne Tension";
+          const stylesheet = document.createElement("link");
+          stylesheet.rel = "stylesheet";
+          stylesheet.href = "./assets/app.css";
+          document.head.appendChild(stylesheet);
+
+          const logout = document.createElement("button");
+          logout.id = "gdo-logout";
+          logout.type = "button";
+          logout.textContent = "Déconnexion";
+          logout.title = "Fermer la session GDO-MT";
+          logout.addEventListener("click", () => {
+            sessionStorage.removeItem(SESSION_KEY);
+            window.location.reload();
+          });
+          document.body.appendChild(logout);
+
+          try {
+            await import("./src/app.js");
+          } catch (loadError) {
+            console.error("Erreur de chargement de GDO-MT :", loadError);
+            logout.remove();
+            panel.hidden = false;
+            error.textContent = "Impossible de charger la plateforme. Actualisez la page.";
+          }
+        }
+
+        form.addEventListener("submit", async event => {
+          event.preventDefault();
+          error.textContent = "";
+          submit.disabled = true;
+          submit.textContent = "Vérification…";
+          try {
+            if (await sha256(input.value) === PASSWORD_SHA256) {
+              sessionStorage.setItem(SESSION_KEY, "1");
+              await openApplication();
+            } else {
+              error.textContent = "Mot de passe incorrect.";
+              input.value = "";
+              input.focus();
+            }
+          } catch (authError) {
+            console.error("Erreur d'authentification :", authError);
+            error.textContent = "La vérification a échoué. Réessayez.";
+          } finally {
+            submit.disabled = false;
+            submit.textContent = "Accéder à la plateforme";
+          }
+        });
+
+        if (sessionStorage.getItem(SESSION_KEY) === "1") {
+          void openApplication();
+        }
+      })();
+    </script>
   </body>
 </html>
