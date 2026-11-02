@@ -673,10 +673,11 @@ html, body, .gdo-app-shell { background: #f8fafc; color: #172b4d; }
   .gdo-terrain-view form > button[type="submit"],
   .gdo-settings-view form > button[type="submit"] {
     width: auto !important;
-    min-width: 210px;
-    min-height: 36px !important;
-    padding: 8px 16px !important;
+    min-width: 0 !important;
+    min-height: 32px !important;
+    padding: 6px 12px !important;
     font-size: 11px !important;
+    line-height: 1.2;
     border-radius: 8px !important;
     background: #2563eb !important;
     color: #fff !important;
