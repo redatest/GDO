@@ -194,3 +194,35 @@ html, body, .gdo-app-shell { background: #f8fafc; color: #172b4d; }
 .gdo-app-shell .border-blue-200, .gdo-app-shell .border-indigo-200 { border-color: #bfdbfe; }
 .gdo-app-shell .bg-blue-50, .gdo-app-shell .bg-indigo-50 { background-color: #eff6ff; }
 .gdo-app-shell :is(.bg-white.rounded-xl, .bg-white.rounded-2xl) { border-color: #dbe4ef; }
+
+/* GDO-MT — neutralisation des anciens aplats bleu foncé */
+.gdo-main-nav button {
+  background: #ffffff !important;
+  color: #475569 !important;
+  border: 1px solid #dbe4ef !important;
+  box-shadow: none !important;
+}
+.gdo-main-nav button[aria-current="page"] {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border-color: #bfdbfe !important;
+  box-shadow: inset 0 -3px 0 #3b82f6 !important;
+}
+.gdo-app-shell .bg-gradient-to-br.from-blue-700 {
+  background-image: none !important;
+  background-color: #eff6ff !important;
+  color: #172b4d !important;
+  border: 1px solid #dbe4ef !important;
+}
+.gdo-app-shell .bg-gradient-to-br.from-blue-700 .text-blue-100 {
+  color: #64748b !important;
+}
+.gdo-app-shell .bg-gradient-to-br.from-blue-700 button {
+  background: #ffffff !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #bfdbfe !important;
+  box-shadow: none !important;
+}
+.gdo-app-shell .bg-gradient-to-br.from-blue-700 button:hover {
+  background: #eff6ff !important;
+}
