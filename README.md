@@ -18,24 +18,6 @@
 - **Tables de référence :** consultation, recherche, filtrage, pagination et export des données disponibles.
 - **Stockage local :** paramètres et fiches de terrain conservés dans le navigateur avec `localStorage`.
 
-## Référentiel réseau
-
-L'instantané applicatif actuellement documenté contient notamment :
-
-| Indicateur | Valeur |
-|---|---:|
-| Départs dans le référentiel courant | 49 |
-| Tronçons/arcs physiques | 7 501 |
-| Occurrences de nœuds dans les départs | 6 596 |
-| Linéaire cumulé déclaré | 2 632,07 km |
-| Postes recensés | 2 660 |
-| Transformateurs recensés | 2 800 |
-| IACM recensés | 1 638 |
-
-Ces valeurs décrivent les données intégrées à l'application. Elles ne constituent pas une certification de l'état réel ou de la configuration électrique du réseau.
-
-Le dépôt conserve également un instantané topologique historique. Il diffère du référentiel courant : il contient 51 départs et des totaux différents. Ces écarts doivent être vérifiés avec les données métier. L'application n'ajoute pas automatiquement de raccordements physiques supposés.
-
 ## Architecture sans npm ni Bun
 
 L'application est une application statique côté navigateur. Son exécution ne nécessite ni Node.js, ni npm, ni Bun, ni framework JavaScript, ni compilation.
