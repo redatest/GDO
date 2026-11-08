@@ -165,7 +165,7 @@ export function analyzeBouclage(depart, failedNodeId, allDeparts = {}) {
       if (source.departId === selectedDepartId) continue;
       const queue = [{ key: source.key, openCount: 0 }];
       const previous = new Map();
-      const visited = new Set([source.key + '|0']);
+      const visited = new Set([source.key + '\\u0000' + '0']);
       let found = null;
 
       while (queue.length) {
@@ -185,11 +185,11 @@ export function analyzeBouclage(depart, failedNodeId, allDeparts = {}) {
           if (open && !isSharedTie) continue;
           const nextOpenCount = current.openCount + (isSharedTie ? 1 : 0);
           if (nextOpenCount > 1) continue;
-          const stateKey = link.key + '|' + nextOpenCount;
+          const stateKey = link.key + '\\u0000' + nextOpenCount;
           if (visited.has(stateKey)) continue;
           visited.add(stateKey);
           previous.set(stateKey, {
-            previousKey: current.key + '|' + current.openCount,
+            previousKey: current.key + '\\u0000' + current.openCount,
             edge: link.edge,
             departId: link.departId
           });
@@ -200,9 +200,9 @@ export function analyzeBouclage(depart, failedNodeId, allDeparts = {}) {
       if (!found) continue;
       const pathKeys = [];
       const pathSteps = [];
-      let stateKey = found.key + '|' + found.openCount;
+      let stateKey = found.key + '\\u0000' + found.openCount;
       while (stateKey) {
-        pathKeys.push(stateKey.split('|')[0]);
+        pathKeys.push(stateKey.slice(0, stateKey.lastIndexOf('\\u0000')));
         const step = previous.get(stateKey);
         if (!step) break;
         pathSteps.push(step);
