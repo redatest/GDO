@@ -26,6 +26,7 @@ jobs:
           cp assets/app.css _site/assets/
           cp src/app.js _site/src/
           cp src/utils/formatters.js _site/src/utils/
+          cp src/utils/bouclage.js _site/src/utils/
           cp src/config/defaultSettings.js _site/src/config/
           cp src/views/settingsViews.js _site/src/views/
           cp src/views/quickSearchView.js _site/src/views/
