@@ -472,7 +472,7 @@ function renderBouclageModal(currentDepart) {
     resultHtml += '<div class="grid grid-cols-2 gap-2">' +
       '<div class="rounded-xl border border-slate-200 bg-slate-50 p-3"><div class="text-[10px] font-bold uppercase text-slate-500">Postes affectés</div><div class="mt-1 text-2xl font-black tabular-nums text-slate-900">' + result.affectedPostes.length + '</div></div>' +
       '<div class="rounded-xl border border-slate-200 bg-slate-50 p-3"><div class="text-[10px] font-bold uppercase text-slate-500">Chemins candidats</div><div class="mt-1 text-2xl font-black tabular-nums text-teal-700">' + candidates.length + '</div></div></div>' +
-      '<div class="text-[11px] text-slate-500">IACM recensés : <strong>' + result.switchCount + '</strong> · IACM ouverts : <strong>' + result.openSwitchCount + '</strong> · Postes déjà non alimentés avant simulation : <strong>' + result.preExistingUnreachablePostes.length + '</strong></div>';
+      '<div class="text-[11px] text-slate-500">IACM recensés dans ce départ : <strong>' + result.switchCount + '</strong> · IACM ouverts : <strong>' + result.openSwitchCount + '</strong> · Liaisons ouvertes partagées : <strong>' + result.sharedOpenSwitchCount + '</strong> · Postes déjà non alimentés : <strong>' + result.preExistingUnreachablePostes.length + '</strong></div>';
     if (result.sourceIsVirtual) {
       resultHtml += '<div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">Attention : l’origine du départ est un ancrage graphique virtuel. Le résultat ne confirme pas une source électrique réelle.</div>';
     }
@@ -483,12 +483,14 @@ function renderBouclageModal(currentDepart) {
         (index === selectedIndex ? 'border-teal-500 bg-teal-50 ring-1 ring-teal-200' : 'border-slate-200 bg-white hover:bg-slate-50') + '">' +
         '<span class="flex flex-wrap items-center justify-between gap-2"><strong class="font-mono text-xs text-slate-900">' + escapeHtml(candidate.posteId) + '</strong><span class="text-[10px] font-bold text-teal-800">' + candidate.edgeCount + ' tronçon(s)</span></span>' +
         '<span class="mt-1 block text-xs text-slate-600">' + escapeHtml(candidate.posteName) + '</span>' +
-        '<span class="mt-1 block text-[11px] text-teal-800">Manœuvre candidate : IACM ' + escapeHtml(candidate.switchId) + ' — ' + escapeHtml(candidate.switchName) + '</span></button>'
+        '<span class="mt-1 block text-[11px] text-teal-800">Départ de secours : ' + escapeHtml(candidate.sourceDepartId) + '</span>' +
+        '<span class="mt-1 block text-[11px] text-teal-800">Bouclage candidat : IACM ' + escapeHtml(candidate.switchId) + ' — ' + escapeHtml(candidate.switchName) + '</span></button>'
       ).join('');
       resultHtml += '</div>';
       if (selectedCandidate) {
         resultHtml += '<div class="rounded-xl border border-teal-200 bg-teal-50 p-3 text-xs text-teal-950 space-y-1"><strong class="block">Chemin sélectionné sur le schéma</strong>' +
           '<div class="font-mono break-words">' + selectedCandidate.pathNodeIds.map(escapeHtml).join(' → ') + '</div>' +
+          '<div>Départ de secours : <strong>' + escapeHtml(selectedCandidate.sourceDepartId) + '</strong> (' + escapeHtml(selectedCandidate.sourceName) + ')</div>' +
           '<div>Fermeture théorique à étudier : <strong>' + escapeHtml(selectedCandidate.switchId) + '</strong></div>' +
           '<button type="button" onclick="window.app.closeBouclage()" class="mt-2 rounded-lg bg-teal-700 px-3 py-2 font-bold text-white">Afficher le chemin sur le schéma</button></div>';
       }
@@ -1412,7 +1414,7 @@ window.app = {
     state.bouclageCandidateIndex = 0;
     state.bouclageOpen = true;
     state.bouclageResult = depart && state.bouclagePosteId
-      ? analyzeBouclage(depart, state.bouclagePosteId)
+      ? analyzeBouclage(depart, state.bouclagePosteId, networkData.departs)
       : null;
     renderApp();
   },
@@ -1436,14 +1438,14 @@ window.app = {
     state.bouclageCandidateIndex = 0;
     const depart = networkData.departs[state.selectedDepartId];
     state.bouclageResult = depart && state.bouclagePosteId
-      ? analyzeBouclage(depart, state.bouclagePosteId)
+      ? analyzeBouclage(depart, state.bouclagePosteId, networkData.departs)
       : null;
     renderApp();
   },
   analyzeBouclage: () => {
     const depart = networkData.departs[state.selectedDepartId];
     if (!depart || !state.bouclagePosteId) return;
-    state.bouclageResult = analyzeBouclage(depart, state.bouclagePosteId);
+    state.bouclageResult = analyzeBouclage(depart, state.bouclagePosteId, networkData.departs);
     state.bouclageCandidateIndex = 0;
     renderApp();
   },
