@@ -488,7 +488,7 @@ function renderBouclageModal(currentDepart) {
       ).join('');
       resultHtml += '</div>';
       if (selectedCandidate) {
-        resultHtml += '<div class="rounded-xl border border-teal-200 bg-teal-50 p-3 text-xs text-teal-950 space-y-1"><strong class="block">Chemin sélectionné sur le schéma</strong>' +
+        resultHtml += '<div class="rounded-xl border border-teal-200 bg-teal-50 p-3 text-xs text-teal-950 space-y-1"><strong class="block">Segment local du chemin de bouclage</strong>' +
           '<div class="font-mono break-words">' + selectedCandidate.pathNodeIds.map(escapeHtml).join(' → ') + '</div>' +
           '<div>Départ de secours : <strong>' + escapeHtml(selectedCandidate.sourceDepartId) + '</strong> (' + escapeHtml(selectedCandidate.sourceName) + ')</div>' +
           '<div>Fermeture théorique à étudier : <strong>' + escapeHtml(selectedCandidate.switchId) + '</strong></div>' +
