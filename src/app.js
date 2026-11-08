@@ -509,8 +509,8 @@ function renderBouclageModal(currentDepart) {
     resultHtml = '<div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-xs text-slate-600">L’analyse affichera les postes impactés et les chemins alternatifs identifiés à partir des tronçons et des positions IACM enregistrés.</div>';
   }
 
-  return '<div class="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-3 md:p-6" role="dialog" aria-modal="true" aria-labelledby="bouclage-title">' +
-    '<section class="w-full max-w-3xl max-h-[90%] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 md:p-6 shadow-2xl space-y-4">' +
+  return '<div class="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-slate-950/45 p-3 md:p-6" role="dialog" aria-modal="true" aria-labelledby="bouclage-title">' +
+    '<section class="min-h-0 w-full max-w-3xl max-h-[calc(100dvh-1.5rem)] md:max-h-[calc(100dvh-3rem)] overflow-y-auto overscroll-contain rounded-2xl border border-slate-200 bg-white p-4 md:p-6 shadow-2xl space-y-4">' +
     '<header class="flex items-start justify-between gap-3 border-b border-slate-100 pb-3"><div><div class="text-[10px] font-bold uppercase tracking-wider text-teal-700">Aide à la reconfiguration MT</div><h2 id="bouclage-title" class="text-lg font-black text-slate-900">Assistant de bouclage</h2><p class="mt-1 text-xs text-slate-500">Départ analysé : <strong class="font-mono text-slate-700">' + escapeHtml(currentDepart.id) + '</strong></p></div>' +
     '<button type="button" onclick="window.app.closeBouclage()" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-600">Fermer</button></header>' +
     '<div class="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end"><label class="block space-y-1.5"><span class="text-xs font-bold text-slate-700">Poste supposé en défaut</span>' +
