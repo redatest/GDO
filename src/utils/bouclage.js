@@ -1,12 +1,15 @@
 /**
  * Analyse topologique d'une proposition de bouclage sur un départ MT.
- * Simulation non destructive ; ne remplace pas les études électriques.
+ * Les postes déjà non alimentés avant la panne ne sont pas comptés comme
+ * conséquences de la panne simulée. L'analyse reste non destructive.
  */
 export function analyzeBouclage(depart, failedNodeId) {
   const nodes = Array.isArray(depart?.nodes) ? depart.nodes : [];
   const edges = Array.isArray(depart?.edges) ? depart.edges : [];
   const nodeById = new Map(nodes.map(node => [String(node.id), node]));
-  const failedNode = nodeById.get(String(failedNodeId));
+  const failedId = String(failedNodeId);
+  const failedNode = nodeById.get(failedId);
+
   if (!failedNode || failedNode.type !== 'POSTE_HTA_BT') {
     return { ok: false, reason: 'Sélectionnez un poste HTA/BT valide.' };
   }
@@ -24,7 +27,7 @@ export function analyzeBouclage(depart, failedNodeId) {
   const virtualSource = nodes.find(node => node.type === 'POSTE_SOURCE' && node.isVirtual);
   let source = physicalSource;
   if (!source && virtualSource) {
-    const anchor = edges.find(edge => edge.isVirtual && edge.from === virtualSource.id);
+    const anchor = edges.find(edge => edge.isVirtual && String(edge.from) === String(virtualSource.id));
     source = anchor ? nodeById.get(String(anchor.to)) : null;
   }
   if (!source) source = nodes.find(node => node.type === 'CELLULE');
@@ -37,8 +40,38 @@ export function analyzeBouclage(depart, failedNodeId) {
     const value = node.meta?.isOpen;
     return value === true || value === 1 || ['1', 'true', 'oui', 'ouvert'].includes(String(value ?? '').trim().toLowerCase());
   };
+  const switchCount = nodes.filter(node => node.type === 'INTERRUPTEUR_AERIEN').length;
+  const openSwitchCount = nodes.filter(isOpenSwitch).length;
 
-  function findPath(targetId) {
+  // Recherche les postes alimentés dans l'état de référence, puis après
+  // retrait du poste en défaut. Les coupures préexistantes sont exclues.
+  function getReachable(excludedNodeId = null) {
+    const reachable = new Set([String(source.id)]);
+    const queue = [String(source.id)];
+    while (queue.length) {
+      const currentId = queue.shift();
+      for (const link of adjacency.get(currentId) || []) {
+        const nextId = link.nodeId;
+        if (nextId === excludedNodeId || reachable.has(nextId) || isOpenSwitch(nodeById.get(nextId))) continue;
+        reachable.add(nextId);
+        queue.push(nextId);
+      }
+    }
+    return reachable;
+  }
+
+  const baselineReachable = getReachable();
+  const afterFailureReachable = getReachable(failedId);
+  const posteNodes = nodes.filter(node => node.type === 'POSTE_HTA_BT' && String(node.id) !== failedId);
+  const affectedPostes = posteNodes.filter(node =>
+    baselineReachable.has(String(node.id)) && !afterFailureReachable.has(String(node.id))
+  );
+  const preExistingUnreachablePostes = posteNodes.filter(node => !baselineReachable.has(String(node.id)));
+
+  // Cherche explicitement un état cible atteint après le passage par UN
+  // IACM ouvert. Ne pas s'arrêter sur un chemin à zéro IACM : un autre chemin
+  // de transfert peut exister dans le même graphe.
+  function findTransferPath(targetId) {
     const startId = String(source.id);
     const queue = [{ nodeId: startId, openCount: 0 }];
     const previous = new Map();
@@ -47,83 +80,96 @@ export function analyzeBouclage(depart, failedNodeId) {
 
     while (queue.length) {
       const current = queue.shift();
-      if (current.nodeId === String(targetId)) { found = current; break; }
+      if (current.nodeId === String(targetId) && current.openCount === 1) {
+        found = current;
+        break;
+      }
+
       for (const link of adjacency.get(current.nodeId) || []) {
-        if (link.nodeId === String(failedNodeId)) continue;
+        if (link.nodeId === failedId) continue;
         const nextNode = nodeById.get(link.nodeId);
         const nextOpenCount = current.openCount + (isOpenSwitch(nextNode) ? 1 : 0);
         if (nextOpenCount > 1) continue;
+
         const key = link.nodeId + '|' + nextOpenCount;
         if (visited.has(key)) continue;
         visited.add(key);
-        previous.set(key, { previousKey: current.nodeId + '|' + current.openCount, edge: link.edge });
+        previous.set(key, {
+          previousKey: current.nodeId + '|' + current.openCount,
+          edge: link.edge
+        });
         queue.push({ nodeId: link.nodeId, openCount: nextOpenCount });
       }
     }
 
     if (!found) return null;
-    const nodeIds = [];
-    const edgeIds = [];
+    const pathNodeIds = [];
+    const pathEdgeIds = [];
     let key = found.nodeId + '|' + found.openCount;
     while (key) {
-      const nodeId = key.split('|')[0];
-      nodeIds.push(nodeId);
+      pathNodeIds.push(key.split('|')[0]);
       const step = previous.get(key);
       if (!step) break;
-      edgeIds.push(String(step.edge.id));
+      pathEdgeIds.push(String(step.edge.id));
       key = step.previousKey;
     }
-    nodeIds.reverse();
-    edgeIds.reverse();
-    const switches = nodeIds.map(id => nodeById.get(id)).filter(isOpenSwitch);
-    return { nodeIds, edgeIds, switches, openSwitchCount: found.openCount };
+    pathNodeIds.reverse();
+    pathEdgeIds.reverse();
+    const switches = pathNodeIds.map(id => nodeById.get(id)).filter(isOpenSwitch);
+    return { pathNodeIds, pathEdgeIds, switches };
   }
 
-  // État actuel : les IACM ouverts sont des coupures.
-  const currentlyReachable = new Set([String(source.id)]);
-  const queue = [String(source.id)];
-  while (queue.length) {
-    const currentId = queue.shift();
-    for (const link of adjacency.get(currentId) || []) {
-      const nextId = link.nodeId;
-      const nextNode = nodeById.get(nextId);
-      if (nextId === String(failedNodeId) || isOpenSwitch(nextNode) || currentlyReachable.has(nextId)) continue;
-      currentlyReachable.add(nextId);
-      queue.push(nextId);
-    }
-  }
-
-  const affectedPostes = nodes.filter(node =>
-    node.type === 'POSTE_HTA_BT' &&
-    String(node.id) !== String(failedNodeId) &&
-    !currentlyReachable.has(String(node.id))
-  );
-
-  const candidates = [];
-  for (const poste of affectedPostes) {
-    const path = findPath(poste.id);
-    if (!path || path.openSwitchCount !== 1 || path.switches.length !== 1) continue;
-    candidates.push({
+  const candidates = affectedPostes.map(poste => {
+    const path = findTransferPath(poste.id);
+    if (!path || path.switches.length !== 1) return null;
+    const switchNode = path.switches[0];
+    return {
       posteId: String(poste.id),
       posteName: String(poste.meta?.nom || poste.id),
-      pathNodeIds: path.nodeIds,
-      pathEdgeIds: path.edgeIds,
-      switchId: String(path.switches[0].id),
-      switchName: String(path.switches[0].meta?.nom || path.switches[0].id),
-      edgeCount: path.edgeIds.length
-    });
+      pathNodeIds: path.pathNodeIds,
+      pathEdgeIds: path.pathEdgeIds,
+      switchId: String(switchNode.id),
+      switchName: String(switchNode.meta?.nom || switchNode.id),
+      edgeCount: path.pathEdgeIds.length
+    };
+  }).filter(Boolean);
+
+  candidates.sort((a, b) =>
+    a.edgeCount - b.edgeCount ||
+    a.posteId.localeCompare(b.posteId, 'fr', { numeric: true })
+  );
+
+  let message = '';
+  if (!affectedPostes.length) {
+    message = 'Le retrait de ce poste ne prive aucun autre poste actuellement alimenté dans la topologie de ce départ.';
+  } else if (!switchCount) {
+    message = 'Des postes seraient privés d’alimentation, mais aucun IACM n’est enregistré dans ce départ. Le référentiel ne contient donc aucun organe permettant de proposer un bouclage.';
+  } else if (!candidates.length) {
+    message = 'Des postes seraient privés d’alimentation, mais aucun chemin alternatif nécessitant une seule fermeture d’IACM ouvert n’a été trouvé dans ce départ.';
+  } else {
+    message = candidates.length + ' proposition(s) topologique(s) trouvée(s).';
   }
-  candidates.sort((a, b) => a.edgeCount - b.edgeCount || a.posteId.localeCompare(b.posteId, 'fr', { numeric: true }));
 
   return {
     ok: true,
     departId: String(depart.id || ''),
-    failedNodeId: String(failedNodeId),
+    failedNodeId: failedId,
     failedNodeName: String(failedNode.meta?.nom || failedNode.id),
     sourceId: String(source.id),
     sourceIsVirtual: !physicalSource && Boolean(virtualSource),
-    affectedPostes: affectedPostes.map(node => ({ id: String(node.id), name: String(node.meta?.nom || node.id) })),
+    switchCount,
+    openSwitchCount,
+    baselinePosteCount: posteNodes.filter(node => baselineReachable.has(String(node.id))).length,
+    affectedPostes: affectedPostes.map(node => ({
+      id: String(node.id),
+      name: String(node.meta?.nom || node.id)
+    })),
+    preExistingUnreachablePostes: preExistingUnreachablePostes.map(node => ({
+      id: String(node.id),
+      name: String(node.meta?.nom || node.id)
+    })),
     candidates,
+    message,
     note: 'Analyse topologique uniquement : intensités, transit de puissance, chutes de tension, protections et sélectivité ne sont pas calculés.'
   };
 }
