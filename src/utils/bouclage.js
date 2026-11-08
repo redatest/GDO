@@ -22,11 +22,12 @@ export function analyzeBouclage(depart, failedNodeId) {
 
   const physicalSource = nodes.find(node => node.type === 'POSTE_SOURCE' && !node.isVirtual);
   const virtualSource = nodes.find(node => node.type === 'POSTE_SOURCE' && node.isVirtual);
-  let source = physicalSource || nodes.find(node => node.type === 'CELLULE');
+  let source = physicalSource;
   if (!source && virtualSource) {
     const anchor = edges.find(edge => edge.isVirtual && edge.from === virtualSource.id);
     source = anchor ? nodeById.get(String(anchor.to)) : null;
   }
+  if (!source) source = nodes.find(node => node.type === 'CELLULE');
   if (!source) {
     return { ok: false, reason: 'Aucune origine topologique exploitable n’est identifiée dans ce départ.' };
   }
@@ -120,7 +121,7 @@ export function analyzeBouclage(depart, failedNodeId) {
     failedNodeId: String(failedNodeId),
     failedNodeName: String(failedNode.meta?.nom || failedNode.id),
     sourceId: String(source.id),
-    sourceIsVirtual: !physicalSource,
+    sourceIsVirtual: !physicalSource && Boolean(virtualSource),
     affectedPostes: affectedPostes.map(node => ({ id: String(node.id), name: String(node.meta?.nom || node.id) })),
     candidates,
     note: 'Analyse topologique uniquement : intensités, transit de puissance, chutes de tension, protections et sélectivité ne sont pas calculés.'
