@@ -11,7 +11,7 @@
 ## Fonctionnalités
 
 - **Schéma unifilaire MT :** sélection des départs, navigation dans le schéma, zoom, panoramique et inspection des nœuds et tronçons.
-- **Assistant de bouclage :** simulation topologique d'un poste en défaut, identification des postes impactés et recherche de chemins alternatifs nécessitant au plus une manœuvre sur un IACM ouvert, avec visualisation non destructive du chemin proposé.
+- **Assistant de bouclage :** simulation topologique sur le départ sélectionné, identification des postes impactés et recherche de chemins alternatifs nécessitant au plus une manœuvre sur un IACM ouvert, avec visualisation non destructive du chemin proposé. Les résultats ne constituent pas une validation électrique.
 - **Filtrage par agence :** affichage des départs correspondant à l'agence sélectionnée.
 - **Catalogue des ouvrages :** consultation et recherche des postes, transformateurs, IACM, tronçons et autres éléments du réseau.
 - **Carnet de terrain :** création et gestion locale des fiches de visite technique.
