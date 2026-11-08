@@ -1308,6 +1308,10 @@ window.app = {
     if (tabId === 'ouvrages') void loadFullTablesData(state, renderApp);
   },
   setAgency: (agency) => {
+    state.bouclageOpen = false;
+    state.bouclageResult = null;
+    state.bouclagePosteId = '';
+    state.bouclageCandidateIndex = 0;
     state.selectedAgency = agency;
     // Une sélection explicite dans l'en-tête doit prévaloir sur l'agence initiale par défaut.
     state.schemaAgencyInitialized = true;
@@ -1330,6 +1334,10 @@ window.app = {
     }
   },
   openDepart: (depId) => {
+    state.bouclageOpen = false;
+    state.bouclageResult = null;
+    state.bouclagePosteId = '';
+    state.bouclageCandidateIndex = 0;
     const targetSummary = departsSummary.find(item => item.id === depId);
     if (!targetSummary) return;
     state.selectedDepartId = depId;
@@ -1345,6 +1353,10 @@ window.app = {
     });
   },
   selectDepart: (depId) => {
+    state.bouclageOpen = false;
+    state.bouclageResult = null;
+    state.bouclagePosteId = '';
+    state.bouclageCandidateIndex = 0;
     state.selectedDepartId = depId;
     state.selectedNode = null;
     state.selectedEdge = null;
