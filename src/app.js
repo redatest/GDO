@@ -471,7 +471,8 @@ function renderBouclageModal(currentDepart) {
   } else if (result) {
     resultHtml += '<div class="grid grid-cols-2 gap-2">' +
       '<div class="rounded-xl border border-slate-200 bg-slate-50 p-3"><div class="text-[10px] font-bold uppercase text-slate-500">Postes affectés</div><div class="mt-1 text-2xl font-black tabular-nums text-slate-900">' + result.affectedPostes.length + '</div></div>' +
-      '<div class="rounded-xl border border-slate-200 bg-slate-50 p-3"><div class="text-[10px] font-bold uppercase text-slate-500">Chemins candidats</div><div class="mt-1 text-2xl font-black tabular-nums text-teal-700">' + candidates.length + '</div></div></div>';
+      '<div class="rounded-xl border border-slate-200 bg-slate-50 p-3"><div class="text-[10px] font-bold uppercase text-slate-500">Chemins candidats</div><div class="mt-1 text-2xl font-black tabular-nums text-teal-700">' + candidates.length + '</div></div></div>' +
+      '<div class="text-[11px] text-slate-500">IACM recensés : <strong>' + result.switchCount + '</strong> · IACM ouverts : <strong>' + result.openSwitchCount + '</strong> · Postes déjà non alimentés avant simulation : <strong>' + result.preExistingUnreachablePostes.length + '</strong></div>';
     if (result.sourceIsVirtual) {
       resultHtml += '<div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">Attention : l’origine du départ est un ancrage graphique virtuel. Le résultat ne confirme pas une source électrique réelle.</div>';
     }
@@ -494,11 +495,12 @@ function renderBouclageModal(currentDepart) {
       if (candidates.length > 12) resultHtml += '<p class="text-[10px] text-slate-500">12 premières propositions affichées sur ' + candidates.length + '.</p>';
       resultHtml += '</div>';
     } else {
-      resultHtml += '<div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">' +
-        (result.affectedPostes.length
-          ? 'Aucun chemin alternatif avec une seule manœuvre sur un IACM ouvert n’a été identifié dans les données topologiques de ce départ.'
-          : 'Aucun autre poste n’est isolé dans le graphe après retrait du poste sélectionné. Vérifiez la nature exacte du défaut et la topologie.') +
-        '</div>';
+      resultHtml += '<div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">' + escapeHtml(result.message) + '</div>';
+      if (result.affectedPostes.length) {
+        resultHtml += '<div class="rounded-xl border border-slate-200 bg-white p-3"><div class="text-xs font-bold text-slate-700 mb-2">Postes qui seraient privés d’alimentation</div><div class="flex flex-wrap gap-1.5">' +
+          result.affectedPostes.slice(0, 15).map(poste => '<span class="rounded-md bg-amber-50 border border-amber-200 px-2 py-1 text-[10px] font-mono text-amber-900">' + escapeHtml(poste.id) + '</span>').join('') +
+          '</div>' + (result.affectedPostes.length > 15 ? '<p class="mt-2 text-[10px] text-slate-500">15 premiers postes affichés sur ' + result.affectedPostes.length + '.</p>' : '') + '</div>';
+      }
     }
     resultHtml += '<p class="text-[11px] leading-relaxed text-slate-500">' + escapeHtml(result.note) + '</p>';
   } else {
@@ -1407,9 +1409,11 @@ window.app = {
     const depart = networkData.departs[state.selectedDepartId];
     const postes = (depart?.nodes || []).filter(node => node.type === 'POSTE_HTA_BT');
     state.bouclagePosteId = postes.find(node => node.id === state.selectedNode?.id)?.id || postes[0]?.id || '';
-    state.bouclageResult = null;
     state.bouclageCandidateIndex = 0;
     state.bouclageOpen = true;
+    state.bouclageResult = depart && state.bouclagePosteId
+      ? analyzeBouclage(depart, state.bouclagePosteId)
+      : null;
     renderApp();
   },
   closeBouclage: () => {
@@ -1429,8 +1433,11 @@ window.app = {
   },
   setBouclagePoste: (posteId) => {
     state.bouclagePosteId = String(posteId || '');
-    state.bouclageResult = null;
     state.bouclageCandidateIndex = 0;
+    const depart = networkData.departs[state.selectedDepartId];
+    state.bouclageResult = depart && state.bouclagePosteId
+      ? analyzeBouclage(depart, state.bouclagePosteId)
+      : null;
     renderApp();
   },
   analyzeBouclage: () => {
