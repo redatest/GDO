@@ -466,7 +466,9 @@ function renderBouclageModal(currentDepart) {
     escapeHtml(node.id + ' — ' + (node.meta?.nom || node.id)) + '</option>'
   ).join('');
   let resultHtml = '';
-  if (result) {
+  if (result && !result.ok) {
+    resultHtml = '<div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">' + escapeHtml(result.reason || 'Analyse impossible avec les données disponibles.') + '</div>';
+  } else if (result) {
     resultHtml += '<div class="grid grid-cols-2 gap-2">' +
       '<div class="rounded-xl border border-slate-200 bg-slate-50 p-3"><div class="text-[10px] font-bold uppercase text-slate-500">Postes affectés</div><div class="mt-1 text-2xl font-black tabular-nums text-slate-900">' + result.affectedPostes.length + '</div></div>' +
       '<div class="rounded-xl border border-slate-200 bg-slate-50 p-3"><div class="text-[10px] font-bold uppercase text-slate-500">Chemins candidats</div><div class="mt-1 text-2xl font-black tabular-nums text-teal-700">' + candidates.length + '</div></div></div>';
@@ -1414,6 +1416,7 @@ window.app = {
     const candidate = state.bouclageResult?.candidates?.[state.bouclageCandidateIndex];
     state.bouclageOpen = false;
     if (candidate) {
+      state.showJunctions = true;
       const depart = networkData.departs[state.selectedDepartId];
       const node = depart?.nodes.find(item => item.id === candidate.posteId);
       if (node) {
