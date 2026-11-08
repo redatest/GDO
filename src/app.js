@@ -11,6 +11,7 @@
 import { departsSummary } from './data/departsSummary.js';
 import { networkData, fullTablesData, getNodeDepartIndex, ensureNetworkData as loadNetworkData, ensureFullTablesData as loadFullTablesData } from './data/dataRepository.js';
 import { formatNumber, escapeHtml, escapeJsString } from './utils/formatters.js';
+import { analyzeBouclage } from './utils/bouclage.js';
 import { DEFAULT_SETTINGS } from './config/defaultSettings.js';
 import { renderTablesView, renderNewTransfoModal, renderNewConducteurModal } from './views/settingsViews.js';
 import { renderQuickSearchModal } from './views/quickSearchView.js';
@@ -132,6 +133,10 @@ const state = {
   selectedNode: null,
   selectedEdge: null,
   showBottomSheet: false,
+  bouclageOpen: false,
+  bouclagePosteId: '',
+  bouclageResult: null,
+  bouclageCandidateIndex: 0,
 
   // Ouvrages (Parc MT)
   ouvragesFilterType: 'P', // 'P' (Postes HTA/BT) | 'J' (IACM) | 'T' (Transfos) | 'L' (Tronçons) | 'E' (Étoilements)
@@ -444,6 +449,73 @@ function renderHomeView() {
   `;
 }
 
+// --- ASSISTANT DE BOUCLAGE TOPOLOGIQUE ---
+function renderBouclageModal(currentDepart) {
+  if (!state.bouclageOpen) return '';
+  const postes = (currentDepart.nodes || [])
+    .filter(node => node.type === 'POSTE_HTA_BT')
+    .sort((a, b) => String(a.id).localeCompare(String(b.id), 'fr', { numeric: true }));
+  const defaultPoste = postes.find(node => node.id === state.selectedNode?.id)?.id || postes[0]?.id || '';
+  const selectedPosteId = postes.some(node => node.id === state.bouclagePosteId) ? state.bouclagePosteId : defaultPoste;
+  const result = state.bouclageResult?.failedNodeId === selectedPosteId ? state.bouclageResult : null;
+  const candidates = result?.candidates || [];
+  const selectedIndex = Math.min(state.bouclageCandidateIndex, Math.max(0, candidates.length - 1));
+  const selectedCandidate = candidates[selectedIndex];
+  const options = postes.map(node =>
+    '<option value="' + escapeHtml(node.id) + '" ' + (node.id === selectedPosteId ? 'selected' : '') + '>' +
+    escapeHtml(node.id + ' — ' + (node.meta?.nom || node.id)) + '</option>'
+  ).join('');
+  let resultHtml = '';
+  if (result) {
+    resultHtml += '<div class="grid grid-cols-2 gap-2">' +
+      '<div class="rounded-xl border border-slate-200 bg-slate-50 p-3"><div class="text-[10px] font-bold uppercase text-slate-500">Postes affectés</div><div class="mt-1 text-2xl font-black tabular-nums text-slate-900">' + result.affectedPostes.length + '</div></div>' +
+      '<div class="rounded-xl border border-slate-200 bg-slate-50 p-3"><div class="text-[10px] font-bold uppercase text-slate-500">Chemins candidats</div><div class="mt-1 text-2xl font-black tabular-nums text-teal-700">' + candidates.length + '</div></div></div>';
+    if (result.sourceIsVirtual) {
+      resultHtml += '<div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">Attention : l’origine du départ est un ancrage graphique virtuel. Le résultat ne confirme pas une source électrique réelle.</div>';
+    }
+    if (candidates.length) {
+      resultHtml += '<div class="space-y-2"><h3 class="text-sm font-bold text-slate-800">Propositions classées par longueur topologique</h3><div class="max-h-52 space-y-2 overflow-y-auto">';
+      resultHtml += candidates.slice(0, 12).map((candidate, index) =>
+        '<button type="button" onclick="window.app.selectBouclageCandidate(' + index + ')" class="w-full rounded-xl border px-3 py-2.5 text-left ' +
+        (index === selectedIndex ? 'border-teal-500 bg-teal-50 ring-1 ring-teal-200' : 'border-slate-200 bg-white hover:bg-slate-50') + '">' +
+        '<span class="flex flex-wrap items-center justify-between gap-2"><strong class="font-mono text-xs text-slate-900">' + escapeHtml(candidate.posteId) + '</strong><span class="text-[10px] font-bold text-teal-800">' + candidate.edgeCount + ' tronçon(s)</span></span>' +
+        '<span class="mt-1 block text-xs text-slate-600">' + escapeHtml(candidate.posteName) + '</span>' +
+        '<span class="mt-1 block text-[11px] text-teal-800">Manœuvre candidate : IACM ' + escapeHtml(candidate.switchId) + ' — ' + escapeHtml(candidate.switchName) + '</span></button>'
+      ).join('');
+      resultHtml += '</div>';
+      if (selectedCandidate) {
+        resultHtml += '<div class="rounded-xl border border-teal-200 bg-teal-50 p-3 text-xs text-teal-950 space-y-1"><strong class="block">Chemin sélectionné sur le schéma</strong>' +
+          '<div class="font-mono break-words">' + selectedCandidate.pathNodeIds.map(escapeHtml).join(' → ') + '</div>' +
+          '<div>Fermeture théorique à étudier : <strong>' + escapeHtml(selectedCandidate.switchId) + '</strong></div>' +
+          '<button type="button" onclick="window.app.closeBouclage()" class="mt-2 rounded-lg bg-teal-700 px-3 py-2 font-bold text-white">Afficher le chemin sur le schéma</button></div>';
+      }
+      if (candidates.length > 12) resultHtml += '<p class="text-[10px] text-slate-500">12 premières propositions affichées sur ' + candidates.length + '.</p>';
+      resultHtml += '</div>';
+    } else {
+      resultHtml += '<div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">' +
+        (result.affectedPostes.length
+          ? 'Aucun chemin alternatif avec une seule manœuvre sur un IACM ouvert n’a été identifié dans les données topologiques de ce départ.'
+          : 'Aucun autre poste n’est isolé dans le graphe après retrait du poste sélectionné. Vérifiez la nature exacte du défaut et la topologie.') +
+        '</div>';
+    }
+    resultHtml += '<p class="text-[11px] leading-relaxed text-slate-500">' + escapeHtml(result.note) + '</p>';
+  } else {
+    resultHtml = '<div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-xs text-slate-600">L’analyse affichera les postes impactés et les chemins alternatifs identifiés à partir des tronçons et des positions IACM enregistrés.</div>';
+  }
+
+  return '<div class="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-3 md:p-6" role="dialog" aria-modal="true" aria-labelledby="bouclage-title">' +
+    '<section class="w-full max-w-3xl max-h-[90%] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 md:p-6 shadow-2xl space-y-4">' +
+    '<header class="flex items-start justify-between gap-3 border-b border-slate-100 pb-3"><div><div class="text-[10px] font-bold uppercase tracking-wider text-teal-700">Aide à la reconfiguration MT</div><h2 id="bouclage-title" class="text-lg font-black text-slate-900">Assistant de bouclage</h2><p class="mt-1 text-xs text-slate-500">Départ analysé : <strong class="font-mono text-slate-700">' + escapeHtml(currentDepart.id) + '</strong></p></div>' +
+    '<button type="button" onclick="window.app.closeBouclage()" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-600">Fermer</button></header>' +
+    '<div class="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end"><label class="block space-y-1.5"><span class="text-xs font-bold text-slate-700">Poste supposé en défaut</span>' +
+    '<select id="bouclagePosteSelect" onchange="window.app.setBouclagePoste(this.value)" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm font-mono text-slate-900">' + options + '</select></label>' +
+    '<button type="button" onclick="window.app.analyzeBouclage()" ' + (postes.length ? '' : 'disabled') + ' class="rounded-lg bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50">Analyser le bouclage</button></div>' +
+    '<div class="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">Simulation : le poste sélectionné est retiré du graphe. L’application recherche les postes privés d’alimentation et un chemin alternatif nécessitant au maximum la fermeture d’un IACM actuellement ouvert. Aucune manœuvre réelle n’est exécutée.</div>' +
+    resultHtml +
+    '<div class="border-t border-slate-100 pt-3 text-[11px] leading-relaxed text-slate-500">Limites : calcul limité au départ sélectionné et aux connexions présentes dans le graphe. Aucune vérification de transit de puissance, ampacité, chute de tension, court-circuit, réglage des protections ou sélectivité. Toute proposition doit être validée par les études et procédures d’exploitation avant toute manœuvre.</div>' +
+    '</section></div>';
+}
+
 // --- VUE 2 : SCHÉMA UNIFILAIRE MT AVEC BOTTOM SHEET ---
 function renderUnifilaireView() {
   if (!Object.keys(networkData.departs).length) {
@@ -543,6 +615,8 @@ function renderUnifilaireView() {
   }
 
   const inPathSet = new Set();
+  const activeBouclageCandidate = state.bouclageResult?.candidates?.[state.bouclageCandidateIndex] || null;
+  if (activeBouclageCandidate && state.bouclageResult?.departId === currentDepart.id) activeBouclageCandidate.pathNodeIds.forEach(id => inPathSet.add(id));
   if (state.selectedNode) {
     let curr = state.selectedNode.id;
     while (curr) {
@@ -661,6 +735,7 @@ function renderUnifilaireView() {
             <button type="button" onclick="window.app.fitView()" class="gdo-schema-action">
               <span aria-hidden="true">⌖</span><span>Centrer</span>
             </button>
+            <button type="button" onclick="window.app.openBouclage()" class="gdo-schema-action" title="Rechercher une solution topologique de bouclage"><span aria-hidden="true">⇄</span><span>Bouclage</span></button>
           </div>
         </div>
 
@@ -865,6 +940,21 @@ function renderUnifilaireView() {
             }).join('')}
           </g>
 
+          <!-- Chemin de bouclage proposé : superposition non destructive -->
+          ${activeBouclageCandidate && state.bouclageResult?.departId === currentDepart.id ? `
+            <g class="bouclage-proposal" pointer-events="none">
+              ${activeBouclageCandidate.pathEdgeIds.map(edgeId => {
+                const edge = rawEdges.find(item => String(item.id) === String(edgeId));
+                const u = edge && nodePosMap.get(edge.from);
+                const v = edge && nodePosMap.get(edge.to);
+                return u && v ? `<line x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}" stroke="#0f766e" stroke-width="6" stroke-dasharray="9 5" stroke-linecap="round" opacity="0.95"/>` : '';
+              }).join('')}
+              ${activeBouclageCandidate.pathNodeIds.map(nodeId => {
+                const node = nodePosMap.get(nodeId);
+                return node ? `<circle cx="${node.x}" cy="${node.y}" r="15" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-dasharray="4 3"/>` : '';
+              }).join('')}
+            </g>
+          ` : ''}
           <!-- Nœuds MT -->
           <g class="nodes">
             ${calculatedNodes.map(node => {
@@ -1113,6 +1203,8 @@ function renderUnifilaireView() {
           ` : ''}
         </div>
       ` : ''}
+
+      ${renderBouclageModal(currentDepart)}
     </div>
   `;
 }
@@ -1296,6 +1388,47 @@ window.app = {
       state.pan = { x: 30, y: 70 };
     }
     updateSvgTransform();
+  },
+  openBouclage: () => {
+    const depart = networkData.departs[state.selectedDepartId];
+    const postes = (depart?.nodes || []).filter(node => node.type === 'POSTE_HTA_BT');
+    state.bouclagePosteId = postes.find(node => node.id === state.selectedNode?.id)?.id || postes[0]?.id || '';
+    state.bouclageResult = null;
+    state.bouclageCandidateIndex = 0;
+    state.bouclageOpen = true;
+    renderApp();
+  },
+  closeBouclage: () => {
+    const candidate = state.bouclageResult?.candidates?.[state.bouclageCandidateIndex];
+    state.bouclageOpen = false;
+    if (candidate) {
+      const depart = networkData.departs[state.selectedDepartId];
+      const node = depart?.nodes.find(item => item.id === candidate.posteId);
+      if (node) {
+        state.selectedNode = node;
+        state.selectedEdge = null;
+        state.showBottomSheet = true;
+      }
+    }
+    renderApp();
+  },
+  setBouclagePoste: (posteId) => {
+    state.bouclagePosteId = String(posteId || '');
+    state.bouclageResult = null;
+    state.bouclageCandidateIndex = 0;
+    renderApp();
+  },
+  analyzeBouclage: () => {
+    const depart = networkData.departs[state.selectedDepartId];
+    if (!depart || !state.bouclagePosteId) return;
+    state.bouclageResult = analyzeBouclage(depart, state.bouclagePosteId);
+    state.bouclageCandidateIndex = 0;
+    renderApp();
+  },
+  selectBouclageCandidate: (index) => {
+    if (!Number.isInteger(index) || index < 0 || index >= (state.bouclageResult?.candidates?.length || 0)) return;
+    state.bouclageCandidateIndex = index;
+    renderApp();
   },
   selectNode: (nodeId) => {
     if (state.dragMoved) return;
