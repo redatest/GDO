@@ -726,3 +726,33 @@ html, body, .gdo-app-shell { background: #f8fafc; color: #172b4d; }
   }
 }
 
+
+
+/* Assistant de bouclage : dimensions explicites, indépendantes de la génération Tailwind. */
+.bouclage-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 12px;
+}
+.bouclage-modal-panel {
+  box-sizing: border-box;
+  width: min(100%, 48rem);
+  min-height: 0;
+  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+@media (min-width: 768px) {
+  .bouclage-modal-overlay { padding: 24px; }
+  .bouclage-modal-panel {
+    max-height: calc(100vh - 48px);
+    max-height: calc(100dvh - 48px);
+  }
+}
