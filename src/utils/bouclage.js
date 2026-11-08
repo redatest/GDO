@@ -31,7 +31,11 @@ export function analyzeBouclage(depart, failedNodeId) {
     return { ok: false, reason: 'Aucune origine topologique exploitable n’est identifiée dans ce départ.' };
   }
 
-  const isOpenSwitch = node => node?.type === 'INTERRUPTEUR_AERIEN' && node.meta?.isOpen === true;
+  const isOpenSwitch = node => {
+    if (node?.type !== 'INTERRUPTEUR_AERIEN') return false;
+    const value = node.meta?.isOpen;
+    return value === true || value === 1 || ['1', 'true', 'oui', 'ouvert'].includes(String(value ?? '').trim().toLowerCase());
+  };
 
   function findPath(targetId) {
     const startId = String(source.id);
