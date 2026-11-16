@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-    <meta name="theme-color" content="#0f172a" />
+    <meta name="theme-color" content="#0785a4" />
     <title>Connexion — GDO-MT</title>
     <meta name="description" content="Accès à la plateforme GDO-MT." />
     <style>
@@ -24,6 +24,37 @@
       .login-card button:disabled { opacity: .65; cursor: wait; }
       #login-error { min-height: 18px; margin: 12px 0 0; color: #b91c1c; font-size: 12px; font-weight: 600; }
       .footer { margin-top: 20px; text-align: center; color: #94a3b8; font-size: 11px; }
+
+
+      /* Identité GDO-MT — écran de connexion */
+      body.login-mode {
+        background: linear-gradient(145deg, #dff1f2 0%, #f4f8f8 55%, #d6ecee 100%);
+      }
+      .login-card {
+        border: 1px solid #b9dce0;
+        border-top: 5px solid #ffc900;
+        border-radius: 16px;
+        box-shadow: 0 18px 48px rgba(0, 91, 112, .16);
+      }
+      .brand-mark {
+        color: #164756;
+        background: linear-gradient(135deg, #ffc900, #ffdc4d);
+        border-radius: 12px;
+      }
+      .login-card h1 { color: #087f9e; }
+      .login-card label { color: #285866; }
+      .login-card input { border-color: #b9d3d9; border-radius: 9px; }
+      .login-card input:focus {
+        border-color: #49b5bd;
+        box-shadow: 0 0 0 3px rgba(73,181,189,.2);
+      }
+      .login-card button {
+        color: #174756;
+        background: #ffc900;
+        border-radius: 9px;
+      }
+      .login-card button:hover { background: #ffda45; }
+      .footer { color: #66868d; }
 
     </style>
   </head>
