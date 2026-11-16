@@ -232,7 +232,6 @@ function renderMobileTopBar() {
           <div>
             <div class="flex items-center gap-1.5">
               <span class="text-sm md:text-base font-black tracking-tight text-slate-900 leading-none">GDO-MT</span>
-              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">MT 30kV</span>
             </div>
             <span class="text-[10px] text-slate-500 font-medium">SDO &middot; Wilaya de Guelma (24)</span>
           </div>
