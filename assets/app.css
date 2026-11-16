@@ -779,3 +779,202 @@ html, body, .gdo-app-shell { background: #f8fafc; color: #172b4d; }
     max-height: calc(100dvh - 48px);
   }
 }
+
+/* ==========================================================
+   GDO-MT — nouvelle identité visuelle inspirée de la maquette EPS
+   Turquoise / bleu pétrole / jaune, adaptée à une application réseau MT.
+   Les styles du schéma électrique et ses codes topologiques restent intacts.
+   ========================================================== */
+:root {
+  --gdo-teal: #0785a4;
+  --gdo-teal-dark: #006b88;
+  --gdo-aqua: #49b5bd;
+  --gdo-aqua-soft: #e7f5f5;
+  --gdo-yellow: #ffc900;
+  --gdo-canvas: #edf4f5;
+  --gdo-ink: #173746;
+  --gdo-line: #d5e5e8;
+  --gdo-radius: 13px;
+  --gdo-shadow: 0 3px 12px rgba(0, 82, 105, .08);
+}
+body { background: var(--gdo-canvas) !important; color: var(--gdo-ink) !important; }
+.gdo-app-shell { background: var(--gdo-canvas) !important; color: var(--gdo-ink) !important; }
+
+/* Barre supérieure turquoise, comme les bandeaux de la maquette */
+.gdo-topbar {
+  background: var(--gdo-teal) !important;
+  border: 0 !important;
+  border-bottom: 4px solid var(--gdo-yellow) !important;
+  box-shadow: 0 3px 12px rgba(0, 70, 90, .18) !important;
+}
+.gdo-brand > div:first-child {
+  background: var(--gdo-yellow) !important;
+  color: var(--gdo-teal-dark) !important;
+  border-radius: 11px !important;
+  box-shadow: none !important;
+}
+.gdo-brand span, .gdo-brand > div > span,
+.gdo-brand .text-slate-900, .gdo-brand .text-slate-500 {
+  color: #fff !important;
+}
+.gdo-brand .bg-emerald-100 {
+  background: rgba(255,255,255,.18) !important;
+  border-color: rgba(255,255,255,.28) !important;
+  color: #fff !important;
+}
+.gdo-header-tools button[title="Recherche rapide d'ouvrage"],
+.gdo-header-tools select {
+  background: rgba(255,255,255,.16) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,.35) !important;
+}
+.gdo-header-tools select option { color: #173746; background: #fff; }
+.gdo-header-tools button[title="Fermer la session GDO-MT"] {
+  background: var(--gdo-yellow) !important;
+  border-color: var(--gdo-yellow) !important;
+  color: #164453 !important;
+}
+.gdo-header-tools button[title="Fermer la session GDO-MT"]:hover {
+  background: #ffda45 !important;
+  color: #103744 !important;
+}
+
+/* Navigation : boutons blancs, sélection jaune */
+.gdo-main-nav > div > button,
+.gdo-main-nav > div > button:hover,
+.gdo-main-nav > div > button:focus {
+  background: rgba(255,255,255,.96) !important;
+  color: #176078 !important;
+  border: 1px solid #cce4e7 !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+.gdo-main-nav > div > button[aria-current="page"] {
+  background: var(--gdo-yellow) !important;
+  border-color: var(--gdo-yellow) !important;
+  color: #174756 !important;
+  box-shadow: inset 0 -3px 0 rgba(0,75,95,.18) !important;
+}
+.gdo-main-nav > div > button:hover:not([aria-current="page"]) {
+  background: #e6f6f7 !important;
+  color: var(--gdo-teal-dark) !important;
+}
+@media (min-width: 768px) {
+  .gdo-main-nav { background: var(--gdo-teal-dark) !important; border: 0 !important; }
+}
+@media (max-width: 767px) {
+  .gdo-main-nav {
+    background: var(--gdo-teal) !important;
+    border-top: 3px solid var(--gdo-yellow) !important;
+    box-shadow: 0 -4px 16px rgba(0,70,90,.12) !important;
+  }
+}
+
+/* Fond général, cartes et panneaux */
+.gdo-main { background: var(--gdo-canvas) !important; }
+.gdo-app-shell :is(.bg-white.rounded-xl, .bg-white.rounded-2xl, .bg-white.rounded-lg) {
+  border: 1px solid var(--gdo-line) !important;
+  border-radius: 13px !important;
+  box-shadow: var(--gdo-shadow) !important;
+}
+.gdo-app-shell :is(.bg-slate-50, .bg-slate-100) { background-color: #f1f7f8 !important; }
+.gdo-app-shell :is(.border-slate-100, .border-slate-200, .border-slate-300) { border-color: var(--gdo-line) !important; }
+.gdo-app-shell :is(.text-slate-900, .text-slate-800) { color: #173746 !important; }
+.gdo-app-shell :is(.text-slate-600, .text-slate-500) { color: #587580 !important; }
+
+/* Bandeau d'accueil : turquoise, avec repère jaune */
+.gdo-app-shell .bg-gradient-to-br.from-blue-700 {
+  background: linear-gradient(120deg, #087f9e 0%, #45b2bb 100%) !important;
+  border-left: 5px solid var(--gdo-yellow) !important;
+  box-shadow: 0 5px 16px rgba(0, 94, 116, .15) !important;
+}
+.gdo-app-shell .bg-gradient-to-br.from-blue-700 :is(.text-white, .text-blue-100) { color: #fff !important; }
+.gdo-app-shell .bg-gradient-to-br.from-blue-700 button {
+  background: #fff !important;
+  color: var(--gdo-teal-dark) !important;
+  border-color: rgba(255,255,255,.7) !important;
+}
+
+/* Boutons et actions : turquoise ; jaune pour l'action principale */
+.gdo-app-shell button.bg-blue-600,
+.gdo-app-shell button.bg-blue-700,
+.gdo-app-shell button.bg-blue-800,
+.gdo-app-shell button.bg-indigo-600,
+.gdo-app-shell button.bg-indigo-700 {
+  background: var(--gdo-teal) !important;
+  color: #fff !important;
+  border-color: var(--gdo-teal) !important;
+  box-shadow: none !important;
+}
+.gdo-app-shell button.bg-blue-600:hover,
+.gdo-app-shell button.bg-blue-700:hover,
+.gdo-app-shell button.bg-indigo-600:hover {
+  background: var(--gdo-teal-dark) !important;
+}
+.gdo-app-shell button.bg-amber-500,
+.gdo-app-shell button.bg-yellow-500,
+.gdo-app-shell button.bg-amber-400 {
+  background: var(--gdo-yellow) !important;
+  color: #174756 !important;
+  border-color: #e7b900 !important;
+}
+.gdo-app-shell button[class*="border-blue-"] {
+  border-color: #b8dce1 !important;
+}
+.gdo-app-shell button[class*="text-blue-"] { color: var(--gdo-teal-dark) !important; }
+
+/* Formulaires et recherche */
+.gdo-app-shell :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  background: #fff !important;
+  border: 1px solid #b9d3d9 !important;
+  border-radius: 9px !important;
+  color: #173746 !important;
+}
+.gdo-app-shell :is(input, select, textarea):focus {
+  border-color: var(--gdo-aqua) !important;
+  box-shadow: 0 0 0 3px rgba(73,181,189,.18) !important;
+  outline: 0 !important;
+}
+.gdo-app-shell input::placeholder,
+.gdo-app-shell textarea::placeholder { color: #8aa4aa !important; }
+
+/* Tableaux : en-tête bleu pétrole et survol aqua */
+.gdo-app-shell table thead,
+.gdo-app-shell table thead tr { background: #e3f1f3 !important; }
+.gdo-app-shell table th { color: #176078 !important; }
+.gdo-app-shell table tbody tr:hover { background: #f0f9f9 !important; }
+
+/* Onglets et filtres */
+.gdo-app-shell [role="tablist"],
+.gdo-app-shell .gdo-view-tabs,
+.gdo-app-shell .gdo-schema-filters {
+  background: #e5f0f2 !important;
+  border-color: #cfe1e5 !important;
+}
+.gdo-app-shell [role="tab"][aria-selected="true"],
+.gdo-app-shell .gdo-view-tab.is-active {
+  background: #fff !important;
+  color: var(--gdo-teal-dark) !important;
+  border-color: #a9d3d9 !important;
+  box-shadow: inset 0 -3px 0 var(--gdo-yellow) !important;
+}
+
+/* Barre du schéma : outils cohérents avec la nouvelle charte.
+   Les couleurs des conducteurs, postes et IACM dans le SVG ne sont pas modifiées. */
+.gdo-schema-toolbar { background: #f8fcfc !important; border-color: var(--gdo-line) !important; }
+.gdo-schema-action:hover, .gdo-schema-action.is-active {
+  background: #e5f5f5 !important;
+  border-color: #9bd1d7 !important;
+  color: var(--gdo-teal-dark) !important;
+}
+.gdo-schema-filter.is-active {
+  background: #fff5c9 !important;
+  border-color: #f0d46a !important;
+  color: #725900 !important;
+}
+
+/* Modales et barres de défilement */
+.gdo-app-shell [role="dialog"] { border-color: var(--gdo-line) !important; }
+.gdo-app-shell ::-webkit-scrollbar { width: 9px; height: 9px; }
+.gdo-app-shell ::-webkit-scrollbar-thumb { background: #a8cbd0; border: 2px solid #f1f7f8; border-radius: 10px; }
+.gdo-app-shell ::-webkit-scrollbar-track { background: #edf4f5; }
