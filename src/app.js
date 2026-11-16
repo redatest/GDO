@@ -112,6 +112,7 @@ const state = {
   selectedDepartId: '121H5C1',
   selectedAgency: 'ALL', // 'ALL' | '121' | '123' | '125' | '127'
   schemaAgencyInitialized: false,
+  schemaFullscreen: false,
   
   // Recherche rapide globale (Header)
   showQuickSearchModal: false,
@@ -700,7 +701,7 @@ function renderUnifilaireView() {
   }
 
   return `
-    <div class="gdo-schema-view flex flex-col h-[calc(100vh-105px)] bg-slate-50 text-slate-800 relative overflow-hidden">
+    <div class="gdo-schema-view ${state.schemaFullscreen ? 'is-fullscreen' : ''} flex flex-col h-[calc(100vh-105px)] bg-slate-50 text-slate-800 relative overflow-hidden">
       <!-- Barre de commandes Schéma MT -->
       <div class="gdo-schema-toolbar bg-white border-b border-slate-200 px-3 py-2 shrink-0 z-20 shadow-xs">
         <div class="gdo-schema-toolbar-main">
@@ -742,6 +743,7 @@ function renderUnifilaireView() {
               <span aria-hidden="true">⌖</span><span>Centrer</span>
             </button>
             <button type="button" onclick="window.app.openBouclage()" class="gdo-schema-action" title="Rechercher une solution topologique de bouclage"><span aria-hidden="true">⇄</span><span>Bouclage</span></button>
+            <button type="button" onclick="window.app.toggleSchemaFullscreen()" class="gdo-schema-action ${state.schemaFullscreen ? 'is-active' : ''}" aria-pressed="${state.schemaFullscreen}" title="${state.schemaFullscreen ? 'Revenir à l’affichage normal' : 'Afficher le schéma en plein écran'}"><span aria-hidden="true">${state.schemaFullscreen ? '⤢' : '⛶'}</span><span>${state.schemaFullscreen ? 'Quitter' : 'Plein écran'}</span></button>
           </div>
         </div>
 
@@ -1488,6 +1490,11 @@ window.app = {
     state.showPoseLegend = !state.showPoseLegend;
     renderApp();
   },
+  toggleSchemaFullscreen: () => {
+    state.schemaFullscreen = !state.schemaFullscreen;
+    state.showBottomSheet = false;
+    renderApp();
+  },
 
   // --- GESTION TACTILE MOBILE (PAN ET PINCH-TO-ZOOM À 2 DOIGTS) ---
   handleTouchStart: (e) => {
@@ -2011,4 +2018,3 @@ if (document.readyState === 'loading') {
 } else {
   renderApp();
 }
-

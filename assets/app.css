@@ -606,6 +606,29 @@ html, body, .gdo-app-shell { background: #f8fafc; color: #172b4d; }
   border-color: #fde68a;
 }
 .gdo-schema-filter.schema-filter-aer.is-active strong { color: #b45309; }
+/* Schéma MT — affichage plein écran adapté aux mobiles et au WebView Android. */
+.gdo-schema-view.is-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 100 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+.gdo-schema-view.is-fullscreen .gdo-schema-toolbar {
+  padding-top: max(8px, env(safe-area-inset-top)) !important;
+}
+.gdo-schema-view.is-fullscreen #svgContainer {
+  min-height: 0;
+}
+.gdo-schema-view.is-fullscreen .gdo-schema-toolbar,
+.gdo-schema-view.is-fullscreen #svgContainer {
+  flex-shrink: 0;
+}
+
 @media (max-width: 700px) {
   .gdo-schema-toolbar-main {
     grid-template-columns: 1fr;
@@ -618,7 +641,7 @@ html, body, .gdo-app-shell { background: #f8fafc; color: #172b4d; }
   .gdo-schema-depart select { width: 100%; }
   .gdo-schema-actions {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .gdo-schema-action {
     min-width: 0;
