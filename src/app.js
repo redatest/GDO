@@ -120,6 +120,7 @@ const state = {
 
   // Schéma Unifilaire
   showJunctions: false,
+  topologyWarningDismissed: false,
   poseFilter: 'ALL', // 'ALL' | 'SOUT_HIGHLIGHT' | 'AER_ONLY'
   showPoseLegend: false,
   zoom: 1,
@@ -760,9 +761,10 @@ function renderUnifilaireView() {
         </div>
       </div>
 
-      ${disconnectedComponentCount > 0 ? `
-        <div role="alert" class="shrink-0 border-b border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
-          Avertissement topologique : ${disconnectedComponentCount} composante(s) séparée(s), ${unreachableNodeCount} nœud(s) non raccordé(s) à la racine de ce départ. Le traçage amont peut être incomplet ; vérifiez les données de référence.
+      ${disconnectedComponentCount > 0 && !state.topologyWarningDismissed ? `
+        <div role="alert" class="gdo-topology-warning shrink-0 border-b border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
+          <span class="gdo-topology-warning-text">Avertissement topologique : ${disconnectedComponentCount} composante(s) séparée(s), ${unreachableNodeCount} nœud(s) non raccordé(s) à la racine de ce départ. Le traçage amont peut être incomplet ; vérifiez les données de référence.</span>
+          <button type="button" class="gdo-topology-warning-close" onclick="window.app.dismissTopologyWarning()" aria-label="Fermer l’avertissement topologique" title="Fermer l’avertissement">×</button>
         </div>
       ` : ''}
       <!-- Canvas SVG Interactif -->
@@ -1365,6 +1367,7 @@ window.app = {
     state.bouclagePosteId = '';
     state.bouclageCandidateIndex = 0;
     state.selectedDepartId = depId;
+    state.topologyWarningDismissed = false;
     state.selectedNode = null;
     state.selectedEdge = null;
     state.showBottomSheet = false;
@@ -1375,6 +1378,10 @@ window.app = {
   },
   toggleJunctions: () => {
     state.showJunctions = !state.showJunctions;
+    renderApp();
+  },
+  dismissTopologyWarning: () => {
+    state.topologyWarningDismissed = true;
     renderApp();
   },
   zoomCanvas: (delta) => {
